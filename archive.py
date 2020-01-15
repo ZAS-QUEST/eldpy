@@ -1,6 +1,12 @@
 """
 An archive with primary material in and about endangered languages
 """
+ 
+import glob
+import json
+from lxml.html.soupparser import fromstring
+from collection import Collection
+#from collections import defaultdict
 
 class Archive():
     FILETYPES = {
@@ -14,10 +20,64 @@ class Archive():
     def __init__(self, name, url):
         self.name = name
         self.url = url
-        self.collections = [] 
+        self.collections = {}
         
     def populate_collections(self):
-        pass
+        if self.name == "ANLA": 
+            print("loading cached information")
+            try:
+                with open('cache/links/anla.json') as json_in:
+                    cached_links = json.loads(json_in.read())
+            except IOError:
+                cached_links = {}
+            html_files = glob.glob('anla/*html')  
+            landingpage_template = "https://www.uaf.edu/anla/collections/search/resultDetail.xml?resource=%s"
+            print("reading files")
+            for f in html_files:
+                if f in cached_links:
+                     #we already haveinformation about this file
+                    if cached_links[f] == {}: 
+                        continue
+                    #transfer information  
+                    for collection in cached_links[f]:
+                        self.collections[collection] = Collection(collection, "url" )                                
+                        self.collections[collection].elanfiles = cached_links[f][collection]
+                    
+                #print(f,anla_ID)
+                #landingpage = landingpage_template % anla_ID
+                else:
+                    anla_ID = f[5:-5] #get rid of "anla/" and ".html"
+                    with open(f,encoding="iso8859-1") as c:
+                        content = c.read()
+                        #print(len(content))
+                        try:
+                            root = fromstring(content)  
+                        except ValueError:
+                            print(f,"is not valid XML")
+                            continue
+                        cached_links[f] = {}
+                        for link in root.findall(".//td/a"):
+                            href = link.attrib.get("href",'')
+                            if href.endswith("eaf"): 
+                                flag = True
+                                collection, eaf_file = href.split('/')[-2:]
+                                try:
+                                    self.collections[collection].elanfiles.append(eaf_file)
+                                except KeyError:
+                                    self.collections[collection] = Collection(collection, "url" )      #TODO check for mutliple eaf files                          
+                                    self.collections[collection].elanfiles =[eaf_file] 
+                                try:
+                                    cached_links[f][collection].append(eaf_file)
+                                except:
+                                    cached_links[f][collection]= [eaf_file]
+                                    
+            print("updating cache")
+            with  open('cache/links/anla.json','w') as json_out:
+                json_out.write(json.dumps(cached_links, sort_keys=True, indent=4))
+                
+                        
+                    
+                        
     
     def analyze_collections(self):
         """

@@ -73,7 +73,7 @@ class Collection():
                     links = fromstring(html).findall('.//tbody/tr/td/a')    
                     eaflocations = list(set([a.attrib["href"] for a in links if a.attrib["href"].endswith('eaf')])) #make this configurable for other types
                 except AttributeError:
-                    continue
+                    return
                 #dowload identified files
                 retrievedfiles = []
                 for eaflocation in eaflocations:          
