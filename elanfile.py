@@ -5,28 +5,34 @@ A representation of an ELAN file
 import requests
 from collections import Counter
 from lod import NER_BLACKLIST
+from lxml import etree
+from collections import defaultdict
 
 class ElanFile():
-    def __init__(self, name, url, namespace=None):
-        self.name = name
+    def __init__(self, path, url, namespace=None):
+        #self.name = name
+        self.path = path
         self.ID = ''
-        self.url = url
-        self.xml = None
+        self.url = url 
         self.namespace = namespace
         self.tiers = []
         self.vernaculartiers = []
         self.translationtiers = []
         self.glosstiers = []
-        self.parentdic = {}
+        self.parentdic = self.get_parent_dic(self.xml())
         self.timecodes = {}
         self.reftypes = {}
+        
+    def xml(self):
+        root = etree.parse(self.path)
+        return root
         
     def write(self):
         """write the file to the file system"""
         pass
     
     
-    def analyze(self):
+    def analyze(self, fingerprint=False):
         """
         get information about: 
         - number of words
@@ -34,7 +40,8 @@ class ElanFile():
         - time transcribed
         etc
         """
-        pass
+        if fingerprint:
+            print("fingerprint of %s is %s"%(self.path, self.fingerprint()))
         
     def get_triples(self, bundle_url=None):
         """
@@ -47,6 +54,29 @@ class ElanFile():
         #NER triples
         pass
     
+    def get_parent_dic(self, tree):
+        dico = defaultdict(list)
+        linguistic_types = tree.findall(".//LINGUISTIC_TYPE")
+        #map tier IDs to their constraints
+        tierconstraints = {lt.attrib["LINGUISTIC_TYPE_ID"]:lt.attrib.get("CONSTRAINTS") for lt in linguistic_types}
+        tiers = tree.findall(".//TIER")
+        for tier in tiers:
+            ID = tier.attrib["TIER_ID"]
+            #map all tiers to their parent tiers, defaulting to the file itself
+            PARENT_REF = tier.attrib.get("PARENT_REF", (self.path))
+            ltype = tier.attrib["LINGUISTIC_TYPE_REF"]
+            try:
+                constraint = tierconstraints[ltype]
+            except KeyError:
+                print("reference to unknown LINGUISTIC_TYPE_ID  %s when establishing constraints in %s" %(ltype,self.path))
+                continue
+            dico[PARENT_REF].append({'id': ID,
+                                    'constraint': constraint,
+                                    'ltype': ltype
+                                    }
+                                )
+        return dico
+    
     def fingerprint(self): 
         """
         check the tiers there are in a given file and
@@ -58,41 +88,22 @@ class ElanFile():
         - x: anything else
         """
         
-        self.accumulator = '['
-        tree = self.xml
-        linguistic_types = tree.findall(".//LINGUISTIC_TYPE")
-        #map tier IDs to their constraints
-        tierconstraints = {lt.attrib["LINGUISTIC_TYPE_ID"]:lt.attrib.get("CONSTRAINTS") for lt in linguistic_types}
-        tiers = tree.findall(".//TIER")
-        for tier in tiers:
-            ID = tier.attrib["TIER_ID"]
-            #map all tiers to their parent tiers, defaulting to the file itself
-            PARENT_REF = tier.attrib.get("PARENT_REF", (filename))
-            ltype = tier.attrib["LINGUISTIC_TYPE_REF"]
-            try:
-                constraint = tierconstraints[ltype]
-            except KeyError:
-                print("reference to unknown LINGUISTIC_TYPE_ID  %s when establishing constraints in %s" %(ltype,filename))
-                continue
-            dico[PARENT_REF].append({'id': ID,
-                                    'constraint': constraint,
-                                    'ltype': ltype
-                                    }
-                                )
+        tree = self.xml()
+        self.fingerprint = '['
         #start with dummy tier
-        self.analyze_tier({'id':filename,
+        self.analyze_tier({'id':self.path,
                     'constraint': 'root',
                     'ltype': ''
                     },
                     0,
-                    lump=lump
+                    #lump=lump
                     )    
-        self.accumulator += ']'
-        return self.accumulator
+        self.fingerprint += ']' 
+        return self.fingerprint
     
-    def analyze_tier(level, lump=False):
+    def analyze_tier(self, d, level, lump=False):
         """analyze a tier and its children""" 
-        
+        #print(d)
         constraint = d['constraint']
         code = 'x'
         if constraint == 'Symbolic_Subdivision' or constraint == 'Symbolic Subdivision':
@@ -118,14 +129,14 @@ class ElanFile():
         else:
             print(repr(constraint))
             0/0 
-        self.accumulator += code
-        children = dico[d['id']] 
+        self.fingerprint += code
+        children = self.parentdic[d['id']] 
         if children == []:
             return
-        self.accumulator += '['
+        self.fingerprint += '['
         for child in children:
             self.analyze_tier(child, level+1, lump=lump)        
-        self.accumulator += ']'
+        self.fingerprint += ']'
     
     def populate_tiers(self): # TODO refactor this into smaller methods and functions
         transcriptioncandidates = acceptable_transcription_tier_types
@@ -410,7 +421,7 @@ class Tier():
         #extract names and wikidataId's
         return [(x["rawName"], x["wikidataId"])
                 for x in retrieved_entities
-                if x.get("wikidataId") and x["wikidataId"] not in blacklist
+                if x.get("wikidataId") and x["wikidataId"] not in blacklist]
         
 class Annotation():
     def __init__(self, element):

@@ -2,26 +2,35 @@
 A collection with primary material in and about endangered languages.
 """
 
+from elanfile import ElanFile
+
 class Collection():
-    def __init__(self, name, url, namespace=None):
+    def __init__(self, name, url, namespace=None, archive=''):
         self.name = name
-        self.ID = ''
+        self.archive = archive
         self.url = url
-        self.bundles = []
+        self.urlprefix = 'https://uafanlc.alaska.edu/Online'
+        self.ID = ''
+        self.cacheprefix = "cache/eafs/%s"%self.archive.lower()
+        self.elanpaths = []
+        self.elanfiles = []
         self.namespace = namespace
           
-    def populate_bundles(self):
-        pass   
+    def acquire_elans(self):
+        #print(self.elanpaths)
+        for path in self.elanpaths: 
+            localpath = '/'.join((self.cacheprefix, path))
+            eaf_url =  '/'.join((self.urlprefix, self.name, path))
+            #print(localpath)
+            self.elanfiles.append(ElanFile(localpath, eaf_url))
+            
+            
     
-    def analyze_bundles(self):
-        """
-        get information about: 
-        - number of words
-        - number of glosses
-        - time transcribed
-        etc
-        """
-        pass
+    def analyze_elans(self, fingerprints=False):
+        print("analyzing %i elans"%len(self.elanfiles))
+        for eaf in self.elanfiles:
+            eaf.analyze(fingerprint=fingerprints)
+            #TODO
         
     def get_triples(self):
         """

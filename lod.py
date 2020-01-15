@@ -40,7 +40,7 @@ def write_graph(filename):
     with open("filename", "wb") as rdfout:
         rdfout.write(GRAPH.serialize(format='n3'))
         
- LGRLIST = set(
+LGRLIST = set(
     [
         "1",
         "2",

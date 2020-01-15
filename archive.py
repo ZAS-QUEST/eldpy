@@ -40,8 +40,8 @@ class Archive():
                         continue
                     #transfer information  
                     for collection in cached_links[f]:
-                        self.collections[collection] = Collection(collection, "url" )                                
-                        self.collections[collection].elanfiles = cached_links[f][collection]
+                        self.collections[collection] = Collection(collection, "url", archive='anla')                                
+                        self.collections[collection].elanpaths = cached_links[f][collection]
                     
                 #print(f,anla_ID)
                 #landingpage = landingpage_template % anla_ID
@@ -62,10 +62,10 @@ class Archive():
                                 flag = True
                                 collection, eaf_file = href.split('/')[-2:]
                                 try:
-                                    self.collections[collection].elanfiles.append(eaf_file)
+                                    self.collections[collection].elanpaths.append(eaf_file)
                                 except KeyError:
-                                    self.collections[collection] = Collection(collection, "url" )      #TODO check for mutliple eaf files                          
-                                    self.collections[collection].elanfiles =[eaf_file] 
+                                    self.collections[collection] = Collection(collection, "url", archive='anla')      #TODO check for mutliple eaf files                          
+                                    self.collections[collection].elanpaths = [eaf_file] 
                                 try:
                                     cached_links[f][collection].append(eaf_file)
                                 except:
