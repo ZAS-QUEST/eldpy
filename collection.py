@@ -3,13 +3,15 @@ A collection with primary material in and about endangered languages.
 """
 
 from elanfile import ElanFile
+import os.path
 
 class Collection():
-    def __init__(self, name, url, namespace=None, archive=''):
+    def __init__(self, name, url, namespace=None, archive='', urlprefix='',url_template=''):
         self.name = name
         self.archive = archive
         self.url = url
-        self.urlprefix = 'https://uafanlc.alaska.edu/Online'
+        self.urlprefix = urlprefix
+        self.url_template = url_template
         self.ID = ''
         self.cacheprefix = "cache/eafs/%s"%self.archive.lower()
         self.elanpaths = []
@@ -22,7 +24,14 @@ class Collection():
             localpath = '/'.join((self.cacheprefix, path))
             eaf_url =  '/'.join((self.urlprefix, self.name, path))
             #print(localpath)
-            self.elanfiles.append(ElanFile(localpath, eaf_url))
+            if  os.path.isfile(localpath):
+                self.elanfiles.append(ElanFile(localpath, eaf_url))
+                print(1)
+            else:
+                print("file not found %s (remote %s)"%(localpath,eaf_url))
+                #archive_url = "http://catalog.paradisec.org.au/repository/%s/%s/%s"
+                first, second, thirdthrowaway = path.split('-')     
+                print(self.url_template%(first, second, path))  
             
             
     

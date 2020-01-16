@@ -17,10 +17,12 @@ class Archive():
     "Flex":"FLEx"
     }     
     
-    def __init__(self, name, url):
+    def __init__(self, name, url, collectionprefix='', collection_url_template=''):
         self.name = name
         self.url = url
+        self.collectionprefix = collectionprefix
         self.collections = {}
+        self.collection_url_template = collection_url_template
         
     def populate_collections(self):
         if self.name == "ANLA": 
@@ -74,6 +76,30 @@ class Archive():
             print("updating cache")
             with  open('cache/links/anla.json','w') as json_out:
                 json_out.write(json.dumps(cached_links, sort_keys=True, indent=4))
+        if self.name == 'PARADISEC': 
+            print("loading cached information")
+            try:
+                with open('cache/links/paradisec.json') as json_in:
+                    cached_links = json.loads(json_in.read())
+            except IOError:
+                cached_links = {}
+                print("""please download files from the PARADISEC archive
+via 
+> wget -O paradisec.html "https://catalog.paradisec.org.au/items/search?page=1&per_page=18347"
+> grep '<a href="/collections' paradisec.html |grep -o '".*"'|grep -o '[^"]*'| sed "s/\//https:\/\/catalog.paradisec.org.au\//"> itemlist
+> wget -w 5 -i itemlist
+"""
+                    )
+                
+            landingpage_template = "https://catalog.paradisec.org.au/collections/%s"
+            for collection in cached_links:
+                self.collections[collection] = Collection(collection, landingpage_template%collection, archive='paradisec',urlprefix=self.collectionprefix, url_template=self.collection_url_template )       
+                self.collections[collection].elanpaths = [path
+                                                          for bundle in cached_links[collection] 
+                                                          for path in cached_links[collection][bundle]
+                                                         ]
+                
+            print(self.collections)
                 
                         
                     
