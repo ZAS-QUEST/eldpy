@@ -25,6 +25,9 @@ class ElanFile():
         self.timecodes = {}
         self.reftypes = {}
         
+        
+    LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
+    
     def xml(self):
         root = etree.parse(self.path)
         return root
@@ -143,6 +146,8 @@ class ElanFile():
     def populate_transcriptions(self): # TODO refactor this into smaller methods and functions
         transcriptioncandidates = lod.acceptable_transcription_tier_types
         transcriptions = {}
+        root = self.xml()
+        time_in_seconds = []
         for candidate in transcriptioncandidates:
             # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
@@ -161,14 +166,18 @@ class ElanFile():
                     # get a list of duration from the time slots directly mentioned in annotations
                     if wordlist == []:
                         continue
+                    try:
+                        timeslots = self.get_timeslots(root)
+                    except KeyError:
+                        timeslots = {}
                     timelist = [
-                        get_duration(aa)
+                        Annotation(aa, timeslots).get_duration()
                         for aa in tier.findall(".//ALIGNABLE_ANNOTATION")
                         if aa.find(".//ANNOTATION_VALUE").text is not None
                     ]
                     # get a list of durations from time slots mentioned in parent elements
                     timelistannno = [
-                        get_duration(alignableannotations.get(ra.attrib["ANNOTATION_REF"]))
+                        Annotation(self.get_alignable_annotations(root).get(ra.attrib["ANNOTATION_REF"]),timeslots).get_duration()
                         for ra in tier.findall(".//REF_ANNOTATION")
                         if ra.find(".//ANNOTATION_VALUE").text is not None
                     ]
@@ -182,7 +191,7 @@ class ElanFile():
                     #print(toplanguage)
                     if (toplanguage
                             and toplanguage.lang == "en"
-                            and toplanguage.prob > LANGDETECTTHRESHOLD):
+                            and toplanguage.prob > self.LANGDETECTTHRESHOLD):
                         # language is English
                         logging.warning(
                             'ignored vernacular tier with English language content at %.2f%% probability ("%s ...")'
@@ -194,9 +203,9 @@ class ElanFile():
                     except KeyError:
                         transcriptions[candidate] = {}
                         transcriptions[candidate][tierID] = wordlist
+        self.transcriptions = transcriptions
     
     def populate_translations(self):
-        LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
         translationcandidates = lod.acceptable_translation_tier_types 
         root = self.xml()
         translations = {}
@@ -225,7 +234,7 @@ class ElanFile():
                         continue
                     if toplanguage.lang != "en":
                         continue
-                    if toplanguage.prob < LANGDETECTTHRESHOLD:
+                    if toplanguage.prob < self.LANGDETECTTHRESHOLD:
                         # language is English, but likelihood is too small
                         logging.warning(
                             'ignored %.2f%% probability English for "%s ..."'
@@ -258,6 +267,12 @@ class ElanFile():
         return [self.translations[tier_type][tierID]
                 for tier_type in self.translations
                 for tierID in self.translations[tier_type]
+                ]      
+    
+    def get_transcriptions(self):
+        return [self.transcriptions[tier_type][tierID]
+                for tier_type in self.transcriptions
+                for tierID in self.transcriptions[tier_type]
                 ]
             
     
@@ -345,24 +360,24 @@ class ElanFile():
     def annotation_time(self):
         self.annotation_time = 0
         
-    def get_timeslots(self):
+    def get_timeslots(self, xml):
         """
         Create a dictionary with time slot ID as keys and offset in ms as values
         """
 
-        timeorder = self.xml.find(".//TIME_ORDER")
+        timeorder = xml.find(".//TIME_ORDER")
         timeslots = {slot.attrib["TIME_SLOT_ID"]:slot.attrib["TIME_VALUE"]
                     for slot
                     in timeorder.findall("TIME_SLOT")
                     }
         return timeslots
     
-    def get_alignable_annotations(root):
+    def get_alignable_annotations(self,root):
         """
         Create a dictionary with alignable annotations ID as keys and the elements themselves as values
         """
 
-        aas = self.xml.findall(".//ALIGNABLE_ANNOTATION")
+        aas = root.findall(".//ALIGNABLE_ANNOTATION")
         return {aa.attrib["ANNOTATION_ID"]:aa for aa in aas}
     
  
@@ -437,14 +452,24 @@ class Tier():
                 if x.get("wikidataId") and x["wikidataId"] not in lod.NER_BLACKLIST]
         
 class Annotation():
-    def __init__(self, element):
+    def __init__(self, element,timeslots):
         self.ID = ''
         self.value = ''
         self.parentref = ''
-        self.starttime = int(
+        try:
+            self.starttime = int(
                 timeslots[element.attrib["TIME_SLOT_REF1"]])
-        self.endtime = int(
+        except AttributeError:
+            self.starttime = 0
+        except KeyError:
+            self.starttime = 0
+        try:
+            self.endtime = int(
                 timeslots[element.attrib["TIME_SLOT_REF2"]])
+        except AttributeError:
+            self.endtime = 0
+        except KeyError:
+            self.endtime = 0
         
     def get_duration(self):
         """

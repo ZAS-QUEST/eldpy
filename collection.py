@@ -53,6 +53,26 @@ class Collection():
                 wordcount += sum(counts)
         print("%i files, %i tiers, %i words" % (filecount, tiercount, wordcount))
         return filecount, tiercount, wordcount
+                        
+        
+    def populate_transcriptions(self):
+        print("getting transcriptions for %i elans"%len(self.elanfiles))
+        filecount = 0
+        tiercount = 0
+        wordcount = 0
+        for eaf in self.elanfiles: 
+            print(eaf.path)
+            eaf.populate_transcriptions()        
+            transcriptions = eaf.get_transcriptions()
+            counts = [len(t) for t in transcriptions]
+            print("  number of words in transcriptions tiers: %s"%str(counts))
+            if transcriptions:
+                print(counts)
+                filecount += 1
+                tiercount += len(counts)
+                wordcount += sum(counts)
+        print("%i files, %i tiers, %i words" % (filecount, tiercount, wordcount))
+        return filecount, tiercount, wordcount
             
             
     def analyze_elans(self, fingerprints=False):
