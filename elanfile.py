@@ -4,9 +4,11 @@ A representation of an ELAN file
 
 import requests
 from collections import Counter
-from lod import NER_BLACKLIST
+import lod
 from lxml import etree
 from collections import defaultdict
+from langdetect import detect_langs,  lang_detect_exception
+import logging 
 
 class ElanFile():
     def __init__(self, path, url, namespace=None):
@@ -138,8 +140,8 @@ class ElanFile():
             self.analyze_tier(child, level+1, lump=lump)        
         self.fingerprint += ']'
     
-    def populate_tiers(self): # TODO refactor this into smaller methods and functions
-        transcriptioncandidates = acceptable_transcription_tier_types
+    def populate_transcriptions(self): # TODO refactor this into smaller methods and functions
+        transcriptioncandidates = lod.acceptable_transcription_tier_types
         transcriptions = {}
         for candidate in transcriptioncandidates:
             # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
@@ -192,8 +194,11 @@ class ElanFile():
                     except KeyError:
                         transcriptions[candidate] = {}
                         transcriptions[candidate][tierID] = wordlist
- 
-        translationcandidates = acceptable_translation_tier_types
+    
+    def populate_translations(self):
+        LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
+        translationcandidates = lod.acceptable_translation_tier_types 
+        root = self.xml()
         translations = {}
         for candidate in translationcandidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
@@ -247,6 +252,14 @@ class ElanFile():
                     except KeyError:
                         translations[candidate] = {}
                         translations[candidate][tierID] = wordlist
+        self.translations = translations
+        
+    def get_translations(self):
+        return [self.translations[tier_type][tierID]
+                for tier_type in self.translations
+                for tierID in self.translations[tier_type]
+                ]
+            
     
     def get_word_gloss_pairs(filename, root, parentdic):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
@@ -268,7 +281,7 @@ class ElanFile():
             except AttributeError:
                 return None
 
-        glosscandidates = acceptable_gloss_tier_types
+        glosscandidates = lod.acceptable_gloss_tier_types
         retrieved_glosstiers = {}
 
         for candidate in glosscandidates:
@@ -281,7 +294,7 @@ class ElanFile():
                     parent = parentdic[tierID]
                     parentID = parent.attrib["TIER_ID"]
                     parent_type = parent.attrib["LINGUISTIC_TYPE_REF"]
-                    if not parent_type in acceptable_word_tier_types:
+                    if not parent_type in lod.acceptable_word_tier_types:
                         logging.warning(
                             "%s: Type %s is not accepted for potential parent %s of gloss candidate %s" %
                             (filename, parent_type, parentID, tierID)
@@ -421,7 +434,7 @@ class Tier():
         #extract names and wikidataId's
         return [(x["rawName"], x["wikidataId"])
                 for x in retrieved_entities
-                if x.get("wikidataId") and x["wikidataId"] not in blacklist]
+                if x.get("wikidataId") and x["wikidataId"] not in lod.NER_BLACKLIST]
         
 class Annotation():
     def __init__(self, element):

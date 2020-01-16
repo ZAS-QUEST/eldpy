@@ -34,12 +34,32 @@ class Collection():
                 print("file not found %s (remote %s)"%(localpath,eaf_url))
                 first, second, thirdthrowaway = path.split('-')   
             
+        
+    def populate_translations(self):
+        print("getting translations for %i elans"%len(self.elanfiles))
+        filecount = 0
+        tiercount = 0
+        wordcount = 0
+        for eaf in self.elanfiles: 
+            print(eaf.path)
+            eaf.populate_translations()        
+            translations = eaf.get_translations()
+            counts = [len(t) for t in translations]
+            print("  number of words in translation tiers: %s"%str(counts))
+            if translations:
+                print(counts)
+                filecount += 1
+                tiercount += len(counts)
+                wordcount += sum(counts)
+        print("%i files, %i tiers, %i words" % (filecount, tiercount, wordcount))
+        return filecount, tiercount, wordcount
             
-    
+            
     def analyze_elans(self, fingerprints=False):
         print("analyzing %i elans"%len(self.elanfiles))
         for eaf in self.elanfiles:
             eaf.analyze(fingerprint=fingerprints)
+            eaf.populate_translations()
             #TODO
         
     def get_triples(self):
