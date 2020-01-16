@@ -19,7 +19,7 @@ class ElanFile():
         self.vernaculartiers = []
         self.translationtiers = []
         self.glosstiers = []
-        #self.parentdic = self.get_parent_dic(self.xml())
+        self.parentdic = self.get_parent_dic(self.xml())
         self.timecodes = {}
         self.reftypes = {}
         

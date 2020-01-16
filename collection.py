@@ -3,6 +3,7 @@ A collection with primary material in and about endangered languages.
 """
 
 from elanfile import ElanFile
+from lxml.etree import XMLSyntaxError
 import os.path
 
 class Collection():
@@ -25,13 +26,13 @@ class Collection():
             eaf_url =  '/'.join((self.urlprefix, self.name, path))
             #print(localpath)
             if  os.path.isfile(localpath):
-                self.elanfiles.append(ElanFile(localpath, eaf_url))
-                print(1)
+                try:
+                    self.elanfiles.append(ElanFile(localpath, eaf_url)) 
+                except XMLSyntaxError:
+                    print("malformed XML in %s"%localpath)
             else:
                 print("file not found %s (remote %s)"%(localpath,eaf_url))
-                #archive_url = "http://catalog.paradisec.org.au/repository/%s/%s/%s"
-                first, second, thirdthrowaway = path.split('-')     
-                print(self.url_template%(first, second, path))  
+                first, second, thirdthrowaway = path.split('-')   
             
             
     
