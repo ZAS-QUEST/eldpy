@@ -79,20 +79,23 @@ class Collection():
         
     def populate_glosses(self):
         print("getting glosses for %i elans"%len(self.elanfiles))
+        filecount = 0
+        tiercount = 0
         wordcount = 0
         morphemecount = 0
         for eaf in self.elanfiles: 
             print(eaf.path)
             eaf.populate_glosses()        
             glosses = eaf.get_glosses()
-            counts = [len(t) for t in glosses]
+            counts = [len(t[0]) for t in glosses]
             print("  number of glosses in gloss tiers: %s"%str(glosses))
             if glosses: 
                 filecount += 1
                 tiercount += len(counts)
                 wordcount += sum(counts) 
-        print("%i files, %i tiers, %i words" % (filecount, tiercount, wordcount))
-        return filecount, tiercount, wordcount, secs
+                glosscount +=  sum([len(re.split('[-=.:]',word)) for tier in counts for word in tier]) 
+        print("%i files, %i tiers, %i words, %i morphemes" % (filecount, tiercount, wordcount, glosscount))
+        return filecount, tiercount, wordcount, morphemes
             
             
     def analyze_elans(self, fingerprints=False):

@@ -275,9 +275,14 @@ class ElanFile():
                 for tier_type in self.transcriptions
                 for tierID in self.transcriptions[tier_type]
                 ]
-            
+                
+    def get_glosess(self):
+        return [self.glosses[tier_type][tierID]
+                for tier_type in self.transcriptions
+                for tierID in self.transcriptions[tier_type]
+                ]
     
-    def get_word_gloss_pairs(filename, root, parentdic):
+    def populate_glosses(filename, root, parentdic):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
 
         def get_word_for_gloss(annotation_value):
@@ -327,6 +332,7 @@ class ElanFile():
                     ]
                     #print(len(words), len(glosses))
                     retrieved_glosstiers[candidate][tierID] = (words, glosses) 
+        self.glosses = retrieved_glosstiers
                     
     def create_parent_dic(root, filename):
         """
