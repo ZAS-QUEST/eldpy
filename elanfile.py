@@ -203,6 +203,7 @@ class ElanFile():
                     except KeyError:
                         transcriptions[candidate] = {}
                         transcriptions[candidate][tierID] = wordlist
+        self.secondstranscribed = sum(time_in_seconds)
         self.transcriptions = transcriptions
     
     def populate_translations(self):

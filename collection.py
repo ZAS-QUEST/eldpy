@@ -60,19 +60,39 @@ class Collection():
         filecount = 0
         tiercount = 0
         wordcount = 0
+        secs = 0
         for eaf in self.elanfiles: 
             print(eaf.path)
             eaf.populate_transcriptions()        
             transcriptions = eaf.get_transcriptions()
             counts = [len(t) for t in transcriptions]
             print("  number of words in transcriptions tiers: %s"%str(counts))
-            if transcriptions:
-                print(counts)
+            if transcriptions: 
                 filecount += 1
                 tiercount += len(counts)
                 wordcount += sum(counts)
+                secs += eaf.secondstranscribed
+        print("%i files, %i tiers, %i words, %i seconds" % (filecount, tiercount, wordcount, secs))
+        return filecount, tiercount, wordcount, secs
+    
+                            
+        
+    def populate_glosses(self):
+        print("getting glosses for %i elans"%len(self.elanfiles))
+        wordcount = 0
+        morphemecount = 0
+        for eaf in self.elanfiles: 
+            print(eaf.path)
+            eaf.populate_glosses()        
+            glosses = eaf.get_glosses()
+            counts = [len(t) for t in glosses]
+            print("  number of glosses in gloss tiers: %s"%str(glosses))
+            if glosses: 
+                filecount += 1
+                tiercount += len(counts)
+                wordcount += sum(counts) 
         print("%i files, %i tiers, %i words" % (filecount, tiercount, wordcount))
-        return filecount, tiercount, wordcount
+        return filecount, tiercount, wordcount, secs
             
             
     def analyze_elans(self, fingerprints=False):
@@ -87,6 +107,9 @@ class Collection():
         get RDF triples describing the Resource 
         """
         pass
+    
+            
+
     
     def get_recursive_triples(self, archive_url=None):
         triples = self.get_triples()
@@ -142,3 +165,9 @@ class Collection():
                     r2 = s.post(eaflocation, cookies=cookie, data=payload) 
                     eafcontent = r2.text  
                     retrievedfiles.append({'eafname':eafcontent})
+
+    def fingerprint_graphics(self):
+        """
+        get a graphics for the fingerprint distribution
+        """
+        pass
