@@ -5,6 +5,7 @@ A collection with primary material in and about endangered languages.
 from elanfile import ElanFile
 from lxml.etree import XMLSyntaxError
 import os.path
+import re
 
 class Collection():
     def __init__(self, name, url, namespace=None, archive='', urlprefix='',url_template=''):
@@ -90,12 +91,16 @@ class Collection():
             counts = [len(t[0]) for t in glosses]
             print("  number of glosses in gloss tiers: %s"%str(glosses))
             if glosses: 
+                print(counts)
                 filecount += 1
                 tiercount += len(counts)
                 wordcount += sum(counts) 
-                glosscount +=  sum([len(re.split('[-=.:]',word)) for tier in counts for word in tier]) 
-        print("%i files, %i tiers, %i words, %i morphemes" % (filecount, tiercount, wordcount, glosscount))
-        return filecount, tiercount, wordcount, morphemes
+                #try:
+                    #morphemecount +=  sum([len(re.split('[-=.:]',word)) for tier in glosses for word in tier[0]]) 
+                #except TypeError: 
+                    #print(tier[0], "could not be analyzed for morphemes")
+        print("%i files, %i tiers, %i words, %i morphemes" % (filecount, tiercount, wordcount, morphemecount))
+        return filecount, tiercount, wordcount, morphemecount
             
             
     def analyze_elans(self, fingerprints=False):

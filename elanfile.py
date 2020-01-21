@@ -276,13 +276,13 @@ class ElanFile():
                 for tierID in self.transcriptions[tier_type]
                 ]
                 
-    def get_glosess(self):
+    def get_glosses(self):
         return [self.glosses[tier_type][tierID]
-                for tier_type in self.transcriptions
-                for tierID in self.transcriptions[tier_type]
+                for tier_type in self.glosses
+                for tierID in self.glosses[tier_type]
                 ]
     
-    def populate_glosses(filename, root, parentdic):
+    def populate_glosses(self):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
 
         def get_word_for_gloss(annotation_value):
@@ -304,7 +304,15 @@ class ElanFile():
 
         glosscandidates = lod.acceptable_gloss_tier_types
         retrieved_glosstiers = {}
-
+        
+        root = self.xml()
+        invertedparentdic = {}
+        for p in self.parentdic:
+            for ch in self.parentdic[p]:
+                ID = ch['id']
+                pel = root.find('.//TIER[@TIER_ID="%s"]'%p)   
+                invertedparentdic[ID] = pel                                     
+            
         for candidate in glosscandidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
@@ -312,13 +320,14 @@ class ElanFile():
                 retrieved_glosstiers[candidate] = {}
                 for tier in glosstiers:
                     tierID = tier.attrib["TIER_ID"]
-                    parent = parentdic[tierID]
+                    parent = invertedparentdic[tierID] 
+                    print(tier, tierID, parent.attrib["TIER_ID"])
                     parentID = parent.attrib["TIER_ID"]
                     parent_type = parent.attrib["LINGUISTIC_TYPE_REF"]
                     if not parent_type in lod.acceptable_word_tier_types:
                         logging.warning(
                             "%s: Type %s is not accepted for potential parent %s of gloss candidate %s" %
-                            (filename, parent_type, parentID, tierID)
+                            (self.path, parent_type, parentID, tierID)
                         )
                         continue
                     # create a list of all annotations in that tier
