@@ -21,7 +21,8 @@ class ElanFile():
         self.vernaculartiers = []
         self.translationtiers = []
         self.glosstiers = []
-        self.parentdic = self.get_parent_dic(self.xml())
+        self.get_tier_hierarchy()
+        self.create_parent_dic()
         self.timecodes = {}
         self.reftypes = {}
         
@@ -59,28 +60,7 @@ class ElanFile():
         #NER triples
         pass
     
-    def get_parent_dic(self, tree):
-        dico = defaultdict(list)
-        linguistic_types = tree.findall(".//LINGUISTIC_TYPE")
-        #map tier IDs to their constraints
-        tierconstraints = {lt.attrib["LINGUISTIC_TYPE_ID"]:lt.attrib.get("CONSTRAINTS") for lt in linguistic_types}
-        tiers = tree.findall(".//TIER")
-        for tier in tiers:
-            ID = tier.attrib["TIER_ID"]
-            #map all tiers to their parent tiers, defaulting to the file itself
-            PARENT_REF = tier.attrib.get("PARENT_REF", (self.path))
-            ltype = tier.attrib["LINGUISTIC_TYPE_REF"]
-            try:
-                constraint = tierconstraints[ltype]
-            except KeyError:
-                print("reference to unknown LINGUISTIC_TYPE_ID  %s when establishing constraints in %s" %(ltype,self.path))
-                continue
-            dico[PARENT_REF].append({'id': ID,
-                                    'constraint': constraint,
-                                    'ltype': ltype
-                                    }
-                                )
-        return dico
+
     
     def fingerprint(self): 
         """
@@ -135,7 +115,7 @@ class ElanFile():
             print(repr(constraint))
             0/0 
         self.fingerprint += code
-        children = self.parentdic[d['id']] 
+        children = self.tier_hierarchy[d['id']] 
         if children == []:
             return
         self.fingerprint += '['
@@ -305,13 +285,7 @@ class ElanFile():
         glosscandidates = lod.acceptable_gloss_tier_types
         retrieved_glosstiers = {}
         
-        root = self.xml()
-        invertedparentdic = {}
-        for p in self.parentdic:
-            for ch in self.parentdic[p]:
-                ID = ch['id']
-                pel = root.find('.//TIER[@TIER_ID="%s"]'%p)   
-                invertedparentdic[ID] = pel                                     
+        root = self.xml()                                    
             
         for candidate in glosscandidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
@@ -343,26 +317,43 @@ class ElanFile():
                     retrieved_glosstiers[candidate][tierID] = (words, glosses) 
         self.glosses = retrieved_glosstiers
                     
-    def create_parent_dic(root, filename):
+    def create_parent_dic(self):
         """
         match all tier IDs with the referenced parent IDs
 
         The parents are not the XML parents but are different tiers,
         which are the logical parents of a tier
         """
-        dico = {}
-        tiers = root.findall(".//TIER")
+        d = {}
+        for tier_ID in self.tier_hierarchy:
+            for child in self.tier_hierarchy[tier_ID]: 
+                
+                d[child['id']] = tier_ID 
+        self.child_parent_dic = d
+        
+    def get_tier_hierarchy(self):
+        tree = self.xml()
+        dico = defaultdict(list)
+        linguistic_types = tree.findall(".//LINGUISTIC_TYPE")
+        #map tier IDs to their constraints
+        tierconstraints = {lt.attrib["LINGUISTIC_TYPE_ID"]:lt.attrib.get("CONSTRAINTS") for lt in linguistic_types}
+        tiers = tree.findall(".//TIER")
         for tier in tiers:
-            TIER_ID = tier.attrib["TIER_ID"]
-            # map all tiers to their parent tiers
-            PARENT_ID = tier.attrib.get("PARENT_REF")
-            parent = None
-            if PARENT_ID:
-                try:
-                    parent = root.find(".//TIER[@TIER_ID='%s']" % PARENT_ID)
-                except SyntaxError:
-                    print("bad parentID", PARENT_ID)
-            dico[TIER_ID] = parent 
+            ID = tier.attrib["TIER_ID"]
+            #map all tiers to their parent tiers, defaulting to the file itself
+            PARENT_REF = tier.attrib.get("PARENT_REF", (self.path))
+            ltype = tier.attrib["LINGUISTIC_TYPE_REF"]
+            try:
+                constraint = tierconstraints[ltype]
+            except KeyError:
+                print("reference to unknown LINGUISTIC_TYPE_ID  %s when establishing constraints in %s" %(ltype,self.path))
+                continue
+            dico[PARENT_REF].append({'id': ID,
+                                    'constraint': constraint,
+                                    'ltype': ltype
+                                    }
+                                )
+        self.tier_hierarchy = dico
 
     def translations_from_tiers(self):
         self.translations = []    

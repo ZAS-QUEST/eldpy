@@ -95,9 +95,10 @@ class Collection():
                 filecount += 1
                 tiercount += len(counts)
                 wordcount += sum(counts) 
-                #try:
-                    #morphemecount +=  sum([len(re.split('[-=.:]',word)) for tier in glosses for word in tier[0]]) 
-                #except TypeError: 
+                try:
+                    morphemecount +=  sum([len(re.split('[-=.:]',word)) for tier in glosses for word in tier[0]]) 
+                except TypeError: 
+                    pass
                     #print(tier[0], "could not be analyzed for morphemes")
         print("%i files, %i tiers, %i words, %i morphemes" % (filecount, tiercount, wordcount, morphemecount))
         return filecount, tiercount, wordcount, morphemecount
