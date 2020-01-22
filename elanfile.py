@@ -257,11 +257,7 @@ class ElanFile():
                 for tierID in self.transcriptions[tier_type]
                 ]
                 
-    def get_glosses(self):
-        return [self.glosses[tier_type][tierID]
-                for tier_type in self.glosses
-                for tierID in self.glosses[tier_type]
-                ]
+ 
     
     def populate_glosses(self):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
@@ -310,7 +306,7 @@ class ElanFile():
                          for el
                          in  root.findall(".//ANNOTATION")
                         } #TODO this should probably be in init
-            
+        glossed_sentences = []    
         for candidate in glosscandidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
@@ -334,8 +330,7 @@ class ElanFile():
                     # retrieve the glosses
                     glosses = [
                         "" if annotation.text is None else annotation.text.strip() for annotation in annotations
-                    ]
-                    print(glosses)
+                    ] 
                     if list(set(glosses)) == 1:
                         if glosses[0] == "": #no glosses in this tier
                             continue
@@ -359,9 +354,9 @@ class ElanFile():
                             d[sentenceID].append((word,gloss))
                     
                     glossed_sentences.append(d)
-                    pprint.pprint(glossed_sentences)    
-                    retrieved_glosstiers[candidate][tierID] = (words, glosses) 
-        self.glosses = retrieved_glosstiers
+                    #pprint.pprint(glossed_sentences)    
+                    retrieved_glosstiers[candidate][tierID] =  glossed_sentences 
+        self.glossed_sentences = retrieved_glosstiers
                     
     def create_parent_dic(self):
         """

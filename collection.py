@@ -6,6 +6,7 @@ from elanfile import ElanFile
 from lxml.etree import XMLSyntaxError
 import os.path
 import re
+import pprint
 
 class Collection():
     def __init__(self, name, url, namespace=None, archive='', urlprefix='',url_template=''):
@@ -82,26 +83,38 @@ class Collection():
         print("getting glosses for %i elans"%len(self.elanfiles))
         filecount = 0
         tiercount = 0
+        sentencecount = 0
         wordcount = 0
         morphemecount = 0
         for eaf in self.elanfiles: 
             print(eaf.path)
             eaf.populate_glosses()        
-            glosses = eaf.get_glosses()
-            counts = [len(t[0]) for t in glosses]
-            #print("  number of glosses in gloss tiers: %s"%str(glosses))
-            if glosses: 
-                print(counts)
-                filecount += 1
-                tiercount += len(counts)
-                wordcount += sum(counts) 
-                try:
-                    morphemecount +=  sum([len(re.split('[-=.:]',word)) for tier in glosses for word in tier[0]]) 
-                except TypeError: 
-                    pass
-                    #print(tier[0], "could not be analyzed for morphemes")
-        print("%i files, %i tiers, %i words, %i morphemes" % (filecount, tiercount, wordcount, morphemecount))
-        return filecount, tiercount, wordcount, morphemecount
+            glossed_sentences = eaf.glossed_sentences
+            if glossed_sentences == []:
+                continue
+            filecount += 1
+            for tiertype in glossed_sentences: 
+                print(tiertype) 
+                tiercount += 1
+                for tierID in glossed_sentences[tiertype]: 
+                    for sentence in glossed_sentences[tiertype][tierID]:  
+                        sentencecount += 1
+                        try:
+                            words = sentence[list(sentence.keys())[0]]
+                        except IndexError:
+                            continue
+                        #words = glossed_sentences[tiertype][tierID][sentence][]
+                        for pairing in words: 
+                            wordcount += 1
+                            morphemecount += 1 
+                            #every extra morpheme is marked by a separator like - or = in the gloss
+                        try:
+                            morphemecount += len(re.findall("[-=.:]", pairing[1]))
+                        except TypeError: #gloss None
+                            pass
+             
+        print("%i files, %i tiers, %i sentences, %i words, %i morphemes" % (filecount, tiercount, sentencecount,  wordcount, morphemecount))
+        return filecount, tiercount, sentencecount, wordcount, morphemecount
             
             
     def analyze_elans(self, fingerprints=False):
