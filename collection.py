@@ -89,7 +89,7 @@ class Collection():
             eaf.populate_glosses()        
             glosses = eaf.get_glosses()
             counts = [len(t[0]) for t in glosses]
-            print("  number of glosses in gloss tiers: %s"%str(glosses))
+            #print("  number of glosses in gloss tiers: %s"%str(glosses))
             if glosses: 
                 print(counts)
                 filecount += 1

@@ -9,6 +9,7 @@ from lxml import etree
 from collections import defaultdict
 from langdetect import detect_langs,  lang_detect_exception
 import logging 
+import pprint
 
 class ElanFile():
     def __init__(self, path, url, namespace=None):
@@ -24,7 +25,11 @@ class ElanFile():
         self.get_tier_hierarchy()
         self.create_parent_dic()
         self.timecodes = {}
-        self.reftypes = {}
+        self.reftypes = {} 
+        try:
+            self.timeslots = self.get_timeslots()
+        except KeyError:
+            timeslots = {}
         
         
     LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
@@ -146,18 +151,14 @@ class ElanFile():
                     # get a list of duration from the time slots directly mentioned in annotations
                     if wordlist == []:
                         continue
-                    try:
-                        timeslots = self.get_timeslots(root)
-                    except KeyError:
-                        timeslots = {}
                     timelist = [
-                        Annotation(aa, timeslots).get_duration()
-                        for aa in tier.findall(".//ALIGNABLE_ANNOTATION")
-                        if aa.find(".//ANNOTATION_VALUE").text is not None
+                        Annotation(aa, self.timeslots).get_duration()
+                        for aa in tier.findall("./ANNOTATION")
+                        if aa.text is not None
                     ]
                     # get a list of durations from time slots mentioned in parent elements
                     timelistannno = [
-                        Annotation(self.get_alignable_annotations(root).get(ra.attrib["ANNOTATION_REF"]),timeslots).get_duration()
+                        Annotation(self.get_alignable_annotations(root).get(ra.attrib["ANNOTATION_REF"]),self.timeslots).get_duration()
                         for ra in tier.findall(".//REF_ANNOTATION")
                         if ra.find(".//ANNOTATION_VALUE").text is not None
                     ]
@@ -264,56 +265,101 @@ class ElanFile():
     
     def populate_glosses(self):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
-
-        def get_word_for_gloss(annotation_value):
+        
+        def get_word_for_gloss(annotation_value,mapping):
             """retrieve the parent annotation's text"""
 
             # get the XML parent, called <REF_ANNOTATION>
             ref_annotation = annotation_value.getparent()
             # find the attributed called ANNOTATION_REF, which gives the ID of the referred annotation
-            annotation_ref = ref_annotation.attrib["ANNOTATION_REF"]
-            # retrieve the referenced annotation
-            querystring = (
-                ".//REF_ANNOTATION[@ANNOTATION_ID='%s']/ANNOTATION_VALUE" % annotation_ref
-            )
-            parent = root.find(querystring)
-            try:
-                return parent.text
-            except AttributeError:
-                return None
-
-        glosscandidates = lod.acceptable_gloss_tier_types
-        retrieved_glosstiers = {}
+            annotation_ref = ref_annotation.attrib["ANNOTATION_REF"] 
+            wordtext = mapping.get(annotation_ref,"")
+            return wordtext
+        
+        
+        
+        def get_annotation_text_mapping(root):
+            #querystring = (
+                #".//REF_ANNOTATION[@ANNOTATION_ID='%s']/ANNOTATION_VALUE" % annotation_ref
+            #)
+            textdic = {ref_annotation.attrib.get("ANNOTATION_ID"):ref_annotation.find("./ANNOTATION_VALUE").text
+             for ref_annotation 
+             in root.findall(".//REF_ANNOTATION")
+            }  
+            return textdic
+        
+                
+        
+        def get_parent_element_ID_dic(root):
+            #querystring = (
+                #".//REF_ANNOTATION[@ANNOTATION_ID='%s']/ANNOTATION_VALUE" % annotation_ref
+            #)
+            get_parent_element_ID_dic = {ref_annotation.attrib.get("ANNOTATION_ID"):ref_annotation.getparent()
+             for ref_annotation 
+             in root.findall(".//REF_ANNOTATION")
+            }  
+            return textdic
+            
         
         root = self.xml()                                    
+        glosscandidates = lod.acceptable_gloss_tier_types 
+        mapping = get_annotation_text_mapping(root)  
+        retrieved_glosstiers = {}
+         
+        annotationdic = {el[0].attrib["ANNOTATION_ID"]:Annotation(el, self.timeslots) 
+                         for el
+                         in  root.findall(".//ANNOTATION")
+                        } #TODO this should probably be in init
             
         for candidate in glosscandidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
             if glosstiers != []:  # we found a tier of the linguistic type
+                print("found", candidate)
                 retrieved_glosstiers[candidate] = {}
                 for tier in glosstiers:
                     tierID = tier.attrib["TIER_ID"]
-                    parent = invertedparentdic[tierID] 
-                    print(tier, tierID, parent.attrib["TIER_ID"])
-                    parentID = parent.attrib["TIER_ID"]
-                    parent_type = parent.attrib["LINGUISTIC_TYPE_REF"]
-                    if not parent_type in lod.acceptable_word_tier_types:
-                        logging.warning(
-                            "%s: Type %s is not accepted for potential parent %s of gloss candidate %s" %
-                            (self.path, parent_type, parentID, tierID)
-                        )
-                        continue
+                    print(tierID)
+                    parentID = self.child_parent_dic[tierID]   
+                    #parent_type = parent.attrib["LINGUISTIC_TYPE_REF"]
+                    #if not parent_type in lod.acceptable_word_tier_types:
+                        #logging.warning(
+                            #"%s: Type %s is not accepted for potential parent %s of gloss candidate %s" %
+                            #(self.path, parent_type, parentID, tierID)
+                        #)
+                        #continue
                     # create a list of all annotations in that tier
-                    annotations = tier.findall(".//ANNOTATION_VALUE")
+                    annotations = [Annotation(el, self.timeslots) for el in  tier.findall(".//ANNOTATION")]
                     # retrieve the text values associated with the parent annotations
-                    #(i.e., the vernacular words)
-                    words = [get_word_for_gloss(annotation) for annotation in annotations]
                     # retrieve the glosses
                     glosses = [
-                        "" if av.text is None else av.text.strip() for av in annotations
+                        "" if annotation.text is None else annotation.text.strip() for annotation in annotations
                     ]
-                    #print(len(words), len(glosses))
+                    print(glosses)
+                    if list(set(glosses)) == 1:
+                        if glosses[0] == "": #no glosses in this tier
+                            continue
+                    
+                    #(i.e., the vernacular words)
+                    words = [mapping[annotation.parentID] for annotation in annotations] 
+                    sentenceIDs =  [annotationdic[annotation.parentID].parentID for annotation in annotations]
+                    current_sentence_ID = None #we boldly assume that annotaions are linear
+                    d = {} #maps sentences IDs to the chain of word-gloss pairs they containt
+                    glossed_sentences = [] #stores all glosses by sentence they belong to
+                    for i, annotation in enumerate(annotations):
+                        gloss = annotations[i].text 
+                        word = words[i]
+                        sentenceID = sentenceIDs[i] 
+                        if sentenceID != current_sentence_ID: 
+                            if current_sentence_ID: 
+                                glossed_sentences.append(d)
+                            current_sentence_ID = sentenceID
+                            d = {sentenceID:[(word,gloss)]} 
+                        else:
+                            d[sentenceID].append((word,gloss))
+                    
+                    glossed_sentences.append(d)
+                    pprint.pprint(glossed_sentences)    
                     retrieved_glosstiers[candidate][tierID] = (words, glosses) 
         self.glosses = retrieved_glosstiers
                     
@@ -367,12 +413,12 @@ class ElanFile():
     def annotation_time(self):
         self.annotation_time = 0
         
-    def get_timeslots(self, xml):
+    def get_timeslots(self):
         """
         Create a dictionary with time slot ID as keys and offset in ms as values
         """
 
-        timeorder = xml.find(".//TIME_ORDER")
+        timeorder = self.xml().find(".//TIME_ORDER")
         timeslots = {slot.attrib["TIME_SLOT_ID"]:slot.attrib["TIME_VALUE"]
                     for slot
                     in timeorder.findall("TIME_SLOT")
@@ -459,23 +505,25 @@ class Tier():
                 if x.get("wikidataId") and x["wikidataId"] not in lod.NER_BLACKLIST]
         
 class Annotation():
-    def __init__(self, element,timeslots):
-        self.ID = ''
-        self.value = ''
-        self.parentref = ''
+    def __init__(self, element, timeslots):
+        aa =  element.find('.//ALIGNABLE_ANNOTATION')
+        av =  element.find('.//ANNOTATION_VALUE')
         try:
+            self.text = av.text
+        except AttributeError:
+            self.text = ""
+        ra =  element.find('./REF_ANNOTATION')
+        if aa: #time aligned
+            self.ID = aa.attrib["ANNOTATION_ID"]            
+            self.parentID = None
             self.starttime = int(
-                timeslots[element.attrib["TIME_SLOT_REF1"]])
-        except AttributeError:
-            self.starttime = 0
-        except KeyError:
-            self.starttime = 0
-        try:
+                timeslots[aa.attrib["TIME_SLOT_REF1"]])
             self.endtime = int(
-                timeslots[element.attrib["TIME_SLOT_REF2"]])
-        except AttributeError:
-            self.endtime = 0
-        except KeyError:
+                timeslots[aa.attrib["TIME_SLOT_REF2"]])
+        else:
+            self.ID = ra.attrib["ANNOTATION_ID"]   
+            self.parentID = ra.attrib["ANNOTATION_REF"]
+            self.starttime = 0
             self.endtime = 0
         
     def get_duration(self):

@@ -98,8 +98,7 @@ via
                                                           for bundle in cached_links[collection] 
                                                           for path in cached_links[collection][bundle]
                                                          ]
-                
-            print(self.collections)
+                 
                 
                         
                     
