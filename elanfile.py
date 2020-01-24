@@ -344,7 +344,11 @@ class ElanFile():
                     
                     #(i.e., the vernacular words)
                     words = [mapping.get(annotation.parentID,'') for annotation in annotations] 
-                    sentenceIDs =  [annotationdic[annotation.parentID].parentID for annotation in annotations]
+                    try:
+                        sentenceIDs =  [annotationdic[annotation.parentID].parentID for annotation in annotations]
+                    except KeyError:
+                        print("problematic parent relations in ", self.path, tierID)
+                        continue
                     current_sentence_ID = None #we boldly assume that annotaions are linear
                     d = {} #maps sentences IDs to the chain of word-gloss pairs they containt
                     glossed_sentences = [] #stores all glosses by sentence they belong to

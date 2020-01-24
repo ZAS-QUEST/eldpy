@@ -123,6 +123,26 @@ via
                 self.collections[collection].elanpaths = [path
                                                           for bundle in cached_links[collection] 
                                                           for path in cached_links[collection][bundle]
+                                                         ]                 
+        if self.name == 'TLA': 
+            print("loading cached information")
+            try:
+                with open('cache/links/tla.json') as json_in:
+                    cached_links = json.loads(json_in.read())
+            except IOError:
+                cached_links = {}
+                print("""please download files from the TLA archive
+"""
+                    )                
+            landingpage_template = "https://archive.mpi.nl/islandora/object/%s" 
+            for collection in cached_links:
+                self.collections[collection] = Collection(collection,           
+                                                          landingpage_template%collection, 
+                                                          archive='tla',
+                                                          urlprefix=self.collectionprefix, url_template=self.collection_url_template)       
+                self.collections[collection].elanpaths = [path
+                                                          for bundle in cached_links[collection] 
+                                                          for path in cached_links[collection][bundle]
                                                          ]
                  
                 
