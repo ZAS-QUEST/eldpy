@@ -218,7 +218,7 @@ class ElanFile():
                         toplanguage = detect_langs(" ".join(wordlist))[0]
                     except lang_detect_exception.LangDetectException:
                         logging.warning(
-                            "could not detect language for %s in %s" % (wordlist, filename)
+                            "could not detect language for %s in %s" % (wordlist, self.path)
                         )
                         continue
                     if toplanguage.lang != "en":

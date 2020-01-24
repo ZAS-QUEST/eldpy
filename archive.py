@@ -76,6 +76,7 @@ class Archive():
             print("updating cache")
             with  open('cache/links/anla.json','w') as json_out:
                 json_out.write(json.dumps(cached_links, sort_keys=True, indent=4))
+                
         if self.name == 'PARADISEC': 
             print("loading cached information")
             try:
@@ -93,7 +94,32 @@ via
                 
             landingpage_template = "https://catalog.paradisec.org.au/collections/%s"
             for collection in cached_links:
-                self.collections[collection] = Collection(collection, landingpage_template%collection, archive='paradisec',urlprefix=self.collectionprefix, url_template=self.collection_url_template )       
+                self.collections[collection] = Collection(collection,
+                                                          landingpage_template%collection, 
+                                                          archive='paradisec',
+                                                          urlprefix=self.collectionprefix, 
+                                                          url_template=self.collection_url_template )       
+                self.collections[collection].elanpaths = [path
+                                                          for bundle in cached_links[collection] 
+                                                          for path in cached_links[collection][bundle]
+                                                         ]
+                 
+        if self.name == 'ELAR': 
+            print("loading cached information")
+            try:
+                with open('cache/links/elar.json') as json_in:
+                    cached_links = json.loads(json_in.read())
+            except IOError:
+                cached_links = {}
+                print("""please download files from the ELAR archive
+"""
+                    )                
+            landingpage_template = "https://elar.soas.ac.uk/Collection/%s" 
+            for collection in cached_links:
+                self.collections[collection] = Collection(collection,           
+                                                          landingpage_template%collection, 
+                                                          archive='elar',
+                                                          urlprefix=self.collectionprefix, url_template=self.collection_url_template)       
                 self.collections[collection].elanpaths = [path
                                                           for bundle in cached_links[collection] 
                                                           for path in cached_links[collection][bundle]

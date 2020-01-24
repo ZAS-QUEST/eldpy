@@ -22,8 +22,8 @@ class Collection():
         self.namespace = namespace
           
     def acquire_elans(self):
-        #print(self.elanpaths)
-        for path in self.elanpaths: 
+        #print(self.elanpaths) 
+        for path in self.elanpaths:  
             localpath = '/'.join((self.cacheprefix, path))
             eaf_url =  '/'.join((self.urlprefix, self.name, path))
             #print(localpath)
@@ -34,7 +34,6 @@ class Collection():
                     print("malformed XML in %s"%localpath)
             else:
                 print("file not found %s (remote %s)"%(localpath,eaf_url))
-                first, second, thirdthrowaway = path.split('-')   
             
         
     def populate_translations(self):
