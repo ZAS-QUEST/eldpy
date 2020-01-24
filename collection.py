@@ -95,8 +95,8 @@ class Collection():
             filecount += 1
             for tiertype in glossed_sentences: 
                 print(tiertype) 
-                tiercount += 1
                 for tierID in glossed_sentences[tiertype]: 
+                    tiercount += 1
                     for sentence in glossed_sentences[tiertype][tierID]:  
                         sentencecount += 1
                         try:

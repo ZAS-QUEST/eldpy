@@ -29,7 +29,7 @@ class ElanFile():
         try:
             self.timeslots = self.get_timeslots()
         except KeyError:
-            timeslots = {}
+            self.timeslots = {}
         
         
     LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
@@ -157,11 +157,18 @@ class ElanFile():
                         if aa.text is not None
                     ]
                     # get a list of durations from time slots mentioned in parent elements
-                    timelistannno = [
-                        Annotation(self.get_alignable_annotations(root).get(ra.attrib["ANNOTATION_REF"]),self.timeslots).get_duration()
-                        for ra in tier.findall(".//REF_ANNOTATION")
-                        if ra.find(".//ANNOTATION_VALUE").text is not None
-                    ]
+                    aas = self.get_alignable_annotations(root)
+                    try:
+                        annotation_list = [
+                            Annotation(aas.get(ra.attrib["ANNOTATION_REF"]), 
+                                    self.timeslots
+                                    )
+                            for ra in tier.findall(".//REF_ANNOTATION")
+                            if ra.find(".//ANNOTATION_VALUE").text is not None
+                        ]
+                    except ValueError:
+                        continue
+                    timelistannno =  [anno.get_duration for anno in annotation_list]
                     secs = sum(timelist + timelistannno) / 1000
                     time_in_seconds.append(secs)
                     try:  # detect candidate languages and retrieve most likely one
@@ -336,7 +343,7 @@ class ElanFile():
                             continue
                     
                     #(i.e., the vernacular words)
-                    words = [mapping[annotation.parentID] for annotation in annotations] 
+                    words = [mapping.get(annotation.parentID,'') for annotation in annotations] 
                     sentenceIDs =  [annotationdic[annotation.parentID].parentID for annotation in annotations]
                     current_sentence_ID = None #we boldly assume that annotaions are linear
                     d = {} #maps sentences IDs to the chain of word-gloss pairs they containt
@@ -351,7 +358,10 @@ class ElanFile():
                             current_sentence_ID = sentenceID
                             d = {sentenceID:[(word,gloss)]} 
                         else:
-                            d[sentenceID].append((word,gloss))
+                            try:
+                                d[sentenceID].append((word,gloss))
+                            except KeyError:
+                                print("gloss with no parent", self.path, tierID, annotations[i].ID)
                     
                     glossed_sentences.append(d)
                     #pprint.pprint(glossed_sentences)    
@@ -414,10 +424,13 @@ class ElanFile():
         """
 
         timeorder = self.xml().find(".//TIME_ORDER")
-        timeslots = {slot.attrib["TIME_SLOT_ID"]:slot.attrib["TIME_VALUE"]
-                    for slot
-                    in timeorder.findall("TIME_SLOT")
-                    }
+        try:
+            timeslots = {slot.attrib["TIME_SLOT_ID"]:slot.attrib["TIME_VALUE"]
+                        for slot
+                        in timeorder.findall("TIME_SLOT")
+                        }
+        except AttributeError:
+            timeslots = {}
         return timeslots
     
     def get_alignable_annotations(self,root):
@@ -501,23 +514,39 @@ class Tier():
         
 class Annotation():
     def __init__(self, element, timeslots):
-        aa =  element.find('.//ALIGNABLE_ANNOTATION')
+        if element is None:
+            raise ValueError("Annotation is None")            
+        if element.tag != "ANNOTATION":
+            print(element.tag, "is not an <ANNOTATION> element")
+            raise ValueError
+        aa =  element.find('.//ALIGNABLE_ANNOTATION') 
         av =  element.find('.//ANNOTATION_VALUE')
+        ra =  element.find('.//REF_ANNOTATION')  
         try:
             self.text = av.text
         except AttributeError:
             self.text = ""
-        ra =  element.find('./REF_ANNOTATION')
         if aa: #time aligned
             self.ID = aa.attrib["ANNOTATION_ID"]            
             self.parentID = None
-            self.starttime = int(
-                timeslots[aa.attrib["TIME_SLOT_REF1"]])
-            self.endtime = int(
-                timeslots[aa.attrib["TIME_SLOT_REF2"]])
+            try:
+                self.starttime = int(
+                    timeslots[aa.attrib["TIME_SLOT_REF1"]])
+                self.endtime = int(
+                    timeslots[aa.attrib["TIME_SLOT_REF2"]])
+            except KeyError:
+                self.starttime = 0
+                self.endtime = 0
         else:
-            self.ID = ra.attrib["ANNOTATION_ID"]   
-            self.parentID = ra.attrib["ANNOTATION_REF"]
+            if ra:
+                self.ID = ra.attrib["ANNOTATION_ID"]   
+                self.parentID = ra.attrib["ANNOTATION_REF"]
+            else: 
+                print("Annotation without ID in", self.text)
+                print(element[0].text)
+                0/0
+                self.ID = None
+                self.parentID = None
             self.starttime = 0
             self.endtime = 0
         
