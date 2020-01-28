@@ -204,8 +204,12 @@ via
                     for bundle in cached_links[collection]
                     for path in cached_links[collection][bundle]
                 ]
-        #with  open('cache/translations/%s.json'%self.name,w) as translationsout:
-            #write(json.dumps(translations))
+        translationd = {
+            c: self.collections[c].translations
+            for c in self.collections
+        }
+        with  open('cache/translations/%s.json'%self.name, 'w') as translationsout:
+            translationsout.write(json.dumps(translationd, indent=4, sort_keys=True))
         #with  open('cache/transcriptions/%s.json'%self.name,w) as translationsout:
             #write(json.dumps(transcriptions))
         #with  open('cache/glosses/%s.json'%self.name,w) as translationsout:

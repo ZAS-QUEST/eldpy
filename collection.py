@@ -22,6 +22,7 @@ class Collection:
         self.cacheprefix = "cache/eafs/%s" % self.archive.lower()
         self.elanpaths = []
         self.elanfiles = []
+        self.translations = {}
         self.namespace = namespace
 
     def acquire_elans(self):
@@ -42,19 +43,21 @@ class Collection:
         print("getting translations for %i elans" % len(self.elanfiles))
         filecount = 0
         tiercount = 0
-        wordcount = 0
+        wordcount = 0 
         for eaf in self.elanfiles:
-            print(eaf.path)
+            #print(eaf.path)
             eaf.populate_translations()
             translations = eaf.get_translations()
             counts = [len(t) for t in translations]
-            print("  number of words in translation tiers: %s" % str(counts))
+            #print("  number of words in translation tiers: %s" % str(counts))
             if translations:
-                print(counts)
+                #print(counts)
                 filecount += 1
                 tiercount += len(counts)
                 wordcount += sum(counts)
-        print("%i files, %i tiers, %i words" % (filecount, tiercount, wordcount))
+            self.translations[eaf.path] = translations
+        #print(self.translations)
+        #print("%i files, %i tiers, %i words" % (filecount, tiercount, wordcount))
         return filecount, tiercount, wordcount
 
     def populate_transcriptions(self):

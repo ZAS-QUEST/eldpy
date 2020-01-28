@@ -27,6 +27,8 @@ class ElanFile:
         self.create_parent_dic()
         self.timecodes = {}
         self.reftypes = {}
+        self.transcriptions = {}
+        self.translations = {}
         try:
             self.timeslots = self.get_timeslots()
         except KeyError:
