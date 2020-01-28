@@ -120,12 +120,10 @@ class Collection:
         )
         return filecount, tiercount, sentencecount, wordcount, morphemecount
 
-    def analyze_elans(self, fingerprints=False):
-        print("analyzing %i elans" % len(self.elanfiles))
-        for eaf in self.elanfiles:
-            eaf.analyze(fingerprint=fingerprints)
-            eaf.populate_translations()
-            # TODO
+    def get_fingerprints(self):
+        print("getting fingerprints for %i elans" % len(self.elanfiles))
+        self.fingerprints = [eaf.fingerprint() for eaf in self.elanfiles]
+
 
     def get_triples(self):
         """
@@ -196,8 +194,4 @@ class Collection:
                 eafcontent = r2.text
                 retrievedfiles.append({"eafname": eafcontent})
 
-    def fingerprint_graphics(self):
-        """
-        get a graphics for the fingerprint distribution
-        """
-        pass
+ 

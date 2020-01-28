@@ -42,16 +42,17 @@ class ElanFile:
         """write the file to the file system"""
         pass
 
-    def analyze(self, fingerprint=False):
-        """
-        get information about:
-        - number of words
-        - number of glosses
-        - time transcribed
-        etc
-        """
-        if fingerprint:
-            print("fingerprint of %s is %s" % (self.path, self.fingerprint()))
+    #def analyze(self, fingerprint=False):
+        #"""
+        #get information about:
+        #- number of words
+        #- number of glosses
+        #- time transcribed
+        #etc
+        #"""
+        #if fingerprint:
+            #return self.fingerprint()
+        #return None
 
     def get_triples(self, bundle_url=None):
         """

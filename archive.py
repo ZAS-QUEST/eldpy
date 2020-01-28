@@ -4,8 +4,16 @@ An archive with primary material in and about endangered languages
 
 import glob
 import json
+from collections import Counter
 from lxml.html.soupparser import fromstring
+
+#from random import shuffle
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import squarify
+
 from collection import Collection
+
 
 # from collections import defaultdict
 
@@ -156,17 +164,19 @@ via
                 )
             landingpage_template = "https://archive.mpi.nl/islandora/object/%s"
             for collection in cached_links:
-                self.collections[collection] = Collection(
-                    collection,
-                    landingpage_template % collection,
+                tmpc = collection.split('/')[5]
+                print(tmpc)
+                self.collections[tmpc] = Collection(
+                    tmpc,
+                    landingpage_template % tmpc,
                     archive="tla",
                     urlprefix=self.collectionprefix,
                     url_template=self.collection_url_template,
                 )
-                self.collections[collection].elanpaths = [
+                self.collections[tmpc].elanpaths = [
                     path
-                    for bundle in cached_links[collection]
-                    for path in cached_links[collection][bundle]
+                    for path in cached_links[collection]
+                    #for path in cached_links[tmpc][bundle]
                 ]
 
         if self.name == "AILLA":
@@ -194,6 +204,14 @@ via
                     for bundle in cached_links[collection]
                     for path in cached_links[collection][bundle]
                 ]
+        #with  open('cache/translations/%s.json'%self.name,w) as translationsout:
+            #write(json.dumps(translations))
+        #with  open('cache/transcriptions/%s.json'%self.name,w) as translationsout:
+            #write(json.dumps(transcriptions))
+        #with  open('cache/glosses/%s.json'%self.name,w) as translationsout:
+            #write(json.dumps(glosses))
+        #with  open('cache/NER/%s.json'%self.name,w) as translationsout:
+            #write(json.dumps(NER))
 
     def analyze_collections(self):
         """
@@ -268,3 +286,29 @@ via
         for IDs in records:
             for item in IDs:  # etree.findall returns list
                 dico[0].append(item.text.strip().replace("<", "").replace(">", ""))
+
+    def get_fingerprints(self):
+        # map filenames to fingerprints
+        fingerprintd = {
+            "%s/%s" % (self.name, eaf.path): eaf.fingerprint()
+            for c in self.collections
+            for eaf in self.collections[c].elanfiles
+        }
+
+        # sort by number of occurences and print
+        counted_fingerprints = Counter(fingerprintd.values())
+        ranks = sorted(
+            [(counted_fingerprints[key], key) for key in counted_fingerprints.keys()]
+        )[::-1]
+        values = [x[0] for x in ranks]
+        squarify.plot(
+            sizes=values,
+            label=values[:38],
+            color=[cm.pink(x * 0.1) for x in [2, 8, 4, 7, 1, 6, 3, 9, 5]],
+        )  # jumble colormap
+        plt.axis("off")
+        plt.savefig("tiertypetreemap-%s.png" % self.name)
+        with open("tierranks-%s.txt" % self.name, "w") as out:
+            out.write("\n".join(["%s:%s" % x for x in ranks]))
+        with open("cache/fingerprints/%s.json" % self.name, "w") as out:
+            out.write(json.dumps(fingerprintd, indent=4, sort_keys=True))
