@@ -5,6 +5,9 @@ A representation of an ELAN file
 from collections import Counter, defaultdict
 import json
 import logging
+
+logger = logging.getLogger("eldpy")
+logger.setLevel(logging.ERROR)
 import pprint
 import re
 from lxml import etree
@@ -181,7 +184,7 @@ class ElanFile:
                             and toplanguage.prob > self.LANGDETECTTHRESHOLD
                        ):
                         # language is English
-                        logging.warning(
+                        logger.warning(
                             'ignored vernacular tier with English language content at %.2f%% probability ("%s ...")'
                             % (toplanguage.prob * 100, " ".join(wordlist)[:100])
                         )
@@ -217,7 +220,7 @@ class ElanFile:
                     try:  # detect candidate languages and retrieve most likely one
                         toplanguage = detect_langs(" ".join(wordlist))[0]
                     except lang_detect_exception.LangDetectException:
-                        logging.warning(
+                        logger.warning(
                             "could not detect language for %s in %s"
                             % (wordlist, self.path)
                         )
@@ -226,7 +229,7 @@ class ElanFile:
                         continue
                     if toplanguage.prob < self.LANGDETECTTHRESHOLD:
                         # language is English, but likelihood is too small
-                        logging.warning(
+                        logger.warning(
                             'ignored %.2f%% probability English for "%s ..."'
                             % (toplanguage.prob * 100, " ".join(wordlist)[:100])
                         )
@@ -238,7 +241,7 @@ class ElanFile:
                         [len(x.strip().split()) for x in wordlist]
                     ) / len(wordlist)
                     if avg_annotation_length < translation_minimum:
-                        logging.warning(
+                        logger.warning(
                             "%s has too short annotations (%s) for the tier to be a translation (%s ,...)"
                             % (tierID, avg_annotation_length, ", ".join(wordlist[:3]))
                         )
@@ -313,15 +316,15 @@ class ElanFile:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
             if glosstiers != []:  # we found a tier of the linguistic type
-                print("found", candidate)
+                #print("found", candidate)
                 retrieved_glosstiers[candidate] = {}
                 for tier in glosstiers:
                     tierID = tier.attrib["TIER_ID"]
-                    print(tierID)
+                    #print(tierID)
                     parentID = self.child_parent_dic[tierID]
                     # parent_type = parent.attrib["LINGUISTIC_TYPE_REF"]
                     # if not parent_type in lod.acceptable_word_tier_types:
-                    # logging.warning(
+                    # logger.warning(
                     # "%s: Type %s is not accepted for potential parent %s of gloss candidate %s" %
                     # (self.path, parent_type, parentID, tierID)
                     # )
@@ -376,7 +379,7 @@ class ElanFile:
                             try:
                                 d[sentenceID].append((word, gloss))
                             except KeyError:
-                                print(
+                                logger.warning(
                                     "gloss with no parent",
                                     self.path,
                                     tierID,
@@ -543,7 +546,7 @@ class Annotation:
         if element is None:
             raise ValueError("Annotation is None")
         if element.tag != "ANNOTATION":
-            print(element.tag, "is not an <ANNOTATION> element")
+            logger.warning(element.tag, "is not an <ANNOTATION> element")
             raise ValueError
         aa = element.find(".//ALIGNABLE_ANNOTATION")
         av = element.find(".//ANNOTATION_VALUE")

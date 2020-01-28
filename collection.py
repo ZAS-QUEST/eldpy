@@ -6,6 +6,9 @@ import re
 import pprint
 import os.path
 from lxml.etree import XMLSyntaxError
+import logging
+logger = logging.getLogger("eldpy")
+logger.setLevel(logging.ERROR)
 from elanfile import ElanFile
 
 
@@ -23,82 +26,79 @@ class Collection:
         self.elanpaths = []
         self.elanfiles = []
         self.translations = {}
+        self.transcriptions = {}
+        self.glosses = {}
         self.namespace = namespace
+
+        self.transcriptionfiles = 0
+        self.transcriptiontiers = 0
+        self.transcriptionwords = 0
+        self.transcribedseconds = 0
+
+        self.translationfiles = 0
+        self.translationtiers = 0
+        self.translationwords = 0
+
+        self.glossfiles = 0
+        self.glosstiers = 0
+        self.glosssentences = 0 #check for sentences with more than one gloss tiere TODO
+        self.glosswords = 0
+        self.glossmorphemes = 0
 
     def acquire_elans(self):
         # print(self.elanpaths)
         for path in self.elanpaths:
             localpath = "/".join((self.cacheprefix, path))
             eaf_url = "/".join((self.urlprefix, self.name, path))
-            # print(localpath)
+            print('.', end='', flush=True)
             if os.path.isfile(localpath):
                 try:
                     self.elanfiles.append(ElanFile(localpath, eaf_url))
                 except XMLSyntaxError:
-                    print("malformed XML in %s" % localpath)
+                    logger.warning("malformed XML in %s" % localpath)
             else:
-                print("file not found %s (remote %s)" % (localpath, eaf_url))
+                logger.warning("file not found %s (remote %s)" % (localpath, eaf_url))
 
     def populate_translations(self):
-        print("getting translations for %i elans" % len(self.elanfiles))
-        filecount = 0
-        tiercount = 0
-        wordcount = 0 
         for eaf in self.elanfiles:
-            #print(eaf.path)
             eaf.populate_translations()
             translations = eaf.get_translations()
             counts = [len(t) for t in translations]
-            #print("  number of words in translation tiers: %s" % str(counts))
             if translations:
                 #print(counts)
-                filecount += 1
-                tiercount += len(counts)
-                wordcount += sum(counts)
+                self.translationfiles += 1
+                self.translationtiers += len(counts)
+                self.translationwords += sum(counts)
             self.translations[eaf.path] = translations
-        #print(self.translations)
-        #print("%i files, %i tiers, %i words" % (filecount, tiercount, wordcount))
-        return filecount, tiercount, wordcount
 
     def populate_transcriptions(self):
-        print("getting transcriptions for %i elans" % len(self.elanfiles))
-        filecount = 0
-        tiercount = 0
-        wordcount = 0
-        secs = 0
         for eaf in self.elanfiles:
-            print(eaf.path)
+            logging.info('transcriptions for', eaf.path)
             eaf.populate_transcriptions()
             transcriptions = eaf.get_transcriptions()
             counts = [len(t) for t in transcriptions]
-            print("  number of words in transcriptions tiers: %s" % str(counts))
+            logging.info("  number of words in transcriptions tiers: %s" % str(counts))
             if transcriptions:
-                filecount += 1
-                tiercount += len(counts)
-                wordcount += sum(counts)
-                secs += eaf.secondstranscribed
-        print(
-            "%i files, %i tiers, %i words, %i seconds"
-            % (filecount, tiercount, wordcount, secs)
-        )
-        return filecount, tiercount, wordcount, secs
+                self.transcriptionfiles += 1
+                self.transcriptiontiers += len(counts)
+                self.transcriptionwords += sum(counts)
+                self.transcribedseconds += eaf.secondstranscribed
+            self.transcriptions[eaf.path] = transcriptions
 
     def populate_glosses(self):
-        print("getting glosses for %i elans" % len(self.elanfiles))
+        logging.info("getting glosses for %i elans" % len(self.elanfiles))
         filecount = 0
         tiercount = 0
         sentencecount = 0
         wordcount = 0
         morphemecount = 0
         for eaf in self.elanfiles:
-            print(eaf.path)
             eaf.populate_glosses()
             glossed_sentences = eaf.glossed_sentences
             if glossed_sentences == []:
                 continue
             filecount += 1
             for tiertype in glossed_sentences:
-                print(tiertype)
                 for tierID in glossed_sentences[tiertype]:
                     tiercount += 1
                     for sentence in glossed_sentences[tiertype][tierID]:
@@ -116,21 +116,20 @@ class Collection:
                             morphemecount += len(re.findall("[-=.:]", pairing[1]))
                         except TypeError:  # gloss None
                             pass
-
-        print(
+            self.glosses[eaf.path] = glossed_sentences
+        logging.info(
             "%i files, %i tiers, %i sentences, %i words, %i morphemes"
             % (filecount, tiercount, sentencecount, wordcount, morphemecount)
         )
         return filecount, tiercount, sentencecount, wordcount, morphemecount
 
     def get_fingerprints(self):
-        print("getting fingerprints for %i elans" % len(self.elanfiles))
+        logging.info("getting fingerprints for %i elans" % len(self.elanfiles))
         self.fingerprints = [eaf.fingerprint() for eaf in self.elanfiles]
-
 
     def get_triples(self):
         """
-        get RDF triples describing the Resource 
+        get RDF triples describing the Resource
         """
         pass
 
@@ -197,4 +196,4 @@ class Collection:
                 eafcontent = r2.text
                 retrievedfiles.append({"eafname": eafcontent})
 
- 
+
