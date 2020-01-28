@@ -300,7 +300,7 @@ class ElanFile:
                 ref_annotation.attrib.get("ANNOTATION_ID"): ref_annotation.getparent()
                 for ref_annotation in root.findall(".//REF_ANNOTATION")
             }
-            return textdic
+            return get_parent_element_ID_dic
 
         root = self.xml()
         glosscandidates = lod.acceptable_gloss_tier_types
@@ -576,6 +576,14 @@ class Annotation:
                 self.parentID = None
             self.starttime = 0
             self.endtime = 0
+
+    def get_timeslotted_parent(self, element):
+        current = element
+        while not current.attrib.get('TIME_SLOT_REF1'):
+            parentID =  current.attrib["ANNOTATION_REF"]
+            current = get_element_by_ID(parentID)
+        return current #TODO
+
 
     def get_duration(self):
         """
