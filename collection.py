@@ -45,7 +45,7 @@ class Collection:
         self.glosswords = 0
         self.glossmorphemes = 0
 
-    def acquire_elans(self):
+    def acquire_elans(self, cache=True):
         # print(self.elanpaths)
         for path in self.elanpaths:
             localpath = "/".join((self.cacheprefix, path))
@@ -59,69 +59,78 @@ class Collection:
             else:
                 logger.warning("file not found %s (remote %s)" % (localpath, eaf_url))
 
-    def populate_translations(self):
-        for eaf in self.elanfiles:
-            eaf.populate_translations()
-            translations = eaf.get_translations()
-            counts = [len(t) for t in translations]
-            if translations:
-                #print(counts)
-                self.translationfiles += 1
-                self.translationtiers += len(counts)
-                self.translationwords += sum(counts)
-            self.translations[eaf.path] = translations
+    def populate_translations(self, jsoncache=None):
+        if jsoncache:
+            self.translations = jsoncache[self.name]
+        else:
+            for eaf in self.elanfiles:
+                eaf.populate_translations()
+                translations = eaf.get_translations()
+                counts = [len(t) for t in translations]
+                if translations:
+                    #print(counts)
+                    self.translationfiles += 1
+                    self.translationtiers += len(counts)
+                    self.translationwords += sum(counts)
+                self.translations[eaf.path] = translations
 
-    def populate_transcriptions(self):
-        for eaf in self.elanfiles:
-            logging.info('transcriptions for', eaf.path)
-            eaf.populate_transcriptions()
-            transcriptions = eaf.get_transcriptions()
-            counts = [len(t) for t in transcriptions]
-            logging.info("  number of words in transcriptions tiers: %s" % str(counts))
-            if transcriptions:
-                self.transcriptionfiles += 1
-                self.transcriptiontiers += len(counts)
-                self.transcriptionwords += sum(counts)
-                self.transcribedseconds += eaf.secondstranscribed
-            self.transcriptions[eaf.path] = transcriptions
+    def populate_transcriptions(self, jsoncache=None):
+        if jsoncache:
+            self.transcriptions = jsoncache[self.name]
+        else:
+            for eaf in self.elanfiles:
+                logging.info('transcriptions for', eaf.path)
+                eaf.populate_transcriptions()
+                transcriptions = eaf.get_transcriptions()
+                counts = [len(t) for t in transcriptions]
+                logging.info("  number of words in transcriptions tiers: %s" % str(counts))
+                if transcriptions:
+                    self.transcriptionfiles += 1
+                    self.transcriptiontiers += len(counts)
+                    self.transcriptionwords += sum(counts)
+                    self.transcribedseconds += eaf.secondstranscribed
+                self.transcriptions[eaf.path] = transcriptions
 
-    def populate_glosses(self):
-        logging.info("getting glosses for %i elans" % len(self.elanfiles))
-        filecount = 0
-        tiercount = 0
-        sentencecount = 0
-        wordcount = 0
-        morphemecount = 0
-        for eaf in self.elanfiles:
-            eaf.populate_glosses()
-            glossed_sentences = eaf.glossed_sentences
-            if glossed_sentences == []:
-                continue
-            filecount += 1
-            for tiertype in glossed_sentences:
-                for tierID in glossed_sentences[tiertype]:
-                    tiercount += 1
-                    for sentence in glossed_sentences[tiertype][tierID]:
-                        sentencecount += 1
-                        try:
-                            words = sentence[list(sentence.keys())[0]]
-                        except IndexError:
-                            continue
-                        # words = glossed_sentences[tiertype][tierID][sentence][]
-                        for pairing in words:
-                            wordcount += 1
-                            morphemecount += 1
-                            # every extra morpheme is marked by a separator like - or = in the gloss
-                        try:
-                            morphemecount += len(re.findall("[-=.:]", pairing[1]))
-                        except TypeError:  # gloss None
-                            pass
-            self.glosses[eaf.path] = glossed_sentences
-        logging.info(
-            "%i files, %i tiers, %i sentences, %i words, %i morphemes"
-            % (filecount, tiercount, sentencecount, wordcount, morphemecount)
-        )
-        return filecount, tiercount, sentencecount, wordcount, morphemecount
+    def populate_glosses(self, jsoncache=None):
+        if jsoncache:
+            self.glosses = jsoncache[self.name]
+        else:
+            logging.info("getting glosses for %i elans" % len(self.elanfiles))
+            filecount = 0
+            tiercount = 0
+            sentencecount = 0
+            wordcount = 0
+            morphemecount = 0
+            for eaf in self.elanfiles:
+                eaf.populate_glosses()
+                glossed_sentences = eaf.glossed_sentences
+                if glossed_sentences == []:
+                    continue
+                filecount += 1
+                for tiertype in glossed_sentences:
+                    for tierID in glossed_sentences[tiertype]:
+                        tiercount += 1
+                        for sentence in glossed_sentences[tiertype][tierID]:
+                            sentencecount += 1
+                            try:
+                                words = sentence[list(sentence.keys())[0]]
+                            except IndexError:
+                                continue
+                            # words = glossed_sentences[tiertype][tierID][sentence][]
+                            for pairing in words:
+                                wordcount += 1
+                                morphemecount += 1
+                                # every extra morpheme is marked by a separator like - or = in the gloss
+                            try:
+                                morphemecount += len(re.findall("[-=.:]", pairing[1]))
+                            except TypeError:  # gloss None
+                                pass
+                self.glosses[eaf.path] = glossed_sentences
+            logging.info(
+                "%i files, %i tiers, %i sentences, %i words, %i morphemes"
+                % (filecount, tiercount, sentencecount, wordcount, morphemecount)
+            )
+            return filecount, tiercount, sentencecount, wordcount, morphemecount
 
     def get_fingerprints(self):
         logging.info("getting fingerprints for %i elans" % len(self.elanfiles))
