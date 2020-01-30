@@ -19,11 +19,12 @@ ELD_NAMESPACE_MANAGER.bind('QUESTRESOLVER', QUESTRESOLVER) #for the bridge for r
 ELD_NAMESPACE_MANAGER.bind("rdfs", RDFS)
 ELD_NAMESPACE_MANAGER.bind("dc", DC)
 
-ARCHIVE_NAMESPACES = { 
+ARCHIVE_NAMESPACES = {
     'paradisec': Namespace("https://catalog.paradisec.org.au/collections/"),
     #'elarcorpus': Namespace("https://lat1.lis.soas.ac.uk/corpora/ELAR/"),
-    'elarcorpus': Namespace("https://elar.soas.ac.uk/Record/"),   
+    'elarcorpus': Namespace("https://elar.soas.ac.uk/Record/"),
     'elarfiles': Namespace("https://elar.soas.ac.uk/resources/"),
+    'elar': Namespace("https://elar.soas.ac.uk/resources/"),
     'ailla': Namespace("http://ailla.utexas.org/islandora/object/"),
     'anla': Namespace("https://www.uaf.edu/anla/collections/search/resultDetail.xml?id="),
     'tla': Namespace("https://archive.mpi.nl/islandora/object/")
@@ -36,10 +37,10 @@ def create_graph():
     return Graph(namespace_manager=ELD_NAMESPACE_MANAGER)
 
 
-def write_graph(filename):
-    with open("filename", "wb") as rdfout:
-        rdfout.write(GRAPH.serialize(format='n3'))
-        
+def write_graph(graph, filename):
+    with open(filename, "wb") as rdfout:
+        rdfout.write(graph.serialize(format='n3'))
+
 LGRLIST = set(
     [
         "1",
@@ -126,7 +127,7 @@ LGRLIST = set(
         "TR",
         "VOC",
     ]
-)       
+)
 
 # terms which are occasionally recognized, but which are always false positives in the context of ELD
 NER_BLACKLIST = [

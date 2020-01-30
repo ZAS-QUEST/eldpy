@@ -9,6 +9,7 @@ import datetime
 from collections import Counter, defaultdict
 from lxml.html.soupparser import fromstring
 
+from rdflib import Namespace, Graph, Literal, RDF, RDFS #, URIRef, BNode
 
 # from random import shuffle
 import matplotlib.pyplot as plt
@@ -16,7 +17,7 @@ from matplotlib import cm
 import squarify
 
 from collection import Collection
-
+import lod
 
 # from collections import defaultdict
 
@@ -248,6 +249,61 @@ via
         #for IDs in records:
             #for item in IDs:  # etree.findall returns list
                 #dico[0].append(item.text.strip().replace("<", "").replace(">", ""))
+
+    def write_transcriptions_rdf(self):
+        ID_template = "%s-%s-%s-%s"
+        eaf_template = "%s-%s"
+        g = lod.create_graph()
+        for c in self.collections:
+            for eaf in self.collections[c].transcriptions:
+                hashed_eaf = hash(eaf)
+                eaf_id = eaf_template%(c, hashed_eaf)
+                for i,tier in enumerate(self.collections[c].transcriptions[eaf]):
+                    for j,annotation in enumerate(tier):
+                        tier_id = ID_template % (c, hashed_eaf, i, j)
+                        g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
+                                RDF.type,
+                                lod.QUEST.Transcripton_tier
+                              ))
+                        g.add((lod.QUESTRESOLVER[tier_id],
+                               RDFS.label,
+                               Literal('%s'%annotation.strip())
+                               ))
+                        g.add((lod.QUESTRESOLVER[tier_id],
+                                lod.DBPEDIA.isPartOf, #check for tier-file, file-collection and tier-collection meronymic relations
+                                lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id]
+                              ))
+        lod.write_graph(g, 'rdf/%s-transcriptions.n3'%self.name)
+
+
+
+    def write_translations_rdf(self):
+        ID_template = "%s-%s-%s-%s"
+        eaf_template = "%s-%s"
+        g = lod.create_graph()
+        for c in self.collections:
+            for eaf in self.collections[c].translations:
+                hashed_eaf = hash(eaf)
+                eaf_id = eaf_template%(c, hashed_eaf)
+                for i,tier in enumerate(self.collections[c].translations[eaf]):
+                    for j,annotation in enumerate(tier):
+                        tier_id = ID_template % (c, hashed_eaf, i, j)
+                        g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
+                                RDF.type,
+                                lod.QUEST.Transcripton_tier
+                              ))
+                        g.add((lod.QUESTRESOLVER[tier_id],
+                               RDFS.label,
+                               Literal('%s'%annotation.strip())
+                               ))
+                        g.add((lod.QUESTRESOLVER[tier_id],
+                                lod.DBPEDIA.isPartOf, #check for tier-file, file-collection and tier-collection meronymic relations
+                                lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id]
+                              ))
+        lod.write_graph(g, 'rdf/%s-translations.n3'%self.name)
+
+
+
 
 
     def get_triples(self):
