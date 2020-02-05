@@ -14,6 +14,7 @@ from lxml import etree
 from langdetect import detect_langs, lang_detect_exception
 import requests
 import lod
+import copy
 
 class ElanFile:
     def __init__(self, path, url, namespace=None):
@@ -36,6 +37,36 @@ class ElanFile:
             self.timeslots = self.get_timeslots()
         except KeyError:
             self.timeslots = {}
+        tmpxml = self.xml()
+        self.alignable_annotations = {el.attrib["ANNOTATION_ID"]:(el.attrib["TIME_SLOT_REF1"],
+                                                                  el.attrib["TIME_SLOT_REF2"]
+                                                                  )
+                                                                  for el
+                                                                  in tmpxml.findall(".//ALIGNABLE_ANNOTATION")}
+        self.ref_annotations =  {el.attrib["ANNOTATION_ID"]:el.attrib["ANNOTATION_REF"]
+                                                                  for el
+                                                                  in tmpxml.findall(".//REF_ANNOTATION")}
+        self.timeslottedancestors = self.get_timeslotted_parents()
+        #print(len(self.timeslottedancestors))
+
+    def get_timeslotted_parents(self):
+        def get_timeslotted_parent(ID, d):
+            parent_id = self.ref_annotations[ID]
+            if parent_id in self.alignable_annotations:
+                #parent is an alignable_annotation with timecodes
+                return parent_id
+            elif parent_id in d:
+                #we had already established who the ultimate ancestor of the parent is
+                d[ID] = d[parent_id] #the ultimate ancestor or ego is the same as the ua of ego's father
+                return d[parent_id]
+            else:
+                #this parent element is unknown
+                return get_timeslotted_parent(parent_id, d)
+        d = copy.copy(self.alignable_annotations)
+        a = {ra: get_timeslotted_parent(ra, d) for ra in self.ref_annotations}
+        return a
+
+
 
     LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
 
@@ -577,12 +608,7 @@ class Annotation:
             self.starttime = 0
             self.endtime = 0
 
-    def get_timeslotted_parent(self, element):
-        current = element
-        while not current.attrib.get('TIME_SLOT_REF1'):
-            parentID =  current.attrib["ANNOTATION_REF"]
-            current = get_element_by_ID(parentID)
-        return current #TODO
+
 
 
     def get_duration(self):
