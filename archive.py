@@ -277,8 +277,6 @@ via
                               ))
         lod.write_graph(g, 'rdf/%s-transcriptions.n3'%self.name)
 
-
-
     def write_translations_rdf(self):
         ID_template = "%s-%s-%s-%s"
         eaf_template = "%s-%s"
@@ -357,17 +355,19 @@ via
         lod.write_graph(g, 'rdf/%s-glosses.n3'%self.name)
 
 
-
-
-
-    def get_triples(self):
-        """
-        get RDF triples describing the Resource
-        """
-        return []
-
-    def get_recursive_triples(self):
-        triples = self.get_triples()
-        for collection in self.collections:
-            triples += collection.get_recursive_triples(archive_url=self.url)
-        return triples
+    def write_entities_rdf(self):
+        ID_template = "%s-%s-%s"
+        eaf_template = "%s-%s"
+        g = lod.create_graph()
+        for c in self.collections:
+            for eaf in self.collections[c].entities:
+                hashed_eaf = hash(eaf)
+                eaf_id = eaf_template%(c, hashed_eaf)
+                for i,tier in enumerate(self.collections[c].entities[eaf]):
+                    tier_id = ID_template % (c, hashed_eaf, i)
+                    for q_value in tier:
+                        g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
+                                lod.DC.topic,
+                                lod.WIKIDATA[q_value]
+                              ))
+        lod.write_graph(g, 'rdf/%s-entities.n3'%self.name)

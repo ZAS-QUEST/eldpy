@@ -6,10 +6,12 @@ import re
 import pprint
 import os.path
 import logging
+import json
 from lxml.etree import XMLSyntaxError
 from lxml.html.soupparser import fromstring
 import requests
 from elanfile import ElanFile
+import lod
 
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)
@@ -151,6 +153,40 @@ class Collection:
             )
             self.glosswords += wordcount
             self.glossmorphemes += morphemecount
+
+    def populate_entities(self, jsoncache=None):
+        def get_entities(text):
+            """sent text to online resolver and retrieve wikidataId's"""
+
+            url = "http://cloud.science-miner.com/nerd/service/disambiguate"
+            if len(text.split()) < 5:  # cannot do NER on less than 5 words
+                return []
+            # send text
+            rtext = requests.post(url, json={"text": text}).text
+            # parse json
+            retrieved_entities = json.loads(rtext).get("entities", [])
+            # extract names and wikidataId's
+            return {x["wikidataId"]: x["rawName"]
+                    for x in retrieved_entities
+                    if x.get("wikidataId") and x["wikidataId"] not in lod.NER_BLACKLIST
+                   }
+
+        if jsoncache:
+            self.entities = jsoncache[self.name]
+        else:
+            entities = {}
+            translations = self.translations
+            if translations == {}:
+                translations = self.populate_translations()
+            for eaf in translations:
+                entities[eaf] = []
+                for tier in translations[eaf]: #some files have more than one translation tier
+                    text = " ".join(tier)
+                    entities[eaf].append(get_entities(text))
+            pprint.pprint(entities)
+            self.entities = entities
+
+
 
     def get_fingerprints(self):
         logging.info("getting fingerprints for %i elans" % len(self.elanfiles))

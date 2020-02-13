@@ -9,15 +9,18 @@ from resolver import get_URI_for_AILLA, get_URI_for_ANLA, get_URI_for_TLA, get_U
 QUEST = Namespace("http://zasquest.org/")
 QUESTRESOLVER = Namespace("http://zasquest.org/resolver/")
 DBPEDIA = Namespace("http://dbpedia.org/ontology/")
+WIKIDATA = Namespace("https://www.wikidata.org/wiki/")
 LGR = Namespace("https://www.eva.mpg.de/lingua/resources/glossing-rules.php/")
 
 #define archive namespaces
 ELD_NAMESPACE_MANAGER = NamespaceManager(Graph())
 ELD_NAMESPACE_MANAGER.bind('dbpedia', DBPEDIA)
+ELD_NAMESPACE_MANAGER.bind('wikidata', WIKIDATA)
 ELD_NAMESPACE_MANAGER.bind('quest', QUEST) #for ontology
 ELD_NAMESPACE_MANAGER.bind('QUESTRESOLVER', QUESTRESOLVER) #for the bridge for rewritable URLs
 ELD_NAMESPACE_MANAGER.bind("rdfs", RDFS)
 ELD_NAMESPACE_MANAGER.bind("dc", DC)
+ELD_NAMESPACE_MANAGER.bind("lgr", LGR)
 
 ARCHIVE_NAMESPACES = {
     'paradisec': Namespace("https://catalog.paradisec.org.au/collections/"),

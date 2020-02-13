@@ -558,23 +558,7 @@ class Tier:
                 del result[key]
         return result
 
-    def get_entities(self):
-        """sent text to online resolver and retrieve wikidataId's"""
 
-        url = "http://cloud.science-miner.com/nerd/service/disambiguate"
-        text = self.get_annotation_text()
-        if len(text.split()) < 5:  # cannot do NER on less than 5 words
-            return []
-        # send text
-        rtext = requests.post(url, json={"text": text}).text
-        # parse json
-        retrieved_entities = json.loads(rtext).get("entities", [])
-        # extract names and wikidataId's
-        return [
-            (x["rawName"], x["wikidataId"])
-            for x in retrieved_entities
-            if x.get("wikidataId") and x["wikidataId"] not in lod.NER_BLACKLIST
-        ]
 
 
 class Annotation:
