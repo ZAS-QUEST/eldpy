@@ -382,7 +382,7 @@ class ElanFile:
                     ]
                     try:
                         sentenceIDs = [
-                            annotationdic[annotation.parentID].parentID
+                            self.timeslottedancestors[annotation.ID]
                             for annotation in annotations
                         ]
                     except KeyError:

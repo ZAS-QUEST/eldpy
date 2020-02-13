@@ -110,27 +110,29 @@ class Collection:
                 for tiertype in glossed_sentences:
                     for tierID in glossed_sentences[tiertype]:
                         tiercount += 1
-                        for sentence in glossed_sentences[tiertype][tierID]:
-                            sentencecount += 1
-                            try:
-                                words = sentence[list(sentence.keys())[0]]
-                            except IndexError:
-                                continue
-                            # words = glossed_sentences[tiertype][tierID][sentence][]
-                            for pairing in words:
-                                wordcount += 1
-                                morphemecount += 1
-                                # every extra morpheme is marked by a separator like - or = in the gloss
-                            try:
-                                morphemecount += len(re.findall("[-=.:]", pairing[1]))
-                            except TypeError:  # gloss None
-                                pass
+                        for dictionary in glossed_sentences[tiertype][tierID]:
+                            for sentence_ID in dictionary:
+                                sentencecount += 1 #TODO check for double counting for different tiers
+                                try:
+                                    words = dictionary[sentence_ID]
+                                except IndexError:
+                                    continue
+                                for pairing in words:
+                                    wordcount += 1
+                                    morphemecount += 1
+                                    # every extra morpheme is marked by a separator like - or = in the gloss
+                                try:
+                                    morphemecount += len(re.findall("[-=.:]", pairing[1]))
+                                except TypeError:  # gloss None
+                                    pass
                 self.glosses[eaf.path] = glossed_sentences
-            logging.info(
-                "%i files, %i tiers, %i sentences, %i words, %i morphemes"
-                % (filecount, tiercount, sentencecount, wordcount, morphemecount)
-            )
-            return filecount, tiercount, sentencecount, wordcount, morphemecount
+
+            self.glossfiles += filecount
+            self.glosstiers += tiercount
+            self.glosssentences += sentencecount #check for sentences with more than one gloss tiere TODO
+            self.glosswords += wordcount
+            self.glossmorphemes += morphemecount
+
 
     def get_fingerprints(self):
         logging.info("getting fingerprints for %i elans" % len(self.elanfiles))
