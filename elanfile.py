@@ -2,19 +2,20 @@
 A representation of an ELAN file
 """
 
-from collections import Counter, defaultdict
+import copy
 import json
 import logging
+import pprint
+import re
+import requests
+from collections import Counter, defaultdict
+from lxml import etree
+from langdetect import detect_langs, lang_detect_exception
+import lod
 
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)
-import pprint
-import re
-from lxml import etree
-from langdetect import detect_langs, lang_detect_exception
-import requests
-import lod
-import copy
+
 
 class ElanFile:
     def __init__(self, path, url, namespace=None):
@@ -38,35 +39,39 @@ class ElanFile:
         except KeyError:
             self.timeslots = {}
         tmpxml = self.xml()
-        self.alignable_annotations = {el.attrib["ANNOTATION_ID"]:(el.attrib["TIME_SLOT_REF1"],
-                                                                  el.attrib["TIME_SLOT_REF2"]
-                                                                  )
-                                                                  for el
-                                                                  in tmpxml.findall(".//ALIGNABLE_ANNOTATION")}
-        self.ref_annotations =  {el.attrib["ANNOTATION_ID"]:el.attrib["ANNOTATION_REF"]
-                                                                  for el
-                                                                  in tmpxml.findall(".//REF_ANNOTATION")}
+        self.alignable_annotations = {
+            el.attrib["ANNOTATION_ID"]: (
+                el.attrib["TIME_SLOT_REF1"],
+                el.attrib["TIME_SLOT_REF2"],
+            )
+            for el in tmpxml.findall(".//ALIGNABLE_ANNOTATION")
+        }
+        self.ref_annotations = {
+            el.attrib["ANNOTATION_ID"]: el.attrib["ANNOTATION_REF"]
+            for el in tmpxml.findall(".//REF_ANNOTATION")
+        }
         self.timeslottedancestors = self.get_timeslotted_parents()
-        #print(len(self.timeslottedancestors))
+        # print(len(self.timeslottedancestors))
 
     def get_timeslotted_parents(self):
         def get_timeslotted_parent(ID, d):
             parent_id = self.ref_annotations[ID]
             if parent_id in self.alignable_annotations:
-                #parent is an alignable_annotation with timecodes
+                # parent is an alignable_annotation with timecodes
                 return parent_id
             elif parent_id in d:
-                #we had already established who the ultimate ancestor of the parent is
-                d[ID] = d[parent_id] #the ultimate ancestor or ego is the same as the ua of ego's father
+                # we had already established who the ultimate ancestor of the parent is
+                d[ID] = d[
+                    parent_id
+                ]  # the ultimate ancestor or ego is the same as the ua of ego's father
                 return d[parent_id]
             else:
-                #this parent element is unknown
+                # this parent element is unknown
                 return get_timeslotted_parent(parent_id, d)
+
         d = copy.copy(self.alignable_annotations)
         a = {ra: get_timeslotted_parent(ra, d) for ra in self.ref_annotations}
         return a
-
-
 
     LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
 
@@ -78,17 +83,17 @@ class ElanFile:
         """write the file to the file system"""
         pass
 
-    #def analyze(self, fingerprint=False):
-        #"""
-        #get information about:
-        #- number of words
-        #- number of glosses
-        #- time transcribed
-        #etc
-        #"""
-        #if fingerprint:
-            #return self.fingerprint()
-        #return None
+    # def analyze(self, fingerprint=False):
+    # """
+    # get information about:
+    # - number of words
+    # - number of glosses
+    # - time transcribed
+    # etc
+    # """
+    # if fingerprint:
+    # return self.fingerprint()
+    # return None
 
     def get_triples(self, bundle_url=None):
         """
@@ -211,8 +216,8 @@ class ElanFile:
                         toplanguage = None
                     # print(toplanguage)
                     if (toplanguage
-                            and toplanguage.lang == "en"
-                            and toplanguage.prob > self.LANGDETECTTHRESHOLD
+                        and toplanguage.lang == "en"
+                        and toplanguage.prob > self.LANGDETECTTHRESHOLD
                        ):
                         # language is English
                         logger.warning(
@@ -347,11 +352,11 @@ class ElanFile:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
             if glosstiers != []:  # we found a tier of the linguistic type
-                #print("found", candidate)
+                # print("found", candidate)
                 retrieved_glosstiers[candidate] = {}
                 for tier in glosstiers:
                     tierID = tier.attrib["TIER_ID"]
-                    #print(tierID)
+                    # print(tierID)
                     parentID = self.child_parent_dic[tierID]
                     # parent_type = parent.attrib["LINGUISTIC_TYPE_REF"]
                     # if not parent_type in lod.acceptable_word_tier_types:
@@ -607,9 +612,6 @@ class Annotation:
                 self.parentID = None
             self.starttime = 0
             self.endtime = 0
-
-
-
 
     def get_duration(self):
         """

@@ -5,17 +5,25 @@ A collection with primary material in and about endangered languages.
 import re
 import pprint
 import os.path
-from lxml.etree import XMLSyntaxError
 import logging
+from lxml.etree import XMLSyntaxError
+from lxml.html.soupparser import fromstring
+import requests
+from elanfile import ElanFile
+
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)
-from elanfile import ElanFile
 
 
 class Collection:
-    def __init__(
-        self, name, url, namespace=None, archive="", urlprefix="", url_template=""
-    ):
+    def __init__(self,
+                 name,
+                 url,
+                 namespace=None,
+                 archive="",
+                 urlprefix="",
+                 url_template=""
+                ):
         self.name = name
         self.archive = archive
         self.url = url
@@ -41,16 +49,19 @@ class Collection:
 
         self.glossfiles = 0
         self.glosstiers = 0
-        self.glosssentences = 0 #check for sentences with more than one gloss tiere TODO
+        self.glosssentences = (
+            0  # check for sentences with more than one gloss tiere TODO
+        )
         self.glosswords = 0
         self.glossmorphemes = 0
+        self.fingerprints = []
 
     def acquire_elans(self, cache=True):
         # print(self.elanpaths)
         for path in self.elanpaths:
             localpath = "/".join((self.cacheprefix, path))
             eaf_url = "/".join((self.urlprefix, self.name, path))
-            print('.', end='', flush=True)
+            print(".", end="", flush=True)
             if os.path.isfile(localpath):
                 try:
                     self.elanfiles.append(ElanFile(localpath, eaf_url))
@@ -68,7 +79,7 @@ class Collection:
                 translations = eaf.get_translations()
                 counts = [len(t) for t in translations]
                 if translations:
-                    #print(counts)
+                    # print(counts)
                     self.translationfiles += 1
                     self.translationtiers += len(counts)
                     self.translationwords += sum(counts)
@@ -79,11 +90,13 @@ class Collection:
             self.transcriptions = jsoncache[self.name]
         else:
             for eaf in self.elanfiles:
-                logging.info('transcriptions for', eaf.path)
+                logging.info("transcriptions for", eaf.path)
                 eaf.populate_transcriptions()
                 transcriptions = eaf.get_transcriptions()
                 counts = [len(t) for t in transcriptions]
-                logging.info("  number of words in transcriptions tiers: %s" % str(counts))
+                logging.info(
+                    "  number of words in transcriptions tiers: %s" % str(counts)
+                )
                 if transcriptions:
                     self.transcriptionfiles += 1
                     self.transcriptiontiers += len(counts)
@@ -112,7 +125,8 @@ class Collection:
                         tiercount += 1
                         for dictionary in glossed_sentences[tiertype][tierID]:
                             for sentence_ID in dictionary:
-                                sentencecount += 1 #TODO check for double counting for different tiers
+                                sentencecount += 1
+                                # TODO check for double counting for different tiers
                                 try:
                                     words = dictionary[sentence_ID]
                                 except IndexError:
@@ -120,35 +134,27 @@ class Collection:
                                 for pairing in words:
                                     wordcount += 1
                                     morphemecount += 1
-                                    # every extra morpheme is marked by a separator like - or = in the gloss
+                                    # every extra morpheme is marked by a separator
+                                    # like - or = in the gloss
                                 try:
-                                    morphemecount += len(re.findall("[-=.:]", pairing[1]))
+                                    morphemecount += len(
+                                        re.findall("[-=.:]", pairing[1])
+                                    )
                                 except TypeError:  # gloss None
                                     pass
                 self.glosses[eaf.path] = glossed_sentences
 
             self.glossfiles += filecount
             self.glosstiers += tiercount
-            self.glosssentences += sentencecount #check for sentences with more than one gloss tiere TODO
+            self.glosssentences += (
+                sentencecount  # check for sentences with more than one gloss tiere TODO
+            )
             self.glosswords += wordcount
             self.glossmorphemes += morphemecount
-
 
     def get_fingerprints(self):
         logging.info("getting fingerprints for %i elans" % len(self.elanfiles))
         self.fingerprints = [eaf.fingerprint() for eaf in self.elanfiles]
-
-    def get_triples(self):
-        """
-        get RDF triples describing the Resource
-        """
-        pass
-
-    def get_recursive_triples(self, archive_url=None):
-        triples = self.get_triples()
-        for bundle in self.bundles:
-            triples += bundle.get_recursive_triples(collection_url=self.url)
-        return triples
 
     def paradisec_eaf_download(self, filename):
         # compute urls to use
@@ -165,18 +171,16 @@ class Collection:
             return None
         return eafcontent
 
-    def elar_eaf_download(filename):
+    def elar_eaf_download(self, filename):
         # check for validity of ID
         try:
             soasID = filename.split("oai:soas.ac.uk:")[1]
         except IndexError:  # filename does not start with oai:soas.ac.uk:, so we are not interested
-            return None
+            return
         # prepare request
         url = "https://elar.soas.ac.uk/Record/%s" % soasID
-        phpsessid = ""
+        phpsessid = "" #use shell prompt
         cookie = {"PHPSESSID": phpsessid}
-        # user, password = open('password').read().strip().split(',') #it is unclear whether we need user and pw; possibly the Session ID is sufficient
-        # payload = {'user':user, 'password':password}
 
         # retrieve catalog page
         with requests.Session() as s:
@@ -186,15 +190,10 @@ class Collection:
             # extract links to ELAN files
             try:
                 links = fromstring(html).findall(".//tbody/tr/td/a")
-                eaflocations = list(
-                    set(
-                        [
-                            a.attrib["href"]
-                            for a in links
-                            if a.attrib["href"].endswith("eaf")
-                        ]
-                    )
-                )  # make this configurable for other types
+                eaflocations = {a.attrib["href"]
+                                for a in links
+                                if a.attrib["href"].endswith("eaf")
+                               }
             except AttributeError:
                 return
             # dowload identified files
@@ -206,5 +205,3 @@ class Collection:
                 r2 = s.post(eaflocation, cookies=cookie, data=payload)
                 eafcontent = r2.text
                 retrievedfiles.append({"eafname": eafcontent})
-
-
