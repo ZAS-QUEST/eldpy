@@ -6,6 +6,8 @@ import glob
 import json
 import pprint
 import datetime
+import re
+import urllib
 from collections import Counter, defaultdict
 from lxml.html.soupparser import fromstring
 
@@ -301,6 +303,58 @@ via
                                 lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id]
                               ))
         lod.write_graph(g, 'rdf/%s-translations.n3'%self.name)
+
+    def write_glosses_rdf(self):
+        ID_template = "%s-%s-%s"
+        gloss_template = "%s-%s-%s-%s"
+        eaf_template = "%s-%s"
+        g = lod.create_graph()
+        for c in self.collections:
+            for eaf in self.collections[c].glosses:
+                hashed_eaf = hash(eaf)
+                eaf_id = eaf_template%(c, hashed_eaf)
+                for tiertype in self.collections[c].glosses[eaf]:
+                    for tierID in self.collections[c].glosses[eaf][tiertype]:
+                        for dictionary  in self.collections[c].glosses[eaf][tiertype][tierID]:
+                            for sentenceID in dictionary:
+                                sentence_lod_ID = ID_template % (c, hashed_eaf, sentenceID)
+                                g.add((lod.QUESTRESOLVER[sentence_lod_ID], #TODO better use archive specific resolvers
+                                    RDF.type,
+                                    lod.QUEST.Transcripton_tier
+                                    ))
+                                #wordstring = " ".join([t[0] for t in dictionary[sentenceID]])
+                                #glossstring = " ".join([t[1] for t in dictionary[sentenceID]])
+                                g.add((lod.QUESTRESOLVER[sentence_lod_ID],
+                                    lod.DBPEDIA.isPartOf,
+                                    lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id]
+                                ))
+                                glosses = [t[1] for t in dictionary[sentenceID] if t[1]]
+                                for i, gloss in enumerate(glosses):
+                                    try:
+                                        gloss = gloss.strip()
+                                    except TypeError:
+                                        gloss = ''
+                                    gloss_id = urllib.parse.quote(gloss_template % (c, hashed_eaf, sentenceID, i))
+                                    g.add((lod.QUESTRESOLVER[gloss_id],
+                                            RDF.type,
+                                            lod.QUEST.gloss
+                                        ))
+                                    g.add((lod.QUESTRESOLVER[gloss_id],
+                                            RDFS.label,
+                                            Literal(gloss)
+                                        ))
+                                    g.add((lod.QUESTRESOLVER[gloss_id],
+                                           lod.DBPEDIA.isPartOf,
+                                           lod.QUESTRESOLVER[sentence_lod_ID]
+                                        ))
+                                    for subgloss in re.split("[-=.:]", gloss):
+                                        subgloss = subgloss.replace("1",'').replace("2",'').replace("3",'')
+                                        if subgloss in lod.LGRLIST:
+                                            g.add((lod.QUESTRESOLVER[gloss_id],
+                                                lod.QUEST.has_lgr_value,
+                                                lod.LGR[subgloss]
+                                            ))
+        lod.write_graph(g, 'rdf/%s-glosses.n3'%self.name)
 
 
 
