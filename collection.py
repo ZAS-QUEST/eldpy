@@ -148,9 +148,8 @@ class Collection:
 
             self.glossfiles += filecount
             self.glosstiers += tiercount
-            self.glosssentences += (
-                sentencecount  # check for sentences with more than one gloss tiere TODO
-            )
+            self.glosssentences += sentencecount
+                # check for sentences with more than one gloss tiere TODO
             self.glosswords += wordcount
             self.glossmorphemes += morphemecount
 
@@ -178,12 +177,13 @@ class Collection:
             translations = self.translations
             if translations == {}:
                 translations = self.populate_translations()
+            if translations is None:
+                translations = {}
             for eaf in translations:
                 entities[eaf] = []
                 for tier in translations[eaf]: #some files have more than one translation tier
                     text = " ".join(tier)
                     entities[eaf].append(get_entities(text))
-            pprint.pprint(entities)
             self.entities = entities
 
 

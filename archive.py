@@ -197,7 +197,6 @@ via
             datetime.timedelta(seconds=d["transcribedseconds"])
         ).split(".")[0]
         self.statistics.update(d)
-        pprint.pprint(d)
 
     #def getIdentifiers(self, filename, typ):
         #tree = etree.parse(filename)
