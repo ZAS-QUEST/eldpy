@@ -163,6 +163,8 @@ class Collection:
             # send text
             rtext = requests.post(url, json={"text": text}).text
             # parse json
+            if rtext == None:
+                return {}
             retrieved_entities = json.loads(rtext).get("entities", [])
             # extract names and wikidataId's
             return {x["wikidataId"]: x["rawName"]
@@ -185,7 +187,6 @@ class Collection:
                     text = " ".join(tier)
                     entities[eaf].append(get_entities(text))
             self.entities = entities
-
 
 
     def get_fingerprints(self):
