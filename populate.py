@@ -47,11 +47,11 @@ def writejson(type_):
     with open("cache/%s/%s.json" % (type_, archive.name), "w") as out:
         out.write(json.dumps(d, indent=4, sort_keys=True))
 
-for archivename in archives[]:
+#for archivename in archives:
 #for archivename in ['AILLA']:
 #for archivename in ['ANLA']:
 #for archivename in ['ELAR']:
-#for archivename in ['PARADISEC']:
+for archivename in ['PARADISEC']:
 #for archivename in ['TLA']:
     print("processing", archivename)
     archive = archives[archivename]
@@ -79,13 +79,14 @@ for archivename in archives[]:
         #statisticsout.write(json.dumps(archive.statistics, indent=4, sort_keys=True))
 
     #print("calculating fingerprints")
-    archive.get_fingerprints()
-    fingerprintd = {c: archive.collections[c].fingerprints for c in archive.collections}
-    with open("cache/fingerprints/%s.json" % archive.name, "w") as out:
-        out.write(json.dumps(fingerprintd, indent=4, sort_keys=True))
+    #archive.get_fingerprints()
+    #fingerprintd = {c: archive.collections[c].fingerprints for c in archive.collections}
+    #with open("cache/fingerprints/%s.json" % archive.name, "w") as out:
+        #out.write(json.dumps(fingerprintd, indent=4, sort_keys=True))
 
-    #print("writing rdf")
-    #meta rdf
+    print("writing rdf")
+    print("  meta")
+    archive.write_metadata_rdf()
     #print("  transcriptions")
     #archive.write_transcriptions_rdf()
     #print("  glosses")

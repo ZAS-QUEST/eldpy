@@ -251,17 +251,54 @@ via
             #for item in IDs:  # etree.findall returns list
                 #dico[0].append(item.text.strip().replace("<", "").replace(">", ""))
 
+    def write_metadata_rdf(self):
+        archive = self.name
+        eaf_template = "%s-%s"
+        g = lod.create_graph()
+        g.add((lod.QUESTRESOLVER[archive],
+                RDF.type,
+                lod.QUEST.Archive
+                ))
+        for collection in self.collections:
+            g.add((lod.QUESTRESOLVER[collection],
+                    RDF.type,
+                    lod.QUEST.Collection
+                    ))
+            g.add((lod.QUESTRESOLVER[collection],
+                    lod.DBPEDIA.isPartOf,
+                    lod.QUESTRESOLVER[archive]
+                    ))
+            print(collection, len(self.collections[collection].elanfiles))
+            for eaf in self.collections[collection].elanfiles:
+                hashed_eaf = hash(eaf)
+                eaf_id = eaf_template%(collection, hashed_eaf)
+                print(eaf_id)
+                g.add((lod.QUESTRESOLVER[eaf_id], #TODO better use archive specific resolvers
+                        RDF.type,
+                        lod.QUEST.Elan_file
+                        ))
+                g.add((lod.QUESTRESOLVER[eaf_id],
+                        RDFS.label,
+                        Literal(eaf.url)
+                        ))
+                g.add((lod.QUESTRESOLVER[eaf_id],
+                        lod.DBPEDIA.isPartOf,
+                        lod.QUESTRESOLVER[collection]
+                        ))
+        lod.write_graph(g, 'rdf/%s-metadata.n3'%self.name)
+
+
     def write_transcriptions_rdf(self):
         ID_template = "%s-%s-%s-%s"
         eaf_template = "%s-%s"
         g = lod.create_graph()
-        for c in self.collections:
-            for eaf in self.collections[c].transcriptions:
+        for collection in self.collections:
+            for eaf in self.collections[collection].transcriptions:
                 hashed_eaf = hash(eaf)
-                eaf_id = eaf_template%(c, hashed_eaf)
-                for i,tier in enumerate(self.collections[c].transcriptions[eaf]):
+                eaf_id = eaf_template%(collection, hashed_eaf)
+                for i,tier in enumerate(self.collections[collection].transcriptions[eaf]):
                     for j,annotation in enumerate(tier):
-                        tier_id = ID_template % (c, hashed_eaf, i, j)
+                        tier_id = ID_template % (collection, hashed_eaf, i, j)
                         g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
                                 RDF.type,
                                 lod.QUEST.Transcripton_tier
@@ -280,13 +317,13 @@ via
         ID_template = "%s-%s-%s-%s"
         eaf_template = "%s-%s"
         g = lod.create_graph()
-        for c in self.collections:
-            for eaf in self.collections[c].translations:
+        for collection in self.collections:
+            for eaf in self.collections[collection].translations:
                 hashed_eaf = hash(eaf)
-                eaf_id = eaf_template%(c, hashed_eaf)
-                for i,tier in enumerate(self.collections[c].translations[eaf]):
+                eaf_id = eaf_template%(collection, hashed_eaf)
+                for i,tier in enumerate(self.collections[collection].translations[eaf]):
                     for j,annotation in enumerate(tier):
-                        tier_id = ID_template % (c, hashed_eaf, i, j)
+                        tier_id = ID_template % (collection, hashed_eaf, i, j)
                         g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
                                 RDF.type,
                                 lod.QUEST.Transcripton_tier
@@ -306,15 +343,15 @@ via
         gloss_template = "%s-%s-%s-%s"
         eaf_template = "%s-%s"
         g = lod.create_graph()
-        for c in self.collections:
-            for eaf in self.collections[c].glosses:
+        for collection in self.collections:
+            for eaf in self.collections[collection].glosses:
                 hashed_eaf = hash(eaf)
-                eaf_id = eaf_template%(c, hashed_eaf)
-                for tiertype in self.collections[c].glosses[eaf]:
-                    for tierID in self.collections[c].glosses[eaf][tiertype]:
-                        for dictionary  in self.collections[c].glosses[eaf][tiertype][tierID]:
+                eaf_id = eaf_template%(collection, hashed_eaf)
+                for tiertype in self.collections[collection].glosses[eaf]:
+                    for tierID in self.collections[collection].glosses[eaf][tiertype]:
+                        for dictionary  in self.collections[collection].glosses[eaf][tiertype][tierID]:
                             for sentenceID in dictionary:
-                                sentence_lod_ID = ID_template % (c, hashed_eaf, sentenceID)
+                                sentence_lod_ID = ID_template % (collection, hashed_eaf, sentenceID)
                                 g.add((lod.QUESTRESOLVER[sentence_lod_ID], #TODO better use archive specific resolvers
                                     RDF.type,
                                     lod.QUEST.Transcripton_tier
@@ -331,7 +368,7 @@ via
                                         gloss = gloss.strip()
                                     except TypeError:
                                         gloss = ''
-                                    gloss_id = urllib.parse.quote(gloss_template % (c, hashed_eaf, sentenceID, i))
+                                    gloss_id = urllib.parse.quote(gloss_template % (collection, hashed_eaf, sentenceID, i))
                                     g.add((lod.QUESTRESOLVER[gloss_id],
                                             RDF.type,
                                             lod.QUEST.gloss
@@ -358,12 +395,12 @@ via
         ID_template = "%s-%s-%s"
         eaf_template = "%s-%s"
         g = lod.create_graph()
-        for c in self.collections:
-            for eaf in self.collections[c].entities:
+        for collection in self.collections:
+            for eaf in self.collections[collection].entities:
                 hashed_eaf = hash(eaf)
-                eaf_id = eaf_template%(c, hashed_eaf)
-                for i,tier in enumerate(self.collections[c].entities[eaf]):
-                    tier_id = ID_template % (c, hashed_eaf, i)
+                eaf_id = eaf_template%(collection, hashed_eaf)
+                for i,tier in enumerate(self.collections[collection].entities[eaf]):
+                    tier_id = ID_template % (collection, hashed_eaf, i)
                     for q_value in tier:
                         g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
                                 lod.DC.topic,
