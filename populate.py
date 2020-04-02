@@ -47,19 +47,19 @@ def writejson(type_):
     with open("cache/%s/%s.json" % (type_, archive.name), "w") as out:
         out.write(json.dumps(d, indent=4, sort_keys=True))
 
-#for archivename in archives:
+for archivename in archives:
 #for archivename in ['AILLA']:
 #for archivename in ['ANLA']:
 #for archivename in ['ELAR']:
-for archivename in ['PARADISEC']:
+#for archivename in ['PARADISEC']:
 #for archivename in ['TLA']:
     print("processing", archivename)
     archive = archives[archivename]
     archive.populate_collections()
     print("loading caches")
-    transcriptioncache = json.loads(open("cache/transcriptions/%s.json" % archive.name).read())
-    translationcache = json.loads(open("cache/translations/%s.json" % archive.name).read())
-    glosscache = json.loads(open("cache/glosses/%s.json" % archive.name).read())
+    #transcriptioncache = json.loads(open("cache/transcriptions/%s.json" % archive.name).read())
+    #translationcache = json.loads(open("cache/translations/%s.json" % archive.name).read())
+    #glosscache = json.loads(open("cache/glosses/%s.json" % archive.name).read())
     entitiescache = json.loads(open("cache/entities/%s.json" % archive.name).read())
     print("processing data")
     for c in archive.collections:
@@ -67,7 +67,7 @@ for archivename in ['PARADISEC']:
         #archive.collections[c].populate_transcriptions(jsoncache=transcriptioncache)
         #archive.collections[c].populate_translations(jsoncache=translationcache)
         #archive.collections[c].populate_glosses(jsoncache=glosscache)
-        #archive.collections[c].populate_entities(jsoncache=entitiescache)
+        archive.collections[c].populate_entities(jsoncache=entitiescache)
     #archive.print_metadata()
     #print("caching json")
     #writejson('translations')
@@ -84,15 +84,15 @@ for archivename in ['PARADISEC']:
     #with open("cache/fingerprints/%s.json" % archive.name, "w") as out:
         #out.write(json.dumps(fingerprintd, indent=4, sort_keys=True))
 
-    print("writing rdf")
-    print("  meta")
-    archive.write_metadata_rdf()
+    #print("writing rdf")
+    #print("  meta")
+    #archive.write_metadata_rdf()
     #print("  transcriptions")
     #archive.write_transcriptions_rdf()
     #print("  glosses")
     #archive.write_glosses_rdf()
     #print("  translations")
     #archive.write_translations_rdf()
-    #print("  entities")
-    #archive.write_entities_rdf()
+    print("  entities")
+    archive.write_entities_rdf()
     #print("  done")

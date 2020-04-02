@@ -9,7 +9,7 @@ from resolver import get_URI_for_AILLA, get_URI_for_ANLA, get_URI_for_TLA, get_U
 QUEST = Namespace("http://zasquest.org/")
 QUESTRESOLVER = Namespace("http://zasquest.org/resolver/")
 DBPEDIA = Namespace("http://dbpedia.org/ontology/")
-WIKIDATA = Namespace("https://www.wikidata.org/wiki/")
+WIKIDATA = Namespace("http://www.wikidata.org/entity/")
 LGR = Namespace("https://www.eva.mpg.de/lingua/resources/glossing-rules.php/")
 
 #define archive namespaces
