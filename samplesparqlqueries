@@ -46,3 +46,16 @@ WHERE {
 filter (lang(?topicLabel) = "en" )
 filter (lang(?productLabel) = "en" )
 }
+
+
+
+SELECT DISTINCT ?topicID ?topicLabel
+WHERE {
+  ?text dc:topic ?topicID .
+    SERVICE <https://query.wikidata.org/sparql> {
+    ?topicID rdfs:label ?topicLabel .
+    ?topicID wdt:P105 wd:Q7432 .
+    ?topicID wdt:P1672 ?product .
+  }
+filter langMatches( lang(?topicLabel), "de" )
+}
