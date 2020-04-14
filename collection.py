@@ -208,37 +208,3 @@ class Collection:
             return None
         return eafcontent
 
-    def elar_eaf_download(self, filename):
-        # check for validity of ID
-        try:
-            soasID = filename.split("oai:soas.ac.uk:")[1]
-        except IndexError:  # filename does not start with oai:soas.ac.uk:, so we are not interested
-            return
-        # prepare request
-        url = "https://elar.soas.ac.uk/Record/%s" % soasID
-        phpsessid = "" #use shell prompt
-        cookie = {"PHPSESSID": phpsessid}
-
-        # retrieve catalog page
-        with requests.Session() as s:
-            # r = s.post(url, cookies=cookie, data=payload)
-            r = s.post(url, cookies=cookie)
-            html = r.text
-            # extract links to ELAN files
-            try:
-                links = fromstring(html).findall(".//tbody/tr/td/a")
-                eaflocations = {a.attrib["href"]
-                                for a in links
-                                if a.attrib["href"].endswith("eaf")
-                               }
-            except AttributeError:
-                return
-            # dowload identified files
-            retrievedfiles = []
-            for eaflocation in eaflocations:
-                eafname = eaflocation.split("/")[-1]
-                print("  downloading %s:" % eafname, endchar=" ")
-                eafname = "%s.eaf" % eafname[:200]  # avoid overlong file names
-                r2 = s.post(eaflocation, cookies=cookie, data=payload)
-                eafcontent = r2.text
-                retrievedfiles.append({"eafname": eafcontent})
