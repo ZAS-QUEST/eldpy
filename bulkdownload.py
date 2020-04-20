@@ -1,3 +1,4 @@
+import sys
 import requests
 import urllib.request
 from tqdm import tqdm
@@ -5,6 +6,7 @@ from lxml import etree
 import gzip
 from collections import Counter, defaultdict
 from lxml.html.soupparser import fromstring
+
 
 #https://stackoverflow.com/questions/15644964/python-progress-bar-and-downloads
 class DownloadProgressBar(tqdm):
@@ -23,7 +25,7 @@ def download_file(url, filename):
                             filename=filename,
                             reporthook=t.update_to)
 
-def elar_eaf_download(filename, phpsessid, extension):
+def elar_download(filename, phpsessid, extension):
     # check for validity of ID
     try:
         soasID = filename.split("oai:soas.ac.uk:")[1]
@@ -51,17 +53,33 @@ def elar_eaf_download(filename, phpsessid, extension):
             return
         # dowload identified files
         retrievedfiles = []
+        if len(locations) == 0:
+            print("files are not accessible")
+            return
         for location in locations:
-            print(location)
             filename = location.split("/")[-1]
             print("  downloading %s:" % filename)
             #filename = "./downloads/elar/%s.eaf" % filename[:200]  # avoid overlong file names
             filename = "./%s.%s" % (filename[:200], extension)  # avoid overlong file names
-            r2 = s.post(location, cookies=cookie)
-            content = r2.text
-            #retrievedfiles.append({eafname: eafcontent})
-            with open(filename, 'w') as out:
-                out.write(content)
+
+
+            with open(filename, 'wb') as f:
+                response = s.get(location, cookies=cookie, stream=True)
+                total = response.headers.get('content-length')
+
+                if total is None:
+                    f.write(response.content)
+                else:
+                    downloaded = 0
+                    total = int(total)
+                    for data in response.iter_content(chunk_size=max(int(total/1000), 1024*1024)):
+                        downloaded += len(data)
+                        f.write(data)
+                        done = int(50*downloaded/total)
+                        sys.stdout.write('\r[{}{}]'.format('█' * done, '.' * (50-done)))
+                        sys.stdout.flush()
+                sys.stdout.write('\n')
+
 
 
 
@@ -83,17 +101,18 @@ archives = {
     }
 
 
-print("Which files are you interested in?")
+print("This script will download all files from ELAR which you have access to. You will have to provide your username and password. Which file type are you interested in?")
 for i in filetypes:
     print("%i) %s" % (i, filetypes[i][0]))
 input_given = False
 while input_given == False:
     try:
-        filetypeinput = int(input("Select number and hit enter"))
+        filetypeinput = int(input("Select number and hit enter\n"))
         input_given = True
     except ValueError:
         pass
 
+#filetypeinput = 1
 typename, mimetype, extension = filetypes[filetypeinput]
 print("You have chosen %s (%s)" % (typename, extension))
 
@@ -126,20 +145,21 @@ print("found %i relevant records" % len(globalidentifiers))
 
 limit = 9999999
 subset = list(globalidentifiers.keys())[:limit]
-
 print("preparing to download %i files" % len(subset))
 #print(subset)
 
 #retrieve links
-login_url = "https://elar.soas.ac.uk/MyResearch/UserLogin"
+login_url = 'https://elar.soas.ac.uk/MyResearch/Home'
+
 session = requests.Session()
 un_name = "username"
 pw_name = "password"
 username = input("enter user name for ELAR: \n")
 password = input("Your password will only be used for this login session and not be stored anywhere. Enter password for ELAR: \n")
-values = {un_name: username.strip(), pw_name: password.strip()}
+
+values = {un_name: username.strip(), pw_name: password,'auth_method':'ILS','processLogin':'Login'}
 r = session.post(login_url, data = values)
 phpsessid = session.cookies.get_dict().get('PHPSESSID')
 
 for globalidentifier in subset:
-    elar_eaf_download(globalidentifier, phpsessid, extension)
+    elar_download(globalidentifier, phpsessid, extension)

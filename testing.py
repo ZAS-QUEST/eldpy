@@ -70,3 +70,37 @@ ax.scatter(range(len(g)),g,s=1)
 plt.savefig("asymptote2.pdf")
 
 
+from Crypto.Cipher import ARC4
+from Crypto.Hash import SHA
+from Crypto.Random import get_random_bytes
+import binascii
+
+
+
+##salt = json.loads(session.get("https://elar.soas.ac.uk/AJAX/JSON?method=getSalt").text)["data"]
+##encodeURIComponent_pw = password
+##unescaped_pw = encodeURIComponent_pw
+##base64pw =  base64.b64encode(bytes(unescaped_pw,encoding='latin1'))
+##cipher = ARC4.new(salt)
+##rc4Encrypt_pw = cipher.encrypt(base64pw)
+##hexed_pw = binascii.hexlify(rc4Encrypt_pw)
+##print(hexed_pw)
+##password needs to be salted and hashed
+##
+##https://elar.soas.ac.uk/themes/elar/js/common.js?_=1456746694
+##password = rc4Encrypt(salt, btoa(unescape(encodeURIComponent(password))));
+##// hex encode the encrypted password
+##password = hexEncode(password);
+
+##http://api.drupalhelp.net/api/simplenews_statistics/rc4.inc/function/rc4Encrypt/6.2
+##https://docs.python.org/3/library/base64.html
+##https://www.w3schools.com/jsref/met_win_btoa.asp
+##https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+##https://gist.github.com/valentinkostadinov/5875467
+
+##https://pycryptodome.readthedocs.io/en/latest/src/cipher/arc4.html
+##>>> key = b'Very long and confidential key'
+##>>> nonce = get_random_bytes(16)
+##>>> tempkey = SHA.new(key+nonce).digest()
+##>>> cipher = ARC4.new(tempkey)
+##>>> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
