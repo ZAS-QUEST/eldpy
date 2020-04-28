@@ -59,3 +59,14 @@ WHERE {
   }
 filter langMatches( lang(?topicLabel), "de" )
 }
+
+get all direct superclasses of all items in a list
+SELECT DISTINCT ?superclass ?superclassLabel   WHERE {
+	 ?subclass wdt:P279  ?superclass.
+	SERVICE wikibase:label {
+		bd:serviceParam wikibase:language "en" .
+	}
+    VALUES ?subclass { wd:Q8495 wd:Q780 }
+}
+
+
