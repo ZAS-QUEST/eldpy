@@ -81,85 +81,121 @@ def elar_download(filename, phpsessid, extension):
                 sys.stdout.write('\n')
 
 
+if __name__ == "__main__":
+    filetypes = {
+        1: ("ELAN","text/x-eaf+xml","eaf"),
+        2: ("Toolbox","text/x-toolbox-text","tbx"),
+        3: ("transcriber","text/x-trs","trs"),
+        4: ("praat","text/praat-textgrid","textgrid"),
+        5: ("Flex","FLEx","xml"),
+        6: ("Wave audio","audio/x-wav","wav")
+        }
+
+    archives = {
+        1: 'ELAR',
+        2: 'TLA',
+        3: 'PARADISEC',
+        4: 'AILLA',
+        5: 'ANLA'
+        }
 
 
-filetypes = {
-    1: ("ELAN","text/x-eaf+xml","eaf"),
-    2: ("Toolbox","text/x-toolbox-text","tbx"),
-    3: ("transcriber","text/x-trs","trs"),
-    4: ("praat","text/praat-textgrid","textgrid"),
-    5: ("Flex","FLEx","xml"),
-    6: ("Wave audio","audio/x-wav","wav")
-    }
+    print("This script will download all files from ELAR/AILLA which you have access to. You will have to provide your username and password. Which file type are you interested in?")
+    for i in filetypes:
+        print("%i) %s" % (i, filetypes[i][0]))
+    input_given = False
+    input_given = True
+    filetypeinput = 1
+    while input_given == False:
+        try:
+            filetypeinput = int(input("Select number and hit enter\n"))
+            input_given = True
+        except ValueError:
+            pass
 
-archives = {
-    1: 'ELAR',
-    2: 'TLA',
-    3: 'PARADISEC',
-    4: 'AILLA',
-    5: 'ANLA'
-    }
+    #filetypeinput = 1
+    typename, mimetype, extension = filetypes[filetypeinput]
+    print("You have chosen %s (%s)" % (typename, extension))
+    archive = 2
+    if archive == 1:#ELAR
+        try:
+            print("unpacking zipped OLAC file")
+            gunzipped_file = gzip.open("ListRecords.xml.gz")
+        except FileNotFoundError:
+            print("no olac dump found. Retrieving dump from http://www.language-archives.org/xmldump/ListRecords.xml.gz")
+            download_file('http://www.language-archives.org/xmldump/ListRecords.xml.gz', 'ListRecords.xml.gz')
+            print("unpacking zipped OLAC file")
+        gunzipped_file = gzip.open("ListRecords.xml.gz")
+        print("parsing OLAC file")
+        tree = etree.parse(gunzipped_file)
+
+        globalidentifiers = {}
+        #retrieve all records which references files of interest
+        dcformats = tree.findall(".//{http://purl.org/dc/elements/1.1/}format")
+
+        for dcformat in dcformats:
+            if dcformat.text.strip() == mimetype:
+                identifiers = dcformat.getparent().findall(
+                    ".//{http://purl.org/dc/elements/1.1/}identifier"
+                )
+                for identifier in identifiers:
+                    strippedtext = identifier.text.strip().replace("<", "").replace(">", "")
+                    if strippedtext.startswith('oai:soas.ac.uk'):
+                        globalidentifiers[strippedtext] = True
+
+        print("found %i relevant records" % len(globalidentifiers))
+
+        limit = 9999999
+        subset = list(globalidentifiers.keys())[:limit]
+        print("preparing to download %i files" % len(subset))
+        #print(subset)
+
+        #retrieve links
+        login_url = 'https://elar.soas.ac.uk/MyResearch/Home'
+
+        session = requests.Session()
+        un_name = "username"
+        pw_name = "password"
+        username = input("enter user name for ELAR: \n")
+        password = input("Your password will only be used for this login session and not be stored anywhere. Enter password for ELAR: \n")
+
+        values = {un_name: username.strip(), pw_name: password, 'auth_method':'ILS', 'processLogin':'Login'}
+        r = session.post(login_url, data = values)
+        phpsessid = session.cookies.get_dict().get('PHPSESSID')
+
+        for globalidentifier in subset:
+            elar_download(globalidentifier, phpsessid, extension)
+    if archive==2:#ailla
+        base_url = "https://ailla.utexas.org/islandora/object/ailla%3Acollection_collection?page=1&rows=1000"
+        with requests.Session() as s:
+            b_request = s.get(base_url)
+            b_html = b_request.text
+            b_root = fromstring(b_html)
+            collection_links = b_root.findall(".//div/dl/dd/a")
+            collection_urls = ["https://ailla.utexas.org/%s"%a.attrib["href"] for a in collection_links]
+            collections_length = len(collection_urls)
+            for i, c_url in enumerate(collection_urls):
+                print("c: ", c_url)
+                c_request = s.get(c_url)
+                c_html = c_request.text
+                c_root = fromstring(c_html)
+                session_links = c_root.findall(".//div/dl/dd/a")
+                session_urls = ["https://ailla.utexas.org/%s"%a.attrib["href"] for a in session_links]
+                sessions_length = len(session_urls)
+                for j, s_url in enumerate(session_urls):
+                    print(" s: %s (c :%s/%s; s:%s/%s)" % (s_url, i, collections_length, j, sessions_length))
+                    s_request = s.get(s_url)
+                    s_html = s_request.text
+                    s_root = fromstring(s_html)
+                    file_links = s_root.findall(".//tbody/tr/td/a")
+                    file_urls = ["https://ailla.utexas.org/%s"%a.text for a in file_links
+                                 if a.text.endswith(extension)
+                                 ]
+                    for f_url in file_urls:
+                        print("  f: ", f_url)
+                        #ailla_download(f_url)
+                    #else:
+                        #print("  f: no files matching", extension)
 
 
-print("This script will download all files from ELAR which you have access to. You will have to provide your username and password. Which file type are you interested in?")
-for i in filetypes:
-    print("%i) %s" % (i, filetypes[i][0]))
-input_given = False
-while input_given == False:
-    try:
-        filetypeinput = int(input("Select number and hit enter\n"))
-        input_given = True
-    except ValueError:
-        pass
 
-#filetypeinput = 1
-typename, mimetype, extension = filetypes[filetypeinput]
-print("You have chosen %s (%s)" % (typename, extension))
-
-try:
-    print("unpacking zipped OLAC file")
-    gunzipped_file = gzip.open("ListRecords.xml.gz")
-except FileNotFoundError:
-    print("no olac dump found. Retrieving dump from http://www.language-archives.org/xmldump/ListRecords.xml.gz")
-    download_file('http://www.language-archives.org/xmldump/ListRecords.xml.gz', 'ListRecords.xml.gz')
-    print("unpacking zipped OLAC file")
-gunzipped_file = gzip.open("ListRecords.xml.gz")
-print("parsing OLAC file")
-tree = etree.parse(gunzipped_file)
-
-globalidentifiers = {}
-#retrieve all records which references files of interest
-dcformats = tree.findall(".//{http://purl.org/dc/elements/1.1/}format")
-
-for dcformat in dcformats:
-    if dcformat.text.strip() == mimetype:
-        identifiers = dcformat.getparent().findall(
-            ".//{http://purl.org/dc/elements/1.1/}identifier"
-        )
-        for identifier in identifiers:
-            strippedtext = identifier.text.strip().replace("<", "").replace(">", "")
-            if strippedtext.startswith('oai:soas.ac.uk'):
-                globalidentifiers[strippedtext] = True
-
-print("found %i relevant records" % len(globalidentifiers))
-
-limit = 9999999
-subset = list(globalidentifiers.keys())[:limit]
-print("preparing to download %i files" % len(subset))
-#print(subset)
-
-#retrieve links
-login_url = 'https://elar.soas.ac.uk/MyResearch/Home'
-
-session = requests.Session()
-un_name = "username"
-pw_name = "password"
-username = input("enter user name for ELAR: \n")
-password = input("Your password will only be used for this login session and not be stored anywhere. Enter password for ELAR: \n")
-
-values = {un_name: username.strip(), pw_name: password,'auth_method':'ILS','processLogin':'Login'}
-r = session.post(login_url, data = values)
-phpsessid = session.cookies.get_dict().get('PHPSESSID')
-
-for globalidentifier in subset:
-    elar_download(globalidentifier, phpsessid, extension)
