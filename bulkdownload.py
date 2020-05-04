@@ -1,37 +1,36 @@
-import os
 from getpass import getpass
-import sys
-import requests
-import urllib.request
-from tqdm import tqdm
-from lxml import etree
 import gzip
-from collections import Counter, defaultdict
+import os
+import sys
+import urllib.request
+from lxml import etree
 from lxml.html.soupparser import fromstring
+from tqdm import tqdm
+import requests
 
 
-#https://stackoverflow.com/questions/15644964/python-progress-bar-and-downloads
+# https://stackoverflow.com/questions/15644964/python-progress-bar-and-downloads
 class DownloadProgressBar(tqdm):
     def update_to(self, b=1, bsize=1, tsize=None):
         if tsize is not None:
             self.total = tsize
         self.update(b * bsize - self.n)
 
-def download_file(url, filename):
-    with DownloadProgressBar(unit='B',
-                            unit_scale=True,
-                            miniters=1,
-                            desc=url.split('/')[-1]
-                            ) as t:
-        urllib.request.urlretrieve(url,
-                            filename=filename,
-                            reporthook=t.update_to)
 
-def elar_download(filename, phpsessid, extension):
+def download_file(url, filename):
+    with DownloadProgressBar(unit="B",
+                             unit_scale=True,
+                             miniters=1,
+                             desc=url.split("/")[-1]
+                            ) as t:
+        urllib.request.urlretrieve(url, filename=filename, reporthook=t.update_to)
+
+
+def elar_download(file_id, phpsessid, extension):
     # check for validity of ID
     try:
-        soasID = filename.split("oai:soas.ac.uk:")[1]
-    except IndexError:  # filename does not start with oai:soas.ac.uk:, so we are not interested
+        soasID = file_id.split("oai:soas.ac.uk:")[1]
+    except IndexError:  # file_id does not start with oai:soas.ac.uk:, so we are not interested
         print("not a SOAS file", soasID)
         return
     # prepare request
@@ -46,197 +45,230 @@ def elar_download(filename, phpsessid, extension):
         # extract links to ELAN files
         try:
             links = fromstring(html).findall(".//tbody/tr/td/a")
-            locations = {a.attrib["href"]
-                            for a in links
-                            if a.attrib["href"].endswith(extension)
-                            }
-        except AttributeError:#not an ELAN file
+            locations = {
+                a.attrib["href"] for a in links if a.attrib["href"].endswith(extension)
+            }
+        except AttributeError:  # not an ELAN file
             print("files are not accessible")
             return
         # dowload identified files
-        retrievedfiles = []
-        if len(locations) == 0:
+        if locations == []:
             print("files are not accessible")
             return
         for location in locations:
             filename = location.split("/")[-1]
             print("  downloading %s:" % filename)
-            #filename = "./downloads/elar/%s.eaf" % filename[:200]  # avoid overlong file names
-            filename = "./%s.%s" % (filename[:200], extension)  # avoid overlong file names
+            # filename = "./downloads/elar/%s.eaf" % filename[:200]  # avoid overlong file names
+            filename = "./%s.%s" % (
+                filename[:200],
+                extension,
+            )  # avoid overlong file names
 
-
-            with open(filename, 'wb') as f:
+            with open(filename, "wb") as f:
                 response = s.get(location, cookies=cookie, stream=True)
-                total = response.headers.get('content-length')
+                total = response.headers.get("content-length")
 
                 if total is None:
                     f.write(response.content)
                 else:
                     downloaded = 0
                     total = int(total)
-                    for data in response.iter_content(chunk_size=max(int(total/1000), 1024*1024)):
+                    for data in response.iter_content(chunk_size=max(int(total / 1000),
+                                                                     1024 * 1024
+                                                                    )
+                                                     ):
                         downloaded += len(data)
                         f.write(data)
-                        done = int(50*downloaded/total)
-                        sys.stdout.write('\r[{}{}]'.format('█' * done, '.' * (50-done)))
+                        done = int(50 * downloaded / total)
+                        sys.stdout.write(
+                            "\r[{}{}]".format("█" * done, "." * (50 - done))
+                        )
                         sys.stdout.flush()
-                sys.stdout.write('\n')
+                sys.stdout.write("\n")
+
+
+def retrieve_elar(extension):
+    try:
+        print("unpacking zipped OLAC file")
+        gunzipped_file = gzip.open("ListRecords.xml.gz")
+    except FileNotFoundError:
+        print(
+            "no olac dump found. Retrieving dump from http://www.language-archives.org/xmldump/ListRecords.xml.gz"
+        )
+        download_file(
+            "http://www.language-archives.org/xmldump/ListRecords.xml.gz",
+            "ListRecords.xml.gz",
+        )
+        print("unpacking zipped OLAC file")
+    gunzipped_file = gzip.open("ListRecords.xml.gz")
+    print("parsing OLAC file")
+    tree = etree.parse(gunzipped_file)
+
+    globalidentifiers = {}
+    # retrieve all records which references files of interest
+    dcformats = tree.findall(".//{http://purl.org/dc/elements/1.1/}format")
+
+    for dcformat in dcformats:
+        if dcformat.text.strip() == mimetype:
+            identifiers = dcformat.getparent().findall(
+                ".//{http://purl.org/dc/elements/1.1/}identifier"
+            )
+            for identifier in identifiers:
+                strippedtext = identifier.text.strip().replace("<", "").replace(">", "")
+                if strippedtext.startswith("oai:soas.ac.uk"):
+                    globalidentifiers[strippedtext] = True
+
+    print("found %i relevant records" % len(globalidentifiers))
+
+    limit = 9999999
+    subset = list(globalidentifiers.keys())[:limit]
+    print("preparing to download %i files" % len(subset))
+    # print(subset)
+
+    # retrieve links
+    login_url = "https://elar.soas.ac.uk/MyResearch/Home"
+
+    session = requests.Session()
+    un_name = "username"
+    pw_name = "password"
+    username = input("enter user name for ELAR: \n")
+    password = getpass(
+        "Your password will only be used for this login session and not be stored anywhere. Enter password for ELAR: \n"
+    )
+
+    values = {
+        un_name: username.strip(),
+        pw_name: password,
+        "auth_method": "ILS",
+        "processLogin": "Login",
+    }
+    session.post(login_url, data=values)
+    phpsessid = session.cookies.get_dict().get("PHPSESSID")
+
+    for globalidentifier in subset:
+        elar_download(globalidentifier, phpsessid, extension)
+
+
+def retrieve_ailla(extension):
+    base_url = "https://ailla.utexas.org/islandora/object/ailla%3Acollection_collection?page=1&rows=1000"
+    username = input("Enter user name for AILLA: \n")
+    password = getpass(
+        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for AILLA: \n"
+    )
+    with requests.Session() as s:
+        print("retrieving collections")
+        s = requests.Session()
+        un_name = "name"
+        pw_name = "pass"
+        values = {
+            un_name: username.strip(),
+            pw_name: password,
+            "op": "log+in",
+            "form_id": "user_login_block",
+        }
+        s.post(base_url, data=values)
+        session_id = s.cookies.get_dict().get("SSESS64f35ecaf4903fe271ed0b0c15ee2bce")
+        b_request = s.get(base_url)
+        b_html = b_request.text
+        b_root = fromstring(b_html)
+        collection_links = b_root.findall(".//div/dl/dd/a")
+        collection_urls = [
+            "https://ailla.utexas.org/%s" % a.attrib["href"] for a in collection_links
+        ]
+        collections_length = len(collection_urls)
+        for i, c_url in enumerate(collection_urls):
+            print("collection ", c_url)
+            collection_id = c_url.split("%3A")[-1]
+            c_request = s.get(c_url)
+            c_html = c_request.text
+            c_root = fromstring(c_html)
+            session_links = c_root.findall(".//div/dl/dd/a")
+            session_urls = [
+                "https://ailla.utexas.org/%s" % a.attrib["href"] for a in session_links
+            ]
+            sessions_length = len(session_urls)
+            for j, s_url in enumerate(session_urls):
+                print(
+                    " session %s (c :%s/%s; s:%s/%s)"
+                    % (s_url[51:], i + 1, collections_length, j + 1, sessions_length,)
+                )
+                s_request = s.get(s_url)
+                s_html = s_request.text
+                s_root = fromstring(s_html)
+                file_links = s_root.findall(".//tbody/tr/td/a")
+                file_tuples = [
+                    (a.attrib["href"], a.text)
+                    for a in file_links
+                    if a.text.endswith(extension)
+                ]
+                for file_tuple in file_tuples:
+                    # print("  f: ", file_tuple)
+                    f_url, filename = file_tuple
+                    download_url = "%s/datastream/OBJ/download" % f_url
+                    filepath = os.path.join(collection_id, filename)
+                    print("  downloading %s as %s:" % (download_url, filepath))
+                    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                    with open(filepath, "wb") as f:
+                        cookie = {"SSESS64f35ecaf4903fe271ed0b0c15ee2bce": session_id}
+                        response = s.get(download_url, cookies=cookie, stream=True)
+                        total = response.headers.get("content-length")
+                        if total is None:
+                            f.write(response.content)
+                        else:
+                            downloaded = 0
+                            total = int(total)
+                            for data in response.iter_content(chunk_size=max(int(total / 1000),
+                                                                             1024 * 1024)
+                                                             ):
+                                downloaded += len(data)
+                                f.write(data)
+                                done = int(50 * downloaded / total)
+                                sys.stdout.write(
+                                    "\r[{}{}]".format("█" * done, "." * (50 - done))
+                                )
+                                sys.stdout.flush()
+                        sys.stdout.write("\n")
 
 
 if __name__ == "__main__":
     filetypes = {
-        1: ("ELAN","text/x-eaf+xml","eaf"),
-        2: ("Toolbox","text/x-toolbox-text","tbx"),
-        3: ("transcriber","text/x-trs","trs"),
-        4: ("praat","text/praat-textgrid","textgrid"),
-        5: ("Flex","FLEx","xml"),
-        6: ("Wave audio","audio/x-wav","wav")
-        }
+        1: ("ELAN", "text/x-eaf+xml", "eaf"),
+        2: ("Toolbox", "text/x-toolbox-text", "tbx"),
+        3: ("transcriber", "text/x-trs", "trs"),
+        4: ("praat", "text/praat-textgrid", "textgrid"),
+        5: ("Flex", "FLEx", "xml"),
+        6: ("Wave audio", "audio/x-wav", "wav"),
+    }
 
-    archives = {
-        1: 'ELAR',
-        2: 'TLA',
-        3: 'PARADISEC',
-        4: 'AILLA',
-        5: 'ANLA'
-        }
+    archives = {1: "ELAR", 2: "TLA", 3: "PARADISEC", 4: "AILLA", 5: "ANLA"}
 
-
-    print("This script will download all files from ELAR/AILLA which you have access to. You will have to provide your username and password. Which file type are you interested in?")
-    for i in filetypes:
-        print("%i) %s" % (i, filetypes[i][0]))
+    print(
+        "This script will download all files from ELAR/AILLA which you have access to. You will have to provide your username and password. Which file type are you interested in?"
+    )
+    for filetype in filetypes:
+        print("%i) %s" % (filetype, filetypes[filetype][0]))
     input_given = False
-    while input_given == False:
+    while input_given is False:
         try:
             filetypeinput = int(input("Select number and hit enter\n"))
             input_given = True
         except ValueError:
             pass
-    typename, mimetype, extension = filetypes[filetypeinput]
-    print("You have chosen %s (%s)" % (typename, extension))
-
+    typename, mimetype, chosen_extension = filetypes[filetypeinput]
+    print("You have chosen %s (%s)" % (typename, chosen_extension))
     print("Which archive are you interested in?")
-    for i in archives:
-        print("%i) %s" % (i, archives[i]))
+    for archive in archives:
+        print("%i) %s" % (archive, archives[archive]))
     input_given = False
-    while input_given == False:
+    while input_given is False:
         try:
             archiveinput = int(input("Select number and hit enter\n"))
             input_given = True
         except ValueError:
             pass
-
-    archive = archives[archiveinput]
-
-    print("You have chosen %s" % archive)
-    if archiveinput == 1:#ELAR
-        try:
-            print("unpacking zipped OLAC file")
-            gunzipped_file = gzip.open("ListRecords.xml.gz")
-        except FileNotFoundError:
-            print("no olac dump found. Retrieving dump from http://www.language-archives.org/xmldump/ListRecords.xml.gz")
-            download_file('http://www.language-archives.org/xmldump/ListRecords.xml.gz', 'ListRecords.xml.gz')
-            print("unpacking zipped OLAC file")
-        gunzipped_file = gzip.open("ListRecords.xml.gz")
-        print("parsing OLAC file")
-        tree = etree.parse(gunzipped_file)
-
-        globalidentifiers = {}
-        #retrieve all records which references files of interest
-        dcformats = tree.findall(".//{http://purl.org/dc/elements/1.1/}format")
-
-        for dcformat in dcformats:
-            if dcformat.text.strip() == mimetype:
-                identifiers = dcformat.getparent().findall(
-                    ".//{http://purl.org/dc/elements/1.1/}identifier"
-                )
-                for identifier in identifiers:
-                    strippedtext = identifier.text.strip().replace("<", "").replace(">", "")
-                    if strippedtext.startswith('oai:soas.ac.uk'):
-                        globalidentifiers[strippedtext] = True
-
-        print("found %i relevant records" % len(globalidentifiers))
-
-        limit = 9999999
-        subset = list(globalidentifiers.keys())[:limit]
-        print("preparing to download %i files" % len(subset))
-        #print(subset)
-
-        #retrieve links
-        login_url = 'https://elar.soas.ac.uk/MyResearch/Home'
-
-        session = requests.Session()
-        un_name = "username"
-        pw_name = "password"
-        username = input("enter user name for ELAR: \n")
-        password = getpass("Your password will only be used for this login session and not be stored anywhere. Enter password for ELAR: \n")
-
-        values = {un_name: username.strip(), pw_name: password, 'auth_method':'ILS', 'processLogin':'Login'}
-        r = session.post(login_url, data = values)
-        phpsessid = session.cookies.get_dict().get('PHPSESSID')
-
-        for globalidentifier in subset:
-            elar_download(globalidentifier, phpsessid, extension)
-    if archiveinput==4:#ailla
-        base_url = "https://ailla.utexas.org/islandora/object/ailla%3Acollection_collection?page=1&rows=1000"
-        username = input("Enter user name for AILLA: \n")
-        password = getpass("Your password will only be used for this login session and not be stored anywhere.\n Enter password for AILLA: \n")
-        with requests.Session() as s:
-            print("retrieving collections")
-            s = requests.Session()
-            un_name = "name"
-            pw_name = "pass"
-            values = {un_name: username.strip(),
-                        pw_name: password,
-                        'op':'log+in',
-                        'form_id': 'user_login_block'
-                        }
-            r = s.post(base_url, data = values)
-            session_id = s.cookies.get_dict().get('SSESS64f35ecaf4903fe271ed0b0c15ee2bce')
-            b_request = s.get(base_url)
-            b_html = b_request.text
-            b_root = fromstring(b_html)
-            collection_links = b_root.findall(".//div/dl/dd/a")
-            collection_urls = ["https://ailla.utexas.org/%s"%a.attrib["href"] for a in collection_links]
-            collections_length = len(collection_urls)
-            for i, c_url in enumerate(collection_urls):
-                print("collection ", c_url)
-                collection_id = c_url.split("%3A")[-1]
-                c_request = s.get(c_url)
-                c_html = c_request.text
-                c_root = fromstring(c_html)
-                session_links = c_root.findall(".//div/dl/dd/a")
-                session_urls = ["https://ailla.utexas.org/%s"%a.attrib["href"] for a in session_links]
-                sessions_length = len(session_urls)
-                for j, s_url in enumerate(session_urls):
-                    print(" session %s (c :%s/%s; s:%s/%s)" % (s_url[51:], i+1, collections_length, j+1, sessions_length))
-                    s_request = s.get(s_url)
-                    s_html = s_request.text
-                    s_root = fromstring(s_html)
-                    file_links = s_root.findall(".//tbody/tr/td/a")
-                    file_tuples = [(a.attrib["href"], a.text) for a in file_links
-                                 if a.text.endswith(extension)
-                                 ]
-                    for file_tuple in file_tuples:
-                        #print("  f: ", file_tuple)
-                        f_url, filename = file_tuple
-                        download_url = "%s/datastream/OBJ/download" % f_url
-                        filepath = os.path.join(collection_id,filename)
-                        print("  downloading %s as %s:" % (download_url, filepath))
-                        os.makedirs(os.path.dirname(filepath), exist_ok=True)
-                        with open(filepath, 'wb') as f:
-                            cookie = {"SSESS64f35ecaf4903fe271ed0b0c15ee2bce": session_id}
-                            response = s.get(download_url, cookies=cookie, stream=True)
-                            total = response.headers.get('content-length')
-                            if total is None:
-                                f.write(response.content)
-                            else:
-                                downloaded = 0
-                                total = int(total)
-                                for data in response.iter_content(chunk_size=max(int(total/1000), 1024*1024)):
-                                    downloaded += len(data)
-                                    f.write(data)
-                                    done = int(50*downloaded/total)
-                                    sys.stdout.write('\r[{}{}]'.format('█' * done, '.' * (50-done)))
-                                    sys.stdout.flush()
-                            sys.stdout.write('\n')
+    archivename = archives[archiveinput]
+    print("You have chosen %s" % archivename)
+    if archiveinput == 1:  # ELAR
+        retrieve_elar(chosen_extension)
+    if archiveinput == 4:  # ailla
+        retrieve_ailla(chosen_extension)
