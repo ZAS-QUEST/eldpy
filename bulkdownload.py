@@ -1,3 +1,5 @@
+import os
+from getpass import getpass
 import sys
 import requests
 import urllib.request
@@ -104,20 +106,30 @@ if __name__ == "__main__":
     for i in filetypes:
         print("%i) %s" % (i, filetypes[i][0]))
     input_given = False
-    input_given = True
-    filetypeinput = 1
     while input_given == False:
         try:
             filetypeinput = int(input("Select number and hit enter\n"))
             input_given = True
         except ValueError:
             pass
-
-    #filetypeinput = 1
     typename, mimetype, extension = filetypes[filetypeinput]
     print("You have chosen %s (%s)" % (typename, extension))
-    archive = 2
-    if archive == 1:#ELAR
+
+    print("Which archive are you interested in?")
+    for i in archives:
+        print("%i) %s" % (i, archives[i]))
+    input_given = False
+    while input_given == False:
+        try:
+            archiveinput = int(input("Select number and hit enter\n"))
+            input_given = True
+        except ValueError:
+            pass
+
+    archive = archives[archiveinput]
+
+    print("You have chosen %s" % archive)
+    if archiveinput == 1:#ELAR
         try:
             print("unpacking zipped OLAC file")
             gunzipped_file = gzip.open("ListRecords.xml.gz")
@@ -157,7 +169,7 @@ if __name__ == "__main__":
         un_name = "username"
         pw_name = "password"
         username = input("enter user name for ELAR: \n")
-        password = input("Your password will only be used for this login session and not be stored anywhere. Enter password for ELAR: \n")
+        password = getpass("Your password will only be used for this login session and not be stored anywhere. Enter password for ELAR: \n")
 
         values = {un_name: username.strip(), pw_name: password, 'auth_method':'ILS', 'processLogin':'Login'}
         r = session.post(login_url, data = values)
@@ -165,9 +177,22 @@ if __name__ == "__main__":
 
         for globalidentifier in subset:
             elar_download(globalidentifier, phpsessid, extension)
-    if archive==2:#ailla
+    if archiveinput==4:#ailla
         base_url = "https://ailla.utexas.org/islandora/object/ailla%3Acollection_collection?page=1&rows=1000"
+        username = input("Enter user name for AILLA: \n")
+        password = getpass("Your password will only be used for this login session and not be stored anywhere.\n Enter password for AILLA: \n")
         with requests.Session() as s:
+            print("retrieving collections")
+            s = requests.Session()
+            un_name = "name"
+            pw_name = "pass"
+            values = {un_name: username.strip(),
+                        pw_name: password,
+                        'op':'log+in',
+                        'form_id': 'user_login_block'
+                        }
+            r = s.post(base_url, data = values)
+            session_id = s.cookies.get_dict().get('SSESS64f35ecaf4903fe271ed0b0c15ee2bce')
             b_request = s.get(base_url)
             b_html = b_request.text
             b_root = fromstring(b_html)
@@ -175,7 +200,8 @@ if __name__ == "__main__":
             collection_urls = ["https://ailla.utexas.org/%s"%a.attrib["href"] for a in collection_links]
             collections_length = len(collection_urls)
             for i, c_url in enumerate(collection_urls):
-                print("c: ", c_url)
+                print("collection ", c_url)
+                collection_id = c_url.split("%3A")[-1]
                 c_request = s.get(c_url)
                 c_html = c_request.text
                 c_root = fromstring(c_html)
@@ -183,19 +209,34 @@ if __name__ == "__main__":
                 session_urls = ["https://ailla.utexas.org/%s"%a.attrib["href"] for a in session_links]
                 sessions_length = len(session_urls)
                 for j, s_url in enumerate(session_urls):
-                    print(" s: %s (c :%s/%s; s:%s/%s)" % (s_url, i, collections_length, j, sessions_length))
+                    print(" session %s (c :%s/%s; s:%s/%s)" % (s_url[51:], i+1, collections_length, j+1, sessions_length))
                     s_request = s.get(s_url)
                     s_html = s_request.text
                     s_root = fromstring(s_html)
                     file_links = s_root.findall(".//tbody/tr/td/a")
-                    file_urls = ["https://ailla.utexas.org/%s"%a.text for a in file_links
+                    file_tuples = [(a.attrib["href"], a.text) for a in file_links
                                  if a.text.endswith(extension)
                                  ]
-                    for f_url in file_urls:
-                        print("  f: ", f_url)
-                        #ailla_download(f_url)
-                    #else:
-                        #print("  f: no files matching", extension)
-
-
-
+                    for file_tuple in file_tuples:
+                        #print("  f: ", file_tuple)
+                        f_url, filename = file_tuple
+                        download_url = "%s/datastream/OBJ/download" % f_url
+                        filepath = os.path.join(collection_id,filename)
+                        print("  downloading %s as %s:" % (download_url, filepath))
+                        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                        with open(filepath, 'wb') as f:
+                            cookie = {"SSESS64f35ecaf4903fe271ed0b0c15ee2bce": session_id}
+                            response = s.get(download_url, cookies=cookie, stream=True)
+                            total = response.headers.get('content-length')
+                            if total is None:
+                                f.write(response.content)
+                            else:
+                                downloaded = 0
+                                total = int(total)
+                                for data in response.iter_content(chunk_size=max(int(total/1000), 1024*1024)):
+                                    downloaded += len(data)
+                                    f.write(data)
+                                    done = int(50*downloaded/total)
+                                    sys.stdout.write('\r[{}{}]'.format('█' * done, '.' * (50-done)))
+                                    sys.stdout.flush()
+                            sys.stdout.write('\n')
