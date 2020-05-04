@@ -18,6 +18,8 @@ class DownloadProgressBar(tqdm):
 
 
 def download_file(url, filename):
+    """download the file from url to filename and display a progress bar"""
+
     with DownloadProgressBar(unit="B",
                              unit_scale=True,
                              miniters=1,
@@ -26,11 +28,13 @@ def download_file(url, filename):
         urllib.request.urlretrieve(url, filename=filename, reporthook=t.update_to)
 
 
-def elar_download(file_id, phpsessid, extension):
+def elar_download(bundle_id, phpsessid, extension):
+    """download files from an ELAR session/bundle, using a given extension"""
+
     # check for validity of ID
     try:
-        soasID = file_id.split("oai:soas.ac.uk:")[1]
-    except IndexError:  # file_id does not start with oai:soas.ac.uk:, so we are not interested
+        soasID = bundle_id.split("oai:soas.ac.uk:")[1]
+    except IndexError:  # bundle_id does not start with oai:soas.ac.uk:, so we are not interested
         print("not a SOAS file", soasID)
         return
     # prepare request
@@ -88,6 +92,7 @@ def elar_download(file_id, phpsessid, extension):
 
 
 def retrieve_elar(extension):
+    """identify and download  all accessible files from ELAR"""
     try:
         print("unpacking zipped OLAC file")
         gunzipped_file = gzip.open("ListRecords.xml.gz")
@@ -133,7 +138,7 @@ def retrieve_elar(extension):
     pw_name = "password"
     username = input("enter user name for ELAR: \n")
     password = getpass(
-        "Your password will only be used for this login session and not be stored anywhere. Enter password for ELAR: \n"
+        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for ELAR: \n"
     )
 
     values = {
@@ -150,6 +155,8 @@ def retrieve_elar(extension):
 
 
 def retrieve_ailla(extension):
+    """identify and download all accessible files of a given type from AILLA"""
+
     base_url = "https://ailla.utexas.org/islandora/object/ailla%3Acollection_collection?page=1&rows=1000"
     username = input("Enter user name for AILLA: \n")
     password = getpass(
