@@ -154,6 +154,96 @@ def retrieve_elar(extension):
         elar_download(globalidentifier, phpsessid, extension)
 
 
+def retrieve_tla(extension):
+    """identify and download all accessible files of a given type from TLA"""
+
+    if extension != 'eaf':
+        print("currently, only eaf downloads are supported for TLA")
+        return
+    TLA_LIMIT = 5000 #there are currently 35k ELAN files in TLA
+    #base_url = """https://archive.mpi.nl/tla/islandora/search/*%3A*?f[0]=cmd.Format%3A"%s"&f[1]=-cmd.Country%3A"Netherlands"&f[2]=-cmd.Country%3A"Belgium"&f[3]=-cmd.Country%3A"Germany"&limit=%i"""%(mimetype, TLA_LIMIT)
+    #https://archive.mpi.nl/tla/islandora/search/%2A%3A%2A?page=2&f%5B0%5D=cmd.Format%3A%22text/x-eaf%2Bxml%22&islandora_solr_search_navigation=0&sort=fgs_label_s%20asc&limit=500
+    login_url = "https://archive.mpi.nl/tla/user/login"
+    username = input("Enter user name for TLA: \n")
+    password = getpass(
+        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for TLA: \n"
+    )
+    with requests.Session() as s:
+        print("retrieving collections")
+        s = requests.Session()
+        un_name = "name"
+        pw_name = "pass"
+        values = {
+            un_name: username.strip(),
+            pw_name: password,
+            "op": "Log+in",
+            "form_id": "user_login",
+        }
+        s.post(login_url, data=values)
+        session_id = s.cookies.get_dict().get("SESSd8112b76bc7d4802dc104c36df341519")
+        print(session_id)
+        #get pages quantity
+        collection_urls = []
+        tla_mime = "text/x-eaf%2Bxml"
+        country_restrictors = "f%5B1%5D=-cmd.Country%3A%22Netherlands%22&f%5B2%5D=-cmd.Country%3A%22Belgium%22&f%5B3%5D=-cmd.Country%3A%22Germany%22&"
+        resultpages = ["https://archive.mpi.nl/tla/islandora/search/%%2A%%3A%%2A?page=%i&f%%5B0%%5D=cmd.Format%%3A%%22%s%%22&%slimit=%i"%(i, tla_mime, country_restrictors, TLA_LIMIT) for i in range(5)]
+        for resultpage in resultpages:
+            print(resultpage)
+            base_request = s.get(resultpage)
+            base_html = base_request.text
+            #print(base_html)
+            base_root = fromstring(base_html)
+            collection_links = base_root.findall('.//dd[@class="solr-value cmd-title"]/a')
+            new_collection_urls = [
+                "https://archive.mpi.nl/%s" % a.attrib["href"] for a in collection_links
+            ]
+            print(len(new_collection_urls), "new urls")
+            collection_urls += new_collection_urls
+        collection_length = len(collection_urls)
+        print(len(collection_urls), "collections")
+        for i, c_url in enumerate(collection_urls):
+            #print("collection ", c_url)
+            collection_id = c_url.split("%3A")[-1]
+            print(collection_id, "%i/%i"%(i+1, collection_length))
+            c_request = s.get(c_url)
+            c_html = c_request.text
+            c_root = fromstring(c_html)
+            file_links = c_root.findall('.//a[@class="flat-compound-caption-link"]')
+            file_tuples = [
+                (a.attrib["href"], a.text)
+                for a in file_links
+                if a.text.endswith(extension)
+            ]
+            for file_tuple in file_tuples:
+                # print("  f: ", file_tuple)
+                f_url, filename = file_tuple
+                download_url = "https://archive.mpi.nl/%s" % f_url
+                filepath = os.path.join(collection_id, filename)
+                print("  downloading %s as %s:" % (download_url, filepath))
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                with open(filepath, "wb") as f:
+                    cookie = {"SESSd8112b76bc7d4802dc104c36df341519": session_id}
+                    response = s.get(download_url, cookies=cookie, stream=True)
+                    total = response.headers.get("content-length")
+                    if total is None:
+                        f.write(response.content)
+                    else:
+                        downloaded = 0
+                        total = int(total)
+                        for data in response.iter_content(chunk_size=max(int(total / 1000),
+                                                                        1024 * 1024)
+                                                        ):
+                            downloaded += len(data)
+                            f.write(data)
+                            done = int(50 * downloaded / total)
+                            sys.stdout.write(
+                                "\r[{}{}]".format("█" * done, "." * (50 - done))
+                            )
+                            sys.stdout.flush()
+                    sys.stdout.write("\n")
+
+
+
 def retrieve_ailla(extension):
     """identify and download all accessible files of a given type from AILLA"""
 
@@ -255,6 +345,7 @@ if __name__ == "__main__":
     for filetype in filetypes:
         print("%i) %s" % (filetype, filetypes[filetype][0]))
     input_given = False
+    #filetypeinput = 1
     while input_given is False:
         try:
             filetypeinput = int(input("Select number and hit enter\n"))
@@ -267,6 +358,7 @@ if __name__ == "__main__":
     for archive in archives:
         print("%i) %s" % (archive, archives[archive]))
     input_given = False
+    #archiveinput = 2
     while input_given is False:
         try:
             archiveinput = int(input("Select number and hit enter\n"))
@@ -277,5 +369,7 @@ if __name__ == "__main__":
     print("You have chosen %s" % archivename)
     if archiveinput == 1:  # ELAR
         retrieve_elar(chosen_extension)
+    if archiveinput == 2:  # TLA
+        retrieve_tla(chosen_extension)
     if archiveinput == 4:  # ailla
         retrieve_ailla(chosen_extension)
