@@ -63,12 +63,15 @@ def elar_download(bundle_id, phpsessid, extension):
             filename = location.split("/")[-1]
             print("  downloading %s:" % filename)
             # filename = "./downloads/elar/%s.eaf" % filename[:200]  # avoid overlong file names
-            filename = "./%s.%s" % (
-                filename[:200],
+            filename = "%s.%s" % (
+                filename[:-4][:200],
                 extension,
             )  # avoid overlong file names
 
-            with open(filename, "wb") as f:
+            filepath = os.path.join('elar', 'elar', filename)
+            print("  downloading %s as %s:" % (location, filepath))
+            os.makedirs(os.path.dirname(filepath), exist_ok=True)
+            with open(filepath, "wb") as f:
                 response = s.get(location, cookies=cookie, stream=True)
                 total = response.headers.get("content-length")
 
@@ -218,7 +221,7 @@ def retrieve_tla(extension):
                 # print("  f: ", file_tuple)
                 f_url, filename = file_tuple
                 download_url = "https://archive.mpi.nl/%s" % f_url
-                filepath = os.path.join(collection_id, filename)
+                filepath = os.path.join('tla', collection_id, filename)
                 print("  downloading %s as %s:" % (download_url, filepath))
                 os.makedirs(os.path.dirname(filepath), exist_ok=True)
                 with open(filepath, "wb") as f:
@@ -296,13 +299,13 @@ def retrieve_ailla(extension):
                 file_tuples = [
                     (a.attrib["href"], a.text)
                     for a in file_links
-                    if a.text.endswith(extension)
+                    if a.text is not None and a.text.endswith(extension)
                 ]
                 for file_tuple in file_tuples:
                     # print("  f: ", file_tuple)
                     f_url, filename = file_tuple
                     download_url = "%s/datastream/OBJ/download" % f_url
-                    filepath = os.path.join(collection_id, filename)
+                    filepath = os.path.join('ailla', collection_id, filename)
                     print("  downloading %s as %s:" % (download_url, filepath))
                     os.makedirs(os.path.dirname(filepath), exist_ok=True)
                     with open(filepath, "wb") as f:
