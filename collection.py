@@ -31,7 +31,7 @@ class Collection:
         self.url = url
         self.urlprefix = urlprefix
         self.url_template = url_template
-        self.ID = ""
+        self.ID = self.name.split('/')[-1]
         self.cacheprefix = "cache/eafs/%s" % self.archive.lower()
         self.elanpaths = []
         self.elanfiles = []
@@ -104,7 +104,7 @@ class Collection:
                     self.transcriptiontiers += len(counts)
                     self.transcriptionwords += sum(counts)
                     self.transcribedseconds += eaf.secondstranscribed
-                self.transcriptions[eaf.path] = transcriptions
+                self.transcriptions[eaf.ID] = transcriptions
 
     def populate_glosses(self, jsoncache=None):
         if jsoncache:
@@ -149,7 +149,7 @@ class Collection:
             self.glossfiles += filecount
             self.glosstiers += tiercount
             self.glosssentences += sentencecount
-                # check for sentences with more than one gloss tiere TODO
+            # check for sentences with more than one gloss tiere TODO
             self.glosswords += wordcount
             self.glossmorphemes += morphemecount
 

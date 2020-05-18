@@ -43,12 +43,12 @@ archives = {
 
 def writejson(type_):
     print(" ", type_)
-    d = {c: archive.collections[c].__dict__[type_] for c in archive.collections}
+    d = {archive.collections[c].ID: archive.collections[c].__dict__[type_] for c in archive.collections}
     with open("cache/%s/%s.json" % (type_, archive.name), "w") as out:
         out.write(json.dumps(d, indent=4, sort_keys=True))
 
-for archivename in archives:
-#for archivename in ['AILLA']:
+#for archivename in archives:
+for archivename in ['AILLA']:
 #for archivename in ['ANLA']:
 #for archivename in ['ELAR']:
 #for archivename in ['PARADISEC']:
@@ -58,20 +58,20 @@ for archivename in archives:
     archive.populate_collections()
     print("loading caches")
     #transcriptioncache = json.loads(open("cache/transcriptions/%s.json" % archive.name).read())
-    #translationcache = json.loads(open("cache/translations/%s.json" % archive.name).read())
-    #glosscache = json.loads(open("cache/glosses/%s.json" % archive.name).read())
+    translationcache = json.loads(open("cache/translations/%s.json" % archive.name).read())
+    glosscache = json.loads(open("cache/glosses/%s.json" % archive.name).read())
     entitiescache = json.loads(open("cache/entities/%s.json" % archive.name).read())
     print("processing data")
     for c in archive.collections:
         archive.collections[c].acquire_elans(cache=True)
-        #archive.collections[c].populate_transcriptions(jsoncache=transcriptioncache)
+        archive.collections[c].populate_transcriptions()
         #archive.collections[c].populate_translations(jsoncache=translationcache)
         #archive.collections[c].populate_glosses(jsoncache=glosscache)
-        archive.collections[c].populate_entities(jsoncache=entitiescache)
+        #archive.collections[c].populate_entities(jsoncache=entitiescache)
     #archive.print_metadata()
     #print("caching json")
     #writejson('translations')
-    #writejson('transcriptions')
+    writejson('transcriptions')
     #writejson('glosses')
     #writejson('entities')
 
@@ -87,12 +87,12 @@ for archivename in archives:
     #print("writing rdf")
     #print("  meta")
     #archive.write_metadata_rdf()
-    #print("  transcriptions")
-    #archive.write_transcriptions_rdf()
+    print("  transcriptions")
+    archive.write_transcriptions_rdf()
     #print("  glosses")
     #archive.write_glosses_rdf()
     #print("  translations")
     #archive.write_translations_rdf()
-    print("  entities")
-    archive.write_entities_rdf()
+    #print("  entities")
+    #archive.write_entities_rdf()
     #print("  done")

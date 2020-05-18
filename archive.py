@@ -296,12 +296,13 @@ via
         eaf_template = "%s-%s"
         g = lod.create_graph()
         for collection in self.collections:
+            collection_id = self.collections[collection].ID
             for eafname in self.collections[collection].transcriptions:
                 hashed_eaf = self.get_eaf_hash(eafname)
-                eaf_id = eaf_template%(collection, hashed_eaf)
+                eaf_id = eaf_template%(collection_id, hashed_eaf)
                 for i,tier in enumerate(self.collections[collection].transcriptions[eafname]):
                     for j,annotation in enumerate(tier):
-                        tier_id = ID_template % (collection, hashed_eaf, i, j)
+                        tier_id = ID_template % (collection_id, hashed_eaf, i, j)
                         g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
                                 RDF.type,
                                 lod.QUEST.Transcripton_tier

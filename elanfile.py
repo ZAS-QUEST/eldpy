@@ -21,7 +21,7 @@ class ElanFile:
     def __init__(self, path, url, namespace=None):
         # self.name = name
         self.path = path
-        self.ID = ""
+        self.ID = self.path.split('/')[-1]
         self.url = url
         self.namespace = namespace
         self.tiers = []
@@ -189,6 +189,11 @@ class ElanFile:
                     # get a list of duration from the time slots directly mentioned in annotations
                     if wordlist == []:
                         continue
+                    #check for ID tiers. ID tiers either have only digits, or they have an ID consisting of the filename and a running number. We have to find at least three digits since some tone languages use two digit tone indications like "ma24ma52"
+                    if re.search("[0-9]{3}$", wordlist[0]) or re.match("[0-9]+", wordlist[0]) :
+                        if len(wordlist)>1:
+                           if re.search("[0-9]{3}$", wordlist[1]) or re.match("[0-9]+", wordlist[1]) : #this is an ID tier
+                                continue
                     timelist = [
                         Annotation(aa, self.timeslots).get_duration()
                         for aa in tier.findall("./ANNOTATION")
@@ -216,13 +221,13 @@ class ElanFile:
                         toplanguage = None
                     # print(toplanguage)
                     if (toplanguage
-                        and toplanguage.lang == "en"
+                        and toplanguage.lang in ("en", "es")
                         and toplanguage.prob > self.LANGDETECTTHRESHOLD
                        ):
                         # language is English
                         logger.warning(
-                            'ignored vernacular tier with English language content at %.2f%% probability ("%s ...")'
-                            % (toplanguage.prob * 100, " ".join(wordlist)[:100])
+                            'ignored vernacular tier with "%s" language content at %.2f%% probability ("%s ...")'
+                            % (toplanguage.lang, toplanguage.prob * 100, " ".join(wordlist)[:100])
                         )
                         continue
                     try:
