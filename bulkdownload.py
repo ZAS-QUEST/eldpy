@@ -333,42 +333,49 @@ def retrieve_ailla(extension):
 def retrieve_paradisec(extension):
     """identify and download all accessible files of a given type from PARADISEC"""
 
-    login_url = "https://catalog.paradisec.org.au/users/sign_in"
-    username = input("Enter your email for PARADISEC: \n")
-    password = getpass(
-        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for PARADISEC: \n"
-    )
+    #login_url = "https://catalog.paradisec.org.au/users/sign_in"
+    #username = input("Enter your email for PARADISEC: \n")
+    #password = getpass(
+        #"Your password will only be used for this login session and not be stored anywhere.\n Enter password for PARADISEC: \n"
+    #)
+    #print("retrieving collections")
     with requests.Session() as s:
-        print("retrieving collections")
-        s = requests.Session()
-        un_name = "user[email]"
-        pw_name = "user[password]"
-        values = {
-            un_name: username.strip(),
-            pw_name: password,
-            "commit": "Sign+in",
-            "user[remember_me]": "0",
-        }
-        s.post(login_url, data=values)
-        session_id = s.cookies.get_dict().get("_session_id")
+        ##log in
+        #un_name = "user[email]"
+        #pw_name = "user[password]"
+        #values = {
+            #un_name: username.strip(),
+            #pw_name: password,
+            #"commit": "Sign+in",
+            #"user[remember_me]": "0",
+        #}
+        #response = s.post(login_url, data=values)
+        ##session_id = response.cookies.get_dict().get("_session_id")
+        session_id = input("For PARADISEC, you have to login manually and retrieve the cookie called '_session_id'. Paste the value of this cookie (e.g. d9bb68a51923ae30204be72f0006ae63)\n")
+
+        #store session cookie from login
+        cookies = {"_session_id": session_id}
         base_url = "https://catalog.paradisec.org.au/items/search?page=1&per_page=30000"
+        print("retrieving full list of PARADISEC collections. This might take some time")
         b_request = s.get(base_url)
+        print("done")
         b_html = b_request.text
         b_root = fromstring(b_html)
-        collection_links = b_root.findall(".//body/div/div/div/table/tbody/tr/td/a")
+        collection_links = b_root.findall(".//body/div/div[5]/div/table//tr/td[8]/a")
         collection_urls = [
             "https://catalog.paradisec.org.au%s?items_per_page=1000" % a.attrib["href"] for a in collection_links
         ]
         collections_length = len(collection_urls)
+        print(collections_length, "collections found")
         for i, c_url in enumerate(collection_urls):
             print("collection ", c_url)
             collection_id = c_url.split("/")[-1]
             c_request = s.get(c_url)
             c_html = c_request.text
             c_root = fromstring(c_html)
-            item_links = c_root.findall(".//div/div/div/fieldset/table/tbody/tr/td/a")
+            item_links = c_root.findall(".//div/div/div/fieldset/table//tr/td/a")
             item_urls = [
-                "https://catalog.paradisec.org.au%s?files_per_page=1000" % a.attrib["href"] for a in item_links
+                "https://catalog.paradisec.org.au%s?files_per_page=1000" % a.attrib["href"] for a in item_links if "items" in a.attrib["href"]
             ]
             items_length = len(item_urls)
             for j, i_url in enumerate(item_urls):
@@ -376,25 +383,38 @@ def retrieve_paradisec(extension):
                     " session %s (c :%s/%s; s:%s/%s)"
                     % (i_url[33:-20], i + 1, collections_length, j + 1, items_length)
                 )
-                i_request = i.get(s_url)
+                i_request = s.get(i_url, cookies=cookies)
                 i_html = i_request.text
                 i_root = fromstring(i_html)
-                file_tuples = [
-                    (tr.find(".//td[1]").text, tr.find(".//td[5]").attrib["href"])
-                    for tr in trs
-                    if tr.find(".//td[1]").text is not None and a.text.endswith(extension)
-                ]
-                for file_tuple in file_tuples:
-                    filename = file_tuple[0]
-                    # print("  f: ", file_tuple)
-                    f_url = "%s/download" % file_tuple[1]
-                    download_url = "%s/download" % f_url
-                    filepath = os.path.join('paradisec', collection_id, filename)
+                i_root.find("./body/div/div[5]/div[5]/fieldset[1]/table/tbody/tr[1]/td[5]/a")
+                tds = i_root.findall(".//tbody/tr/td[1]")
+                print("  ", len(tds)-1, "downloadable files found. Checking for correct extensions")
+                f_tuples = []
+                for td in tds:
+                    rawname = td.text
+                    if rawname.endswith(extension) is False:
+                        continue
+                    try:
+                        parts = rawname.split('-')
+                        collection_id = parts[0]
+                        running_number = parts[1]
+                        remainder = parts[2]
+                    except IndexError:
+                        continue
+                    f_url = "http://catalog.paradisec.org.au/repository/%s/%s/%s" % (collection_id, running_number,rawname)
+                    #print(f_url)
+                    f_tuples.append((f_url,collection_id,rawname))
+                #print(f_tuples)
+                for f_tuple in f_tuples:
+                    f_url, collection_id, basename = f_tuple
+                    filename = basename
+                    #print("  f: ", file_tuple)
+                    download_url = f_url
+                    filepath = os.path.join('paradisec', collection_id, basename)
                     print("  downloading %s as %s:" % (download_url, filepath))
                     os.makedirs(os.path.dirname(filepath), exist_ok=True)
                     with open(filepath, "wb") as f:
-                        cookie = {"_session_id": session_id}
-                        response = s.get(download_url, cookies=cookie, stream=True)
+                        response = s.get(download_url, cookies=cookies, stream=True)
                         total = response.headers.get("content-length")
                         if total is None:
                             f.write(response.content)
@@ -402,8 +422,8 @@ def retrieve_paradisec(extension):
                             downloaded = 0
                             total = int(total)
                             for data in response.iter_content(chunk_size=max(int(total / 1000),
-                                                                             1024 * 1024)
-                                                             ):
+                                                                                1024 * 1024)
+                                                                ):
                                 downloaded += len(data)
                                 f.write(data)
                                 done = int(50 * downloaded / total)
@@ -445,7 +465,7 @@ if __name__ == "__main__":
     for archive in archives:
         print("%i) %s" % (archive, archives[archive]))
     input_given = False
-    #archiveinput = 2
+    #archiveinput = 3
     while input_given is False:
         try:
             archiveinput = int(input("Select number and hit enter\n"))
