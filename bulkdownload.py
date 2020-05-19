@@ -336,7 +336,7 @@ def retrieve_paradisec(extension):
     login_url = "https://catalog.paradisec.org.au/users/sign_in"
     username = input("Enter your email for PARADISEC: \n")
     password = getpass(
-        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for AILLA: \n"
+        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for PARADISEC: \n"
     )
     with requests.Session() as s:
         print("retrieving collections")
@@ -458,5 +458,7 @@ if __name__ == "__main__":
         retrieve_elar(chosen_extension)
     if archiveinput == 2:  # TLA
         retrieve_tla(chosen_extension)
+    if archiveinput == 3:  # PARADISEC
+        retrieve_paradisec(chosen_extension)
     if archiveinput == 4:  # ailla
         retrieve_ailla(chosen_extension)
