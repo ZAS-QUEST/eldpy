@@ -367,12 +367,17 @@ def retrieve_paradisec(extension):
         ]
         collections_length = len(collection_urls)
         print(collections_length, "collections found")
-        for i, c_url in enumerate(collection_urls):
+        OFFSET = 0
+        print("OFFSET is", OFFSET)
+        for i, c_url in enumerate(collection_urls[OFFSET:]):
             print("collection ", c_url)
             collection_id = c_url.split("/")[-1]
             c_request = s.get(c_url)
             c_html = c_request.text
-            c_root = fromstring(c_html)
+            try:
+                c_root = fromstring(c_html)
+            except ValueError:
+                print("invalid XML", c_url)
             item_links = c_root.findall(".//div/div/div/fieldset/table//tr/td/a")
             item_urls = [
                 "https://catalog.paradisec.org.au%s?files_per_page=1000" % a.attrib["href"] for a in item_links if "items" in a.attrib["href"]
@@ -380,8 +385,8 @@ def retrieve_paradisec(extension):
             items_length = len(item_urls)
             for j, i_url in enumerate(item_urls):
                 print(
-                    " session %s (c :%s/%s; s:%s/%s)"
-                    % (i_url[33:-20], i + 1, collections_length, j + 1, items_length)
+                    " session %s (c (+%i):%s/%s; s:%s/%s)"
+                    % (i_url[33:-20], OFFSET, i + 1, collections_length, j + 1, items_length)
                 )
                 i_request = s.get(i_url, cookies=cookies)
                 i_html = i_request.text
@@ -403,7 +408,9 @@ def retrieve_paradisec(extension):
                         continue
                     f_url = "http://catalog.paradisec.org.au/repository/%s/%s/%s" % (collection_id, running_number,rawname)
                     #print(f_url)
+                    found = True
                     f_tuples.append((f_url,collection_id,rawname))
+                print("  ", len(f_tuples), "relevant file(s) found")
                 #print(f_tuples)
                 for f_tuple in f_tuples:
                     f_url, collection_id, basename = f_tuple
