@@ -204,10 +204,11 @@ def retrieve_tla(extension):
             collection_urls += new_collection_urls
         collection_length = len(collection_urls)
         print(len(collection_urls), "collections")
-        for i, c_url in enumerate(collection_urls):
+        OFFSET= 3390
+        for i, c_url in enumerate(collection_urls[OFFSET:]):
             #print("collection ", c_url)
             collection_id = c_url.split("%3A")[-1]
-            print(collection_id, "%i/%i"%(i+1, collection_length))
+            print(collection_id, "%i (+%i)/%i"%(i+1, OFFSET, collection_length))
             c_request = s.get(c_url)
             c_html = c_request.text
             c_root = fromstring(c_html)
@@ -215,7 +216,7 @@ def retrieve_tla(extension):
             file_tuples = [
                 (a.attrib["href"], a.text)
                 for a in file_links
-                if a.text.endswith(extension)
+                if a.text is not None and a.text.endswith(extension)
             ]
             for file_tuple in file_tuples:
                 # print("  f: ", file_tuple)
