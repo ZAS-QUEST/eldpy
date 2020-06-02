@@ -9,8 +9,11 @@ from tqdm import tqdm
 import requests
 
 
-# https://stackoverflow.com/questions/15644964/python-progress-bar-and-downloads
 class DownloadProgressBar(tqdm):
+    """Container for the download bar
+       https://stackoverflow.com/questions/15644964/python-progress-bar-and-downloads
+    """
+
     def update_to(self, b=1, bsize=1, tsize=None):
         if tsize is not None:
             self.total = tsize
@@ -18,7 +21,7 @@ class DownloadProgressBar(tqdm):
 
 
 def download_file(url, filename):
-    """download the file from url to filename and display a progress bar"""
+    """Download the file from url to filename and display a progress bar"""
 
     with DownloadProgressBar(unit="B",
                              unit_scale=True,
@@ -27,6 +30,37 @@ def download_file(url, filename):
                             ) as t:
         urllib.request.urlretrieve(url, filename=filename, reporthook=t.update_to)
 
+def save_file(s, filepath, download_url, cookie):
+    """Retrieve a file from an url with a given cookie.
+    Store the file locally at filepath
+    """
+
+    with open(filepath, "wb") as f:
+        response = s.get(download_url, cookies=cookie, stream=True)
+        total = response.headers.get("content-length")
+        if total is None:
+            f.write(response.content)
+        else:
+            downloaded = 0
+            total = int(total)
+            for data in response.iter_content(chunk_size=max(int(total / 1000),
+                                                             1024 * 1024)
+                                             ):
+                downloaded += len(data)
+                f.write(data)
+                done = int(50 * downloaded / total)
+                sys.stdout.write(
+                    "\r[{}{}]".format("█" * done, "." * (50 - done))
+                )
+                sys.stdout.flush()
+        sys.stdout.write("\n")
+
+def url2root(s, url, cookies=None):
+    "retrieve a given URL and return parsed XML as etree root"
+    req = s.get(url, cookies=cookies)
+    html = req.text
+    root = fromstring(html)
+    return root
 
 def elar_download(bundle_id, phpsessid, extension):
     """download files from an ELAR session/bundle, using a given extension"""
@@ -39,12 +73,11 @@ def elar_download(bundle_id, phpsessid, extension):
         return
     # prepare request
     url = "https://elar.soas.ac.uk/Record/%s" % soasID
-    cookie = {"PHPSESSID": phpsessid}
+    cookies = {"PHPSESSID": phpsessid}
     print("checking", url)
     # retrieve catalog page
     with requests.Session() as s:
-        # r = s.post(url, cookies=cookie, data=payload)
-        r = s.post(url, cookies=cookie)
+        r = s.post(url, cookies=cookies)
         html = r.text
         # extract links to ELAN files
         try:
@@ -60,42 +93,20 @@ def elar_download(bundle_id, phpsessid, extension):
             print("files are not accessible")
             return
         for location in locations:
+            download_url = location
             filename = location.split("/")[-1]
-            print("  downloading %s:" % filename)
-            # filename = "./downloads/elar/%s.eaf" % filename[:200]  # avoid overlong file names
             filename = "%s.%s" % (
                 filename[:-4][:200],
                 extension,
             )  # avoid overlong file names
-
             filepath = os.path.join('elar', 'elar', filename)
             print("  downloading %s as %s:" % (location, filepath))
             os.makedirs(os.path.dirname(filepath), exist_ok=True)
-            with open(filepath, "wb") as f:
-                response = s.get(location, cookies=cookie, stream=True)
-                total = response.headers.get("content-length")
-
-                if total is None:
-                    f.write(response.content)
-                else:
-                    downloaded = 0
-                    total = int(total)
-                    for data in response.iter_content(chunk_size=max(int(total / 1000),
-                                                                     1024 * 1024
-                                                                    )
-                                                     ):
-                        downloaded += len(data)
-                        f.write(data)
-                        done = int(50 * downloaded / total)
-                        sys.stdout.write(
-                            "\r[{}{}]".format("█" * done, "." * (50 - done))
-                        )
-                        sys.stdout.flush()
-                sys.stdout.write("\n")
-
+            save_file(s, filepath, download_url, cookies)
 
 def retrieve_elar(extension):
     """identify and download  all accessible files from ELAR"""
+
     try:
         print("unpacking zipped OLAC file")
         gunzipped_file = gzip.open("ListRecords.xml.gz")
@@ -128,8 +139,8 @@ def retrieve_elar(extension):
 
     print("found %i relevant records" % len(globalidentifiers))
 
-    limit = 9999999
-    subset = list(globalidentifiers.keys())[:limit]
+    LIMIT = 9999999
+    subset = list(globalidentifiers.keys())[:LIMIT]
     print("preparing to download %i files" % len(subset))
     # print(subset)
 
@@ -172,6 +183,7 @@ def retrieve_tla(extension):
         "Your password will only be used for this login session and not be stored anywhere.\n Enter password for TLA: \n"
     )
     with requests.Session() as s:
+        #login
         print("retrieving collections")
         s = requests.Session()
         un_name = "name"
@@ -190,12 +202,13 @@ def retrieve_tla(extension):
         tla_mime = "text/x-eaf%2Bxml"
         country_restrictors = "f%5B1%5D=-cmd.Country%3A%22Netherlands%22&f%5B2%5D=-cmd.Country%3A%22Belgium%22&f%5B3%5D=-cmd.Country%3A%22Germany%22&"
         resultpages = ["https://archive.mpi.nl/tla/islandora/search/%%2A%%3A%%2A?page=%i&f%%5B0%%5D=cmd.Format%%3A%%22%s%%22&%slimit=%i"%(i, tla_mime, country_restrictors, TLA_LIMIT) for i in range(5)]
+        #retrieve collections from resultpages
         for resultpage in resultpages:
             print(resultpage)
-            base_request = s.get(resultpage)
-            base_html = base_request.text
-            #print(base_html)
-            base_root = fromstring(base_html)
+            #base_request = s.get(resultpage)
+            #base_html = base_request.text
+            #base_root = fromstring(base_html)
+            base_root = url2root(s, resultpage)
             collection_links = base_root.findall('.//dd[@class="solr-value cmd-title"]/a')
             new_collection_urls = [
                 "https://archive.mpi.nl/%s" % a.attrib["href"] for a in collection_links
@@ -204,20 +217,24 @@ def retrieve_tla(extension):
             collection_urls += new_collection_urls
         collection_length = len(collection_urls)
         print(len(collection_urls), "collections")
-        OFFSET= 3390
+        OFFSET = 0
+        #OFFSET = 3390
+        #retrieve file links from collections
         for i, c_url in enumerate(collection_urls[OFFSET:]):
             #print("collection ", c_url)
             collection_id = c_url.split("%3A")[-1]
             print(collection_id, "%i (+%i)/%i"%(i+1, OFFSET, collection_length))
-            c_request = s.get(c_url)
-            c_html = c_request.text
-            c_root = fromstring(c_html)
+            #c_request = s.get(c_url)
+            #c_html = c_request.text
+            #c_root = fromstring(c_html)
+            c_root = url2root(s, c_url)
             file_links = c_root.findall('.//a[@class="flat-compound-caption-link"]')
             file_tuples = [
                 (a.attrib["href"], a.text)
                 for a in file_links
                 if a.text is not None and a.text.endswith(extension)
             ]
+            #download files
             for file_tuple in file_tuples:
                 # print("  f: ", file_tuple)
                 f_url, filename = file_tuple
@@ -225,26 +242,7 @@ def retrieve_tla(extension):
                 filepath = os.path.join('tla', collection_id, filename)
                 print("  downloading %s as %s:" % (download_url, filepath))
                 os.makedirs(os.path.dirname(filepath), exist_ok=True)
-                with open(filepath, "wb") as f:
-                    cookie = {"SESSd8112b76bc7d4802dc104c36df341519": session_id}
-                    response = s.get(download_url, cookies=cookie, stream=True)
-                    total = response.headers.get("content-length")
-                    if total is None:
-                        f.write(response.content)
-                    else:
-                        downloaded = 0
-                        total = int(total)
-                        for data in response.iter_content(chunk_size=max(int(total / 1000),
-                                                                        1024 * 1024)
-                                                        ):
-                            downloaded += len(data)
-                            f.write(data)
-                            done = int(50 * downloaded / total)
-                            sys.stdout.write(
-                                "\r[{}{}]".format("█" * done, "." * (50 - done))
-                            )
-                            sys.stdout.flush()
-                    sys.stdout.write("\n")
+                save_file(s, filepath, download_url, {"SESSd8112b76bc7d4802dc104c36df341519": session_id})
 
 
 
@@ -269,9 +267,10 @@ def retrieve_ailla(extension):
         }
         s.post(base_url, data=values)
         session_id = s.cookies.get_dict().get("SSESS64f35ecaf4903fe271ed0b0c15ee2bce")
-        b_request = s.get(base_url)
-        b_html = b_request.text
-        b_root = fromstring(b_html)
+        #b_request = s.get(base_url)
+        #b_html = b_request.text
+        #b_root = fromstring(b_html)
+        b_root = url2root(s, base_url)
         collection_links = b_root.findall(".//div/dl/dd/a")
         collection_urls = [
             "https://ailla.utexas.org/%s" % a.attrib["href"] for a in collection_links
@@ -280,9 +279,10 @@ def retrieve_ailla(extension):
         for i, c_url in enumerate(collection_urls):
             print("collection ", c_url)
             collection_id = c_url.split("%3A")[-1]
-            c_request = s.get(c_url)
-            c_html = c_request.text
-            c_root = fromstring(c_html)
+            #c_request = s.get(c_url)
+            #c_html = c_request.text
+            #c_root = fromstring(c_html)
+            c_root = url2root(s, c_url)
             session_links = c_root.findall(".//div/dl/dd/a")
             session_urls = [
                 "https://ailla.utexas.org/%s" % a.attrib["href"] for a in session_links
@@ -293,9 +293,10 @@ def retrieve_ailla(extension):
                     " session %s (c :%s/%s; s:%s/%s)"
                     % (s_url[51:], i + 1, collections_length, j + 1, sessions_length,)
                 )
-                s_request = s.get(s_url)
-                s_html = s_request.text
-                s_root = fromstring(s_html)
+                #s_request = s.get(s_url)
+                #s_html = s_request.text
+                #s_root = fromstring(s_html)
+                s_root = url2root(s, s_url)
                 file_links = s_root.findall(".//tbody/tr/td/a")
                 file_tuples = [
                     (a.attrib["href"], a.text)
@@ -309,26 +310,7 @@ def retrieve_ailla(extension):
                     filepath = os.path.join('ailla', collection_id, filename)
                     print("  downloading %s as %s:" % (download_url, filepath))
                     os.makedirs(os.path.dirname(filepath), exist_ok=True)
-                    with open(filepath, "wb") as f:
-                        cookie = {"SSESS64f35ecaf4903fe271ed0b0c15ee2bce": session_id}
-                        response = s.get(download_url, cookies=cookie, stream=True)
-                        total = response.headers.get("content-length")
-                        if total is None:
-                            f.write(response.content)
-                        else:
-                            downloaded = 0
-                            total = int(total)
-                            for data in response.iter_content(chunk_size=max(int(total / 1000),
-                                                                             1024 * 1024)
-                                                             ):
-                                downloaded += len(data)
-                                f.write(data)
-                                done = int(50 * downloaded / total)
-                                sys.stdout.write(
-                                    "\r[{}{}]".format("█" * done, "." * (50 - done))
-                                )
-                                sys.stdout.flush()
-                        sys.stdout.write("\n")
+                    save_file(s, filepath, download_url, {"SSESS64f35ecaf4903fe271ed0b0c15ee2bce": session_id})
 
 
 def retrieve_paradisec(extension):
@@ -356,12 +338,13 @@ def retrieve_paradisec(extension):
 
         #store session cookie from login
         cookies = {"_session_id": session_id}
-        base_url = "https://catalog.paradisec.org.au/items/search?page=1&per_page=30000"
         print("retrieving full list of PARADISEC collections. This might take some time")
-        b_request = s.get(base_url)
+        base_url = "https://catalog.paradisec.org.au/items/search?page=1&per_page=30000"
+        #b_request = s.get(base_url)
+        #b_html = b_request.text
+        #b_root = fromstring(b_html)
+        b_root = url2root(s, base_url)
         print("done")
-        b_html = b_request.text
-        b_root = fromstring(b_html)
         collection_links = b_root.findall(".//body/div/div[5]/div/table//tr/td[8]/a")
         collection_urls = [
             "https://catalog.paradisec.org.au%s?items_per_page=1000" % a.attrib["href"] for a in collection_links
@@ -373,12 +356,15 @@ def retrieve_paradisec(extension):
         for i, c_url in enumerate(collection_urls[OFFSET:]):
             print("collection ", c_url)
             collection_id = c_url.split("/")[-1]
-            c_request = s.get(c_url)
-            c_html = c_request.text
+            #c_request = s.get(c_url)
+            #c_html = c_request.text
+            #try:
+                #c_root = fromstring(c_html)
             try:
-                c_root = fromstring(c_html)
+                c_root = url2root(s, c_url)
             except ValueError:
                 print("invalid XML", c_url)
+                continue
             item_links = c_root.findall(".//div/div/div/fieldset/table//tr/td/a")
             item_urls = [
                 "https://catalog.paradisec.org.au%s?files_per_page=1000" % a.attrib["href"] for a in item_links if "items" in a.attrib["href"]
@@ -389,9 +375,9 @@ def retrieve_paradisec(extension):
                     " session %s (c (+%i):%s/%s; s:%s/%s)"
                     % (i_url[33:-20], OFFSET, i + 1, collections_length, j + 1, items_length)
                 )
-                i_request = s.get(i_url, cookies=cookies)
-                i_html = i_request.text
-                i_root = fromstring(i_html)
+                #i_request = s.get(i_url, cookies=cookies)
+                #i_html = i_request.text
+                i_root = url2root(s, i_url, cookies=cookies)
                 i_root.find("./body/div/div[5]/div[5]/fieldset[1]/table/tbody/tr[1]/td[5]/a")
                 tds = i_root.findall(".//tbody/tr/td[1]")
                 print("  ", len(tds)-1, "downloadable files found. Checking for correct extensions")
@@ -404,42 +390,24 @@ def retrieve_paradisec(extension):
                         parts = rawname.split('-')
                         collection_id = parts[0]
                         running_number = parts[1]
-                        remainder = parts[2]
+                        #remainder = parts[2]
                     except IndexError:
                         continue
-                    f_url = "http://catalog.paradisec.org.au/repository/%s/%s/%s" % (collection_id, running_number,rawname)
+                    f_url = "http://catalog.paradisec.org.au/repository/%s/%s/%s" % (collection_id, running_number, rawname)
                     #print(f_url)
-                    found = True
-                    f_tuples.append((f_url,collection_id,rawname))
+                    #found = True
+                    f_tuples.append((f_url, collection_id, rawname))
                 print("  ", len(f_tuples), "relevant file(s) found")
                 #print(f_tuples)
                 for f_tuple in f_tuples:
                     f_url, collection_id, basename = f_tuple
-                    filename = basename
+                    #filename = basename
                     #print("  f: ", file_tuple)
                     download_url = f_url
                     filepath = os.path.join('paradisec', collection_id, basename)
                     print("  downloading %s as %s:" % (download_url, filepath))
                     os.makedirs(os.path.dirname(filepath), exist_ok=True)
-                    with open(filepath, "wb") as f:
-                        response = s.get(download_url, cookies=cookies, stream=True)
-                        total = response.headers.get("content-length")
-                        if total is None:
-                            f.write(response.content)
-                        else:
-                            downloaded = 0
-                            total = int(total)
-                            for data in response.iter_content(chunk_size=max(int(total / 1000),
-                                                                                1024 * 1024)
-                                                                ):
-                                downloaded += len(data)
-                                f.write(data)
-                                done = int(50 * downloaded / total)
-                                sys.stdout.write(
-                                    "\r[{}{}]".format("█" * done, "." * (50 - done))
-                                )
-                                sys.stdout.flush()
-                        sys.stdout.write("\n")
+                    save_file(s, filepath, download_url, cookies)
 
 
 if __name__ == "__main__":
