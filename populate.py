@@ -57,32 +57,32 @@ for archivename in archives:
     archive = archives[archivename]
     archive.populate_collections()
     print("loading caches")
-    #transcriptioncache = json.loads(open("cache/transcriptions/%s.json" % archive.name).read())
+    transcriptioncache = json.loads(open("cache/transcriptions/%s.json" % archive.name).read())
     translationcache = json.loads(open("cache/translations/%s.json" % archive.name).read())
     glosscache = json.loads(open("cache/glosses/%s.json" % archive.name).read())
     entitiescache = json.loads(open("cache/entities/%s.json" % archive.name).read())
     print("processing data")
     for c in archive.collections:
         archive.collections[c].acquire_elans(cache=True)
-        archive.collections[c].populate_transcriptions()
-        archive.collections[c].populate_translations()
-        archive.collections[c].populate_glosses()
-        archive.collections[c].populate_entities()
+        archive.collections[c].populate_transcriptions(jsoncache=transcriptioncache)
+        archive.collections[c].populate_translations(jsoncache=translationcache)
+        archive.collections[c].populate_glosses(jsoncache=glosscache)
+        archive.collections[c].populate_entities(jsoncache=entitiescache)
     archive.print_metadata()
     print("caching json")
-    writejson('translations')
-    writejson('transcriptions')
-    writejson('glosses')
-    writejson('entities')
+    #writejson('translations')
+    #writejson('transcriptions')
+    #writejson('glosses')
+    #writejson('entities')
 
-    with open("cache/statistics/%s.json" % archive.name, "w") as statisticsout:
-        statisticsout.write(json.dumps(archive.statistics, indent=4, sort_keys=True))
+    #with open("cache/statistics/%s.json" % archive.name, "w") as statisticsout:
+        #statisticsout.write(json.dumps(archive.statistics, indent=4, sort_keys=True))
 
-    print("calculating fingerprints")
-    archive.get_fingerprints()
-    fingerprintd = {c: archive.collections[c].fingerprints for c in archive.collections}
-    with open("cache/fingerprints/%s.json" % archive.name, "w") as out:
-        out.write(json.dumps(fingerprintd, indent=4, sort_keys=True))
+    #print("calculating fingerprints")
+    #archive.get_fingerprints()
+    #fingerprintd = {c: archive.collections[c].fingerprints for c in archive.collections}
+    #with open("cache/fingerprints/%s.json" % archive.name, "w") as out:
+        #out.write(json.dumps(fingerprintd, indent=4, sort_keys=True))
 
     print("writing rdf")
     print("  meta")

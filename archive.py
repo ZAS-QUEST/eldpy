@@ -265,21 +265,22 @@ via
                     lod.QUEST.Collection
                     ))
             g.add((lod.QUESTRESOLVER[collection],
-                    lod.DBPEDIA.isPartOf,
-                    lod.QUESTRESOLVER[archive]
-                    ))
+                   lod.DBPEDIA.isPartOf,
+                   lod.QUESTRESOLVER[archive]
+                   ))
             #print(collection, len(self.collections[collection].elanfiles))
             for eafname in self.collections[collection].elanfiles:
                 hashed_eaf = self.get_eaf_hash(eafname.url)
                 eaf_id = eaf_template%(collection, hashed_eaf)
                 g.add((lod.QUESTRESOLVER[eaf_id], #TODO better use archive specific resolvers
                         RDF.type,
-                        lod.QUEST.Elan_file
+                        #lod.QUEST.Elan_file
+                        lod.LIGT.InterlinearText
                         ))
-                #g.add((lod.QUESTRESOLVER[eaf_id],
-                        #RDFS.label,
-                        #Literal(eafbasename)
-                        #))
+                g.add((lod.QUESTRESOLVER[eaf_id],
+                        RDFS.label,
+                        Literal(eafname)
+                        ))
                 g.add((lod.QUESTRESOLVER[eaf_id],
                         lod.DBPEDIA.isPartOf,
                         lod.QUESTRESOLVER[collection]
@@ -292,7 +293,9 @@ via
         return hashed_eaf
 
     def write_transcriptions_rdf(self):
-        ID_template = "%s-%s-%s-%s"
+        ID_template = "%s-%s-transcription-%s-%s"
+        #FIXME transcriptions and translations should probably point to the same tier
+        #but we must make sure that he offsets match. Better use the annotation_ID of the time-aligned ancestor, which should be shared
         eaf_template = "%s-%s"
         g = lod.create_graph()
         for collection in self.collections:
@@ -305,21 +308,24 @@ via
                         tier_id = ID_template % (collection_id, hashed_eaf, i, j)
                         g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
                                 RDF.type,
-                                lod.QUEST.Transcripton_tier
+                                #lod.QUEST.Transcripton_tier
+                                lod.LIGT.Utterance
                               ))
                         g.add((lod.QUESTRESOLVER[tier_id],
                                RDFS.label,
-                               Literal('%s'%annotation.strip())
+                               Literal('%s'%annotation.strip(), lang="und") # we use und_efined until we can retrieve metatdata
                                ))
-                        g.add((lod.QUESTRESOLVER[tier_id],
-                                lod.DBPEDIA.isPartOf, #check for tier-file, file-collection and tier-collection meronymic relations
-                                lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id]
+                        g.add((lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id],
+                               lod.LIGT.hasTier, #check for tier-file, file-collection and tier-collection meronymic relations
+                               lod.QUESTRESOLVER[tier_id]
                               ))
         lod.write_graph(g, 'rdf/%s-transcriptions.n3'%self.name)
 
     def write_translations_rdf(self):
-        ID_template = "%s-%s-%s-%s"
+        ID_template = "%s-%s-translation-%s-%s"
         eaf_template = "%s-%s"
+        #FIXME transcriptions and translations should probably point to the same tier
+        #but we must make sure that he offsets match. Better use the annotation_ID of the time-aligned ancestor, which should be shared
         g = lod.create_graph()
         for collection in self.collections:
             for eafname in self.collections[collection].translations:
@@ -330,14 +336,15 @@ via
                         tier_id = ID_template % (collection, hashed_eaf, i, j)
                         g.add((lod.QUESTRESOLVER[tier_id], #TODO better use archive specific resolvers
                                 RDF.type,
-                                lod.QUEST.Translation_tier
+                                #lod.QUEST.Translation_tier
+                                lod.LIGT.Utterance
                               ))
                         g.add((lod.QUESTRESOLVER[tier_id],
                                RDFS.label,
-                               Literal('%s'%annotation.strip())
+                               Literal('%s'%annotation.strip(), lang="eng")
                                ))
                         g.add((lod.QUESTRESOLVER[tier_id],
-                                lod.DBPEDIA.isPartOf, #check for tier-file, file-collection and tier-collection meronymic relations
+                                lod.LIGT.subSegment, #check for tier-file, file-collection and tier-collection meronymic relations
                                 lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id]
                               ))
         lod.write_graph(g, 'rdf/%s-translations.n3'%self.name)
@@ -358,16 +365,20 @@ via
                                 sentence_lod_ID = ID_template % (collection, hashed_eaf, sentenceID)
                                 g.add((lod.QUESTRESOLVER[sentence_lod_ID], #TODO better use archive specific resolvers
                                     RDF.type,
-                                    lod.QUEST.Transcripton_tier
+                                    #lod.QUEST.Transcripton_tier
+                                    lod.LIGT.WordTier
                                     ))
                                 #wordstring = " ".join([t[0] for t in dictionary[sentenceID]])
                                 #glossstring = " ".join([t[1] for t in dictionary[sentenceID]])
-                                g.add((lod.QUESTRESOLVER[sentence_lod_ID],
-                                    lod.DBPEDIA.isPartOf,
-                                    lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id]
+                                g.add((
+                                    lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id],
+                                    lod.LIGT.hasTier,
+                                    lod.QUESTRESOLVER[sentence_lod_ID],
                                 ))
-                                glosses = [t[1] for t in dictionary[sentenceID] if t[1]]
+                                vernaculars = [t[0] if t[0] else '' for t in dictionary[sentenceID]]
+                                glosses = [t[1] if t[1] else '' for t in dictionary[sentenceID]]
                                 for i, gloss in enumerate(glosses):
+                                    vernacular = vernaculars[i]
                                     try:
                                         gloss = gloss.strip()
                                     except TypeError:
@@ -375,16 +386,34 @@ via
                                     gloss_id = urllib.parse.quote(gloss_template % (collection, hashed_eaf, sentenceID, i))
                                     g.add((lod.QUESTRESOLVER[gloss_id],
                                             RDF.type,
-                                            lod.QUEST.gloss
+                                            #lod.QUEST.gloss
+                                            lod.LIGT.Word
                                         ))
                                     g.add((lod.QUESTRESOLVER[gloss_id],
                                             RDFS.label,
-                                            Literal(gloss)
+                                            Literal(gloss, lang="qqq"), #we use qqq since glossed text is not natural language
                                         ))
                                     g.add((lod.QUESTRESOLVER[gloss_id],
-                                           lod.DBPEDIA.isPartOf,
-                                           lod.QUESTRESOLVER[sentence_lod_ID]
+                                            RDFS.label,
+                                            Literal(vernacular, lang="und") #we use "und" until we can retrieve the proper metadata
                                         ))
+                                    g.add((lod.QUESTRESOLVER[sentence_lod_ID],
+                                           lod.LIGT.hasWord,
+                                           lod.QUESTRESOLVER[gloss_id]
+                                        ))
+                                    try:
+                                        nextgloss = glosses[i+1]
+                                        nextgloss_id = urllib.parse.quote(gloss_template % (collection, hashed_eaf, sentenceID, i+1))
+                                        g.add((lod.QUESTRESOLVER[gloss_id],
+                                            lod.LIGT.nextWord,
+                                            lod.QUESTRESOLVER[nextgloss_id]
+                                            ))
+                                    except IndexError:#we have reached the end of the list
+                                        g.add((lod.QUESTRESOLVER[gloss_id],
+                                            lod.LIGT.nextWord,
+                                            lod.RDF.nil
+                                            ))
+
                                     for subgloss in re.split("[-=.:]", gloss):
                                         subgloss = subgloss.replace("1",'').replace("2",'').replace("3",'')
                                         if subgloss in lod.LGRLIST:
@@ -406,7 +435,7 @@ via
                 for i,tier in enumerate(self.collections[collection].entities[eafname]):
                     tier_id = ID_template % (collection, hashed_eaf, i)
                     g.add((lod.QUESTRESOLVER[tier_id],
-                            lod.DBPEDIA.isPartOf,
+                            lod.LIGT.subSegment,
                             lod.QUESTRESOLVER[eaf_id]
                             ))
                     for q_value in tier:

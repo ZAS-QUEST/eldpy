@@ -11,6 +11,7 @@ QUESTRESOLVER = Namespace("http://zasquest.org/resolver/")
 DBPEDIA = Namespace("http://dbpedia.org/ontology/")
 WIKIDATA = Namespace("http://www.wikidata.org/entity/")
 LGR = Namespace("https://www.eva.mpg.de/lingua/resources/glossing-rules.php/")
+LIGT = Namespace("http://purl.org/liodi/ligt")
 
 #define archive namespaces
 ELD_NAMESPACE_MANAGER = NamespaceManager(Graph())
@@ -21,6 +22,7 @@ ELD_NAMESPACE_MANAGER.bind('QUESTRESOLVER', QUESTRESOLVER) #for the bridge for r
 ELD_NAMESPACE_MANAGER.bind("rdfs", RDFS)
 ELD_NAMESPACE_MANAGER.bind("dc", DC)
 ELD_NAMESPACE_MANAGER.bind("lgr", LGR)
+ELD_NAMESPACE_MANAGER.bind("ligt", LIGT)
 
 ARCHIVE_NAMESPACES = {
     'paradisec': Namespace("https://catalog.paradisec.org.au/collections/"),
