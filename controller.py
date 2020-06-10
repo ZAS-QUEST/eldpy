@@ -104,7 +104,7 @@ def elar_download(bundle_id, phpsessid, extension):
             os.makedirs(os.path.dirname(filepath), exist_ok=True)
             save_file(s, filepath, download_url, cookies)
 
-def retrieve_elar(extension):
+def retrieve_elar(extension, username=None, password=None):
     """identify and download  all accessible files from ELAR"""
 
     try:
@@ -150,10 +150,14 @@ def retrieve_elar(extension):
     session = requests.Session()
     un_name = "username"
     pw_name = "password"
-    username = input("enter user name for ELAR: \n")
-    password = getpass(
-        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for ELAR: \n"
-    )
+
+    if username and password:
+        pass
+    else:
+        username = input("enter user name for ELAR: \n")
+        password = getpass(
+            "Your password will only be used for this login session and not be stored anywhere.\n Enter password for ELAR: \n"
+        )
 
     values = {
         un_name: username.strip(),
@@ -168,7 +172,7 @@ def retrieve_elar(extension):
         elar_download(globalidentifier, phpsessid, extension)
 
 
-def retrieve_tla(extension):
+def retrieve_tla(extension, username=None, password=None):
     """identify and download all accessible files of a given type from TLA"""
 
     if extension != 'eaf':
@@ -178,10 +182,13 @@ def retrieve_tla(extension):
     #base_url = """https://archive.mpi.nl/tla/islandora/search/*%3A*?f[0]=cmd.Format%3A"%s"&f[1]=-cmd.Country%3A"Netherlands"&f[2]=-cmd.Country%3A"Belgium"&f[3]=-cmd.Country%3A"Germany"&limit=%i"""%(mimetype, TLA_LIMIT)
     #https://archive.mpi.nl/tla/islandora/search/%2A%3A%2A?page=2&f%5B0%5D=cmd.Format%3A%22text/x-eaf%2Bxml%22&islandora_solr_search_navigation=0&sort=fgs_label_s%20asc&limit=500
     login_url = "https://archive.mpi.nl/tla/user/login"
-    username = input("Enter user name for TLA: \n")
-    password = getpass(
-        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for TLA: \n"
-    )
+    if username and password:
+        pass
+    else:
+        username = input("Enter user name for TLA: \n")
+        password = getpass(
+            "Your password will only be used for this login session and not be stored anywhere.\n Enter password for TLA: \n"
+        )
     with requests.Session() as s:
         #login
         print("retrieving collections")
@@ -246,14 +253,17 @@ def retrieve_tla(extension):
 
 
 
-def retrieve_ailla(extension):
+def retrieve_ailla(extension, username=None, password=None):
     """identify and download all accessible files of a given type from AILLA"""
 
     base_url = "https://ailla.utexas.org/islandora/object/ailla%3Acollection_collection?page=1&rows=1000"
-    username = input("Enter user name for AILLA: \n")
-    password = getpass(
-        "Your password will only be used for this login session and not be stored anywhere.\n Enter password for AILLA: \n"
-    )
+    if username and password:
+        pass
+    else:
+        username = input("Enter user name for AILLA: \n")
+        password = getpass(
+            "Your password will only be used for this login session and not be stored anywhere.\n Enter password for AILLA: \n"
+        )
     with requests.Session() as s:
         print("retrieving collections")
         s = requests.Session()
@@ -313,7 +323,7 @@ def retrieve_ailla(extension):
                     save_file(s, filepath, download_url, {"SSESS64f35ecaf4903fe271ed0b0c15ee2bce": session_id})
 
 
-def retrieve_paradisec(extension):
+def retrieve_paradisec(extension, sessionkey=None):
     """identify and download all accessible files of a given type from PARADISEC"""
 
     #login_url = "https://catalog.paradisec.org.au/users/sign_in"
@@ -334,7 +344,10 @@ def retrieve_paradisec(extension):
         #}
         #response = s.post(login_url, data=values)
         ##session_id = response.cookies.get_dict().get("_session_id")
-        session_id = input("For PARADISEC, you have to login manually and retrieve the cookie called '_session_id'. Paste the value of this cookie (e.g. d9bb68a51923ae30204be72f0006ae63)\n")
+        if sessionkey:
+            session_id = sessionkey
+        else:
+            session_id = input("For PARADISEC, you have to login manually and retrieve the cookie called '_session_id'. Paste the value of this cookie (e.g. d9bb68a51923ae30204be72f0006ae63)\n")
 
         #store session cookie from login
         cookies = {"_session_id": session_id}
@@ -410,7 +423,7 @@ def retrieve_paradisec(extension):
                     save_file(s, filepath, download_url, cookies)
 
 
-if __name__ == "__main__":
+def bulkdownload(archive=None, filetype=None, username=None, password=None, sessionkey=None):
     filetypes = {
         1: ("ELAN", "text/x-eaf+xml", "eaf"),
         2: ("Toolbox", "text/x-toolbox-text", "tbx"),
@@ -422,39 +435,45 @@ if __name__ == "__main__":
 
     archives = {1: "ELAR", 2: "TLA", 3: "PARADISEC", 4: "AILLA", 5: "ANLA"}
 
-    print(
-        "This script will download all files from ELAR/AILLA which you have access to. You will have to provide your username and password. Which file type are you interested in?"
-    )
-    for filetype in filetypes:
-        print("%i) %s" % (filetype, filetypes[filetype][0]))
-    input_given = False
-    #filetypeinput = 1
-    while input_given is False:
-        try:
-            filetypeinput = int(input("Select number and hit enter\n"))
-            input_given = True
-        except ValueError:
-            pass
+    print("This script will download all files from ELAR/AILLA which you have access to.")
+    print("You will have to provide your username and password.")
+    if filetype:
+        filetypeinput = filetype
+    else:
+        print("Which file type are you interested in?")
+        for filetype in filetypes:
+            print("%i) %s" % (filetype, filetypes[filetype][0]))
+        input_given = False
+        #filetypeinput = 1
+        while input_given is False:
+            try:
+                filetypeinput = int(input("Select number and hit enter\n"))
+                input_given = True
+            except ValueError:
+                pass
     typename, mimetype, chosen_extension = filetypes[filetypeinput]
     print("You have chosen %s (%s)" % (typename, chosen_extension))
-    print("Which archive are you interested in?")
-    for archive in archives:
-        print("%i) %s" % (archive, archives[archive]))
-    input_given = False
-    #archiveinput = 3
-    while input_given is False:
-        try:
-            archiveinput = int(input("Select number and hit enter\n"))
-            input_given = True
-        except ValueError:
-            pass
+    if archive:
+        archiveinput = archive
+    else:
+        print("Which archive are you interested in?")
+        for archive in archives:
+            print("%i) %s" % (archive, archives[archive]))
+        input_given = False
+        #archiveinput = 3
+        while input_given is False:
+            try:
+                archiveinput = int(input("Select number and hit enter\n"))
+                input_given = True
+            except ValueError:
+                pass
     archivename = archives[archiveinput]
     print("You have chosen %s" % archivename)
     if archiveinput == 1:  # ELAR
-        retrieve_elar(chosen_extension)
+        retrieve_elar(chosen_extension, username=username, password=password)
     if archiveinput == 2:  # TLA
-        retrieve_tla(chosen_extension)
+        retrieve_tla(chosen_extension, username=username, password=password)
     if archiveinput == 3:  # PARADISEC
-        retrieve_paradisec(chosen_extension)
+        retrieve_paradisec(chosen_extension, sessionkey=sessionkey)
     if archiveinput == 4:  # ailla
-        retrieve_ailla(chosen_extension)
+        retrieve_ailla(chosen_extension, username=username, password=password)

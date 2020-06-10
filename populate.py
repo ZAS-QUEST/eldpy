@@ -1,7 +1,10 @@
 import sys
 import json
 from archive import Archive
+from controller import bulkdownload
 
+
+bulkdownload()
 LIMIT = 999999
 OFFSET = 0
 try:
