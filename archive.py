@@ -444,3 +444,18 @@ via
                                 lod.WIKIDATA[q_value]
                               ))
         lod.write_graph(g, 'rdf/%s-entities.n3'%self.name)
+
+
+    def write_rdf(self):
+            print("writing rdf")
+            print("  meta")
+            self.write_metadata_rdf()
+            print("  transcriptions")
+            self.write_transcriptions_rdf()
+            print("  glosses")
+            self.write_glosses_rdf()
+            print("  translations")
+            self.write_translations_rdf()
+            print("  entities")
+            self.write_entities_rdf()
+            print("  done")

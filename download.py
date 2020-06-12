@@ -423,7 +423,7 @@ def retrieve_paradisec(extension, sessionkey=None):
                     save_file(s, filepath, download_url, cookies)
 
 
-def bulkdownload(archive=None, filetype=None, username=None, password=None, sessionkey=None):
+def bulk_download(archive=None, filetype=None, username=None, password=None, sessionkey=None):
     filetypes = {
         1: ("ELAN", "text/x-eaf+xml", "eaf"),
         2: ("Toolbox", "text/x-toolbox-text", "tbx"),

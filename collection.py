@@ -63,7 +63,8 @@ class Collection:
         for path in self.elanpaths:
             localpath = "/".join((self.cacheprefix, path))
             eaf_url = "/".join((self.urlprefix, self.name, path))
-            print(".", end="", flush=True)
+            #print(".", end="", flush=True)
+            #print(".")
             if os.path.isfile(localpath):
                 try:
                     self.elanfiles.append(ElanFile(localpath, eaf_url))
@@ -74,7 +75,7 @@ class Collection:
 
     def populate_translations(self, jsoncache=None):
         if jsoncache:
-            self.translations = jsoncache[self.name]
+            self.translations = json.loads(open("cache/translations/%s.json" % self.name).read())
         else:
             for eaf in self.elanfiles:
                 eaf.populate_translations()
@@ -89,7 +90,7 @@ class Collection:
 
     def populate_transcriptions(self, jsoncache=None):
         if jsoncache:
-            self.transcriptions = jsoncache[self.name]
+            self.transcriptions = json.loads(open("cache/transcriptions/%s.json" % self.name).read())
         else:
             for eaf in self.elanfiles:
                 logging.info("transcriptions for", eaf.path)
@@ -108,7 +109,7 @@ class Collection:
 
     def populate_glosses(self, jsoncache=None):
         if jsoncache:
-            self.glosses = jsoncache[self.name]
+            self.glosses = json.loads(open("cache/glosses/%s.json" % self.name).read())
         else:
             logging.info("getting glosses for %i elans" % len(self.elanfiles))
             filecount = 0
@@ -173,7 +174,7 @@ class Collection:
                    }
 
         if jsoncache:
-            self.entities = jsoncache[self.name]
+            self.entities = json.loads(open("cache/entities/%s.json" % self.name).read())
         else:
             entities = {}
             translations = self.translations
@@ -207,4 +208,8 @@ class Collection:
             # print("no access")
             return None
         return eafcontent
+
+    def json(self, type_):
+        d = {self.collections[c].ID: self.collections[c].__dict__[type_] for c in archive.collections}
+        return json.dumps(d, indent=4, sort_keys=True)
 
