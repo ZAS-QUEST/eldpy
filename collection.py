@@ -60,9 +60,9 @@ class Collection:
         self.fingerprints = []
 
     def acquire_elans(self, cache=True):
-        # print(self.elanpaths)
         for path in self.elanpaths:
-            localpath = "/".join((self.cacheprefix, path))
+            #print(" ", path)
+            localpath = "/".join((self.archive,self.name, path))
             eaf_url = "/".join((self.urlprefix, self.name, path))
             #print(".", end="", flush=True)
             #print(".")
@@ -72,7 +72,8 @@ class Collection:
                 except XMLSyntaxError:
                     logger.warning("malformed XML in %s" % localpath)
             else:
-                logger.warning("file not found %s (remote %s)" % (localpath, eaf_url))
+                #logger.warning("file not found %s (remote %s)" % (localpath, eaf_url))
+                print("file not found %s (remote %s)" % (localpath, eaf_url))
 
     def populate_translations(self, jsoncache=None):
         if jsoncache:

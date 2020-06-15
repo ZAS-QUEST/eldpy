@@ -11,8 +11,8 @@ from bulk import (
     #bulk_download(archive=archive, filetype=1)
 
 
-bulk_populate()
+bulk_populate(cache=True)
 bulk_cache()
-bulk_fingerprints()
-bulk_statistics()
-bulk_rdf()
+#bulk_fingerprints()
+#bulk_statistics()
+#bulk_rdf()

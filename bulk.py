@@ -42,19 +42,19 @@ def bulk_populate(archives_to_populate=archives, cache=True):
     for archivename in archives_to_populate:
         print("processing", archivename)
         archive = archives_to_populate[archivename]
-        archive.populate_collections()
+        archive.populate_collections(cache=cache)
         print("processing data")
-        transcriptioncache = json.loads(open("cache/transcriptions/%s.json" % archivename).read())
-        translationschache = json.loads(open("cache/translations/%s.json" % archivename).read())
-        glosseschache = json.loads(open("cache/glosses/%s.json" % archivename).read())
-        entitieschache = json.loads(open("cache/entities/%s.json" % archivename).read())
+        #transcriptioncache = json.loads(open("cache/transcriptions/%s.json" % archivename).read())
+        #translationschache = json.loads(open("cache/translations/%s.json" % archivename).read())
+        #glosseschache = json.loads(open("cache/glosses/%s.json" % archivename).read())
+        #entitieschache = json.loads(open("cache/entities/%s.json" % archivename).read())
         for c in archive.collections:
             archive.collections[c].acquire_elans(cache=True)
-            archive.collections[c].populate_transcriptions(jsoncache=transcriptioncache)
-            archive.collections[c].populate_translations(jsoncache=translationschache)
-            archive.collections[c].populate_glosses(jsoncache=glosseschache)
-            archive.collections[c].populate_entities(jsoncache=entitieschache)
-        archive.get_metadata()
+            archive.collections[c].populate_transcriptions(jsoncache=None)
+            archive.collections[c].populate_translations(jsoncache=None)
+            archive.collections[c].populate_glosses(jsoncache=None)
+            #archive.collections[c].populate_entities(jsoncache=entitieschache)
+            archive.get_metadata()
 
 
 def bulk_cache(cachearchives=archives, exclude=[]):
