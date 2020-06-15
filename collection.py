@@ -38,6 +38,7 @@ class Collection:
         self.translations = {}
         self.transcriptions = {}
         self.glosses = {}
+        self.entities = {}
         self.namespace = namespace
 
         self.transcriptionfiles = 0
@@ -75,7 +76,7 @@ class Collection:
 
     def populate_translations(self, jsoncache=None):
         if jsoncache:
-            self.translations = json.loads(open("cache/translations/%s.json" % self.name).read())
+            self.translations = jsoncache[self.name]
         else:
             for eaf in self.elanfiles:
                 eaf.populate_translations()
@@ -90,7 +91,7 @@ class Collection:
 
     def populate_transcriptions(self, jsoncache=None):
         if jsoncache:
-            self.transcriptions = json.loads(open("cache/transcriptions/%s.json" % self.name).read())
+            self.transcriptions = jsoncache[self.name]
         else:
             for eaf in self.elanfiles:
                 logging.info("transcriptions for", eaf.path)
@@ -109,7 +110,7 @@ class Collection:
 
     def populate_glosses(self, jsoncache=None):
         if jsoncache:
-            self.glosses = json.loads(open("cache/glosses/%s.json" % self.name).read())
+            self.glosses = jsoncache[self.name]
         else:
             logging.info("getting glosses for %i elans" % len(self.elanfiles))
             filecount = 0
@@ -174,7 +175,7 @@ class Collection:
                    }
 
         if jsoncache:
-            self.entities = json.loads(open("cache/entities/%s.json" % self.name).read())
+            self.entities = jsoncache[self.name]
         else:
             entities = {}
             translations = self.translations

@@ -166,8 +166,8 @@ via
             out.write("\n".join(["%s:%s" % x for x in ranks]))
         self.fingerprints = fingerprintd
 
-    def print_metadata(self):
-        """print aggregated information about tranlations, transcriptions and glosses
+    def get_metadata(self):
+        """get aggregated information about tranlations, transcriptions and glosses
         for this archive"""
 
         d = defaultdict(int)
