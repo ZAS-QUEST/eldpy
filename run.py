@@ -1,18 +1,12 @@
 from download import bulk_download
-from bulk import (
-    bulk_populate,
-    bulk_cache,
-    bulk_rdf,
-    bulk_statistics,
-    bulk_fingerprints,
-)
+from bulk import *
+from delaman import archives
 
-#for archive in (1, 2, 3, 4, 5):
-    #bulk_download(archive=archive, filetype=1)
-
-
-bulk_populate(cache=False)
-#bulk_cache()
-#bulk_fingerprints()
-#bulk_statistics()
-#bulk_rdf()
+def run():
+    #for archive in archives:
+        #bulk_download(archive=archive, filetype=1)#1=ELAN
+    bulk_populate(cache=True)
+    bulk_cache()
+    bulk_fingerprints()
+    bulk_statistics()
+    bulk_rdf()

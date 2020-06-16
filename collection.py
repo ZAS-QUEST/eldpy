@@ -193,7 +193,7 @@ class Collection:
 
 
     def get_fingerprints(self):
-        logging.info("getting fingerprints for %i elans" % len(self.elanfiles))
+        #logging.info("getting fingerprints for %i elans" % len(self.elanfiles))
         self.fingerprints = [eaf.fingerprint() for eaf in self.elanfiles]
 
     def paradisec_eaf_download(self, filename):

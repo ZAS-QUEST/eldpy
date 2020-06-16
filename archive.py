@@ -401,38 +401,21 @@ class Archive:
                     for tierID in self.collections[collection].glosses[eafname][tiertype]:
                         for dictionary in self.collections[collection].glosses[eafname][tiertype][tierID]:
                             for sentenceID in dictionary:
-                                sentence_lod_ID = ID_template % (
-                                    collection,
-                                    hashed_eaf,
-                                    sentenceID,
-                                )
-                                g.add(
-                                    (
-                                        lod.QUESTRESOLVER[
-                                            sentence_lod_ID
-                                        ],  # TODO better use archive specific resolvers
-                                        RDF.type,
-                                        # lod.QUEST.Transcripton_tier
-                                        lod.LIGT.WordTier,
-                                    )
-                                )
+                                sentence_lod_ID = ID_template % (collection, hashed_eaf, sentenceID)
+                                g.add((lod.QUESTRESOLVER[sentence_lod_ID],
+                                       # TODO better use archive specific resolvers
+                                       RDF.type,
+                                       # lod.QUEST.Transcripton_tier
+                                       lod.LIGT.WordTier,
+                                     ))
                                 # wordstring = " ".join([t[0] for t in dictionary[sentenceID]])
                                 # glossstring = " ".join([t[1] for t in dictionary[sentenceID]])
-                                g.add(
-                                    (
-                                        lod.ARCHIVE_NAMESPACES[self.name.lower()][
-                                            eaf_id
-                                        ],
+                                g.add((lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id],
                                         lod.LIGT.hasTier,
                                         lod.QUESTRESOLVER[sentence_lod_ID],
-                                    )
-                                )
-                                vernaculars = [
-                                    t[0] if t[0] else "" for t in dictionary[sentenceID]
-                                ]
-                                glosses = [
-                                    t[1] if t[1] else "" for t in dictionary[sentenceID]
-                                ]
+                                    ))
+                                vernaculars = [t[0] if t[0] else "" for t in dictionary[sentenceID]]
+                                glosses = [t[1] if t[1] else "" for t in dictionary[sentenceID]]
                                 for i, gloss in enumerate(glosses):
                                     vernacular = vernaculars[i]
                                     try:
@@ -440,42 +423,27 @@ class Archive:
                                     except TypeError:
                                         gloss = ""
                                     gloss_id = urllib.parse.quote(
-                                        gloss_template
-                                        % (collection, hashed_eaf, sentenceID, i)
+                                        gloss_template % (collection, hashed_eaf, sentenceID, i)
                                     )
-                                    g.add(
-                                        (
-                                            lod.QUESTRESOLVER[gloss_id],
-                                            RDF.type,
-                                            # lod.QUEST.gloss
-                                            lod.LIGT.Word,
-                                        )
-                                    )
-                                    g.add(
-                                        (
-                                            lod.QUESTRESOLVER[gloss_id],
-                                            RDFS.label,
-                                            Literal(
-                                                gloss, lang="qqq"
-                                            ),  # we use qqq since glossed text is not natural language
-                                        )
-                                    )
-                                    g.add(
-                                        (
-                                            lod.QUESTRESOLVER[gloss_id],
-                                            RDFS.label,
-                                            Literal(
-                                                vernacular, lang="und"
-                                            ),  # we use "und" until we can retrieve the proper metadata
-                                        )
-                                    )
-                                    g.add(
-                                        (
-                                            lod.QUESTRESOLVER[sentence_lod_ID],
-                                            lod.LIGT.hasWord,
-                                            lod.QUESTRESOLVER[gloss_id],
-                                        )
-                                    )
+                                    g.add((lod.QUESTRESOLVER[gloss_id],
+                                           RDF.type,
+                                           # lod.QUEST.gloss
+                                           lod.LIGT.Word,
+                                         ))
+                                    g.add((lod.QUESTRESOLVER[gloss_id],
+                                           RDFS.label,
+                                           Literal(gloss, lang="qqq"),
+                                           # we use qqq since glossed text is not natural language
+                                         ))
+                                    g.add((lod.QUESTRESOLVER[gloss_id],
+                                           RDFS.label,
+                                           Literal(vernacular, lang="und"),
+                                           # we use "und" until we can retrieve the proper metadata
+                                         ))
+                                    g.add((lod.QUESTRESOLVER[sentence_lod_ID],
+                                           lod.LIGT.hasWord,
+                                           lod.QUESTRESOLVER[gloss_id],
+                                         ))
                                     try:
                                         nextgloss = glosses[i + 1]
                                         nextgloss_id = urllib.parse.quote(
@@ -487,21 +455,15 @@ class Archive:
                                                 i + 1,
                                             )
                                         )
-                                        g.add(
-                                            (
-                                                lod.QUESTRESOLVER[gloss_id],
-                                                lod.LIGT.nextWord,
-                                                lod.QUESTRESOLVER[nextgloss_id],
-                                            )
-                                        )
+                                        g.add((lod.QUESTRESOLVER[gloss_id],
+                                               lod.LIGT.nextWord,
+                                               lod.QUESTRESOLVER[nextgloss_id],
+                                             ))
                                     except IndexError:  # we have reached the end of the list
-                                        g.add(
-                                            (
-                                                lod.QUESTRESOLVER[gloss_id],
-                                                lod.LIGT.nextWord,
-                                                lod.RDF.nil,
-                                            )
-                                        )
+                                        g.add((lod.QUESTRESOLVER[gloss_id],
+                                               lod.LIGT.nextWord,
+                                               lod.RDF.nil,
+                                            ))
 
                                     for subgloss in re.split("[-=.:]", gloss):
                                         subgloss = (
@@ -510,13 +472,10 @@ class Archive:
                                             .replace("3", "")
                                         )
                                         if subgloss in lod.LGRLIST:
-                                            g.add(
-                                                (
-                                                    lod.QUESTRESOLVER[gloss_id],
-                                                    lod.QUEST.has_lgr_value,
-                                                    lod.LGR[subgloss],
-                                                )
-                                            )
+                                            g.add((lod.QUESTRESOLVER[gloss_id],
+                                                   lod.QUEST.has_lgr_value,
+                                                   lod.LGR[subgloss],
+                                                ))
         lod.write_graph(g, "rdf/%s-glosses.n3" % self.name)
 
     def write_entities_rdf(self):

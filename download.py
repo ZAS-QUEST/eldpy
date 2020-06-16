@@ -434,7 +434,7 @@ def bulk_download(archive=None, filetype=None, username=None, password=None, ses
     }
 
     archives = {1: "ELAR", 2: "TLA", 3: "PARADISEC", 4: "AILLA", 5: "ANLA"}
-
+    reversearchive = {archives[key]:key for key in archives}
     print("This script will download all files from ELAR/AILLA which you have access to.")
     print("You will have to provide your username and password.")
     if filetype:
@@ -454,7 +454,7 @@ def bulk_download(archive=None, filetype=None, username=None, password=None, ses
     typename, mimetype, chosen_extension = filetypes[filetypeinput]
     print("You have chosen %s (%s)" % (typename, chosen_extension))
     if archive:
-        archiveinput = archive
+        archiveinput = reversearchive[archive]
     else:
         print("Which archive are you interested in?")
         for archive in archives:
