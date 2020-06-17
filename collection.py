@@ -60,20 +60,27 @@ class Collection:
         self.fingerprints = []
 
     def acquire_elans(self, cache=True):
-        for path in self.elanpaths:
-            #print(" ", path)
-            localpath = "/".join((self.archive,self.name, path))
-            eaf_url = "/".join((self.urlprefix, self.name, path))
-            #print(".", end="", flush=True)
-            #print(".")
-            if os.path.isfile(localpath):
-                try:
-                    self.elanfiles.append(ElanFile(localpath, eaf_url))
-                except XMLSyntaxError:
-                    logger.warning("malformed XML in %s" % localpath)
-            else:
-                #logger.warning("file not found %s (remote %s)" % (localpath, eaf_url))
-                print("file not found %s (remote %s)" % (localpath, eaf_url))
+        print(self.ID)
+        pprint.pprint(self.elanpaths)
+        collectionpathpart = self.ID
+        for bundle in self.elanpaths:
+            print(bundle)
+            for path in self.elanpaths[bundle]:
+                print(self.ID, bundle, path)
+                #print(" ", path)
+                localpath = "/".join((self.archive, self.ID, path))
+                print(localpath)
+                eaf_url = "/".join((self.urlprefix, self.name, bundle,  path))
+                #print(".", end="", flush=True)
+                #print(".")
+                if os.path.isfile(localpath):
+                    try:
+                        self.elanfiles.append(ElanFile(localpath, eaf_url))
+                    except XMLSyntaxError:
+                        logger.warning("malformed XML in %s" % localpath)
+                else:
+                    #logger.warning("file not found %s (remote %s)" % (localpath, eaf_url))
+                    print("file not found %s (remote %s)" % (localpath, eaf_url))
 
     def populate_translations(self, jsoncache=None):
         if jsoncache:
@@ -95,11 +102,11 @@ class Collection:
             self.transcriptions = jsoncache[self.name]
         else:
             for eaf in self.elanfiles:
-                logging.info("transcriptions for", eaf.path)
+                print("transcriptions for", eaf.path)
                 eaf.populate_transcriptions()
                 transcriptions = eaf.get_transcriptions()
                 counts = [len(t) for t in transcriptions]
-                logging.info(
+                print(
                     "  number of words in transcriptions tiers: %s" % str(counts)
                 )
                 if transcriptions:
@@ -113,7 +120,7 @@ class Collection:
         if jsoncache:
             self.glosses = jsoncache[self.name]
         else:
-            logging.info("getting glosses for %i elans" % len(self.elanfiles))
+            print("getting glosses for %i elans" % len(self.elanfiles))
             filecount = 0
             tiercount = 0
             sentencecount = 0
@@ -193,7 +200,7 @@ class Collection:
 
 
     def get_fingerprints(self):
-        #logging.info("getting fingerprints for %i elans" % len(self.elanfiles))
+        #print("getting fingerprints for %i elans" % len(self.elanfiles))
         self.fingerprints = [eaf.fingerprint() for eaf in self.elanfiles]
 
     def paradisec_eaf_download(self, filename):

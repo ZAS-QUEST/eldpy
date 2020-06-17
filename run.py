@@ -8,5 +8,6 @@ def run():
     bulk_populate(cache=True)
     bulk_cache()
     bulk_fingerprints()
+    bulk_cache()
     bulk_statistics()
     bulk_rdf()
