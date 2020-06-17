@@ -60,20 +60,24 @@ class Collection:
         self.fingerprints = []
 
     def acquire_elans(self, cache=True):
-        for path in self.elanpaths:
-            #print(" ", path)
-            localpath = "/".join((self.archive,self.name, path))
-            eaf_url = "/".join((self.urlprefix, self.name, path))
-            #print(".", end="", flush=True)
-            #print(".")
-            if os.path.isfile(localpath):
-                try:
-                    self.elanfiles.append(ElanFile(localpath, eaf_url))
-                except XMLSyntaxError:
-                    logger.warning("malformed XML in %s" % localpath)
-            else:
-                #logger.warning("file not found %s (remote %s)" % (localpath, eaf_url))
-                print("file not found %s (remote %s)" % (localpath, eaf_url))
+        collectionpathpart = self.ID
+        for bundle in self.elanpaths:
+            for path in self.elanpaths[bundle]:
+                print(self.ID, bundle, path)
+                #print(" ", path)
+                localpath = "/".join((self.archive, self.ID, path))
+                print(localpath)
+                eaf_url = "/".join((self.urlprefix, self.name, bundle,  path))
+                #print(".", end="", flush=True)
+                #print(".")
+                if os.path.isfile(localpath):
+                    try:
+                        self.elanfiles.append(ElanFile(localpath, eaf_url))
+                    except XMLSyntaxError:
+                        logger.warning("malformed XML in %s" % localpath)
+                else:
+                    #logger.warning("file not found %s (remote %s)" % (localpath, eaf_url))
+                    print("file not found %s (remote %s)" % (localpath, eaf_url))
 
     def populate_translations(self, jsoncache=None):
         if jsoncache:

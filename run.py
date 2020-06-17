@@ -5,7 +5,7 @@ from delaman import archives
 def run():
     #for archive in archives:
         #bulk_download(archive=archive, filetype=1)#1=ELAN
-    bulk_populate(cache=True)
+    bulk_populate(cache=False)
     bulk_cache()
     bulk_fingerprints()
     bulk_statistics()

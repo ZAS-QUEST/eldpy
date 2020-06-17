@@ -141,18 +141,26 @@ class Archive:
                     json_out.write(json.dumps(cached_links, sort_keys=True, indent=4))
         else:  # if not cache
             if self.name in ["PARADISEC"]:  # to be extended
-                paradisecpaths = {}
                 collections = glob.glob("./%s/*" % self.name.lower())
                 for collection in collections:
                     collectionbasename = collection.split("/")[-1]
                     print(collectionbasename)
-                    paradisecpaths[collectionbasename] = defaultdict(list)
+                    self.collections[collectionbasename] = Collection(
+                        collectionbasename,
+                        self.landingpage_template % collectionbasename,
+                        archive=self.name.lower(),
+                        urlprefix=self.collectionprefix,
+                        url_template=self.collection_url_template,
+                    )
                     filenames = glob.glob("%s/*eaf" % collection)
+                    paradisecpaths = defaultdict(list)
                     for filename in filenames:
                         basename = filename.split("/")[-1]
                         collectionthrowaway, bundle, recordingthrowaway = basename.split("-")
-                        paradisecpaths[collectionbasename][bundle].append(basename)
-                    self.collections[collection].elanpaths = paradisecpaths
+                        print(collectionbasename, bundle, basename)
+                        paradisecpaths[bundle].append(basename)
+                self.collections[collectionbasename].elanpaths = paradisecpaths
+                #pprint.pprint([self.collections[c].elanpaths for c in self.collections])
 
     def get_fingerprints(self):
         """map filenames to fingerprints"""

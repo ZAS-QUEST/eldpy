@@ -11,10 +11,12 @@ def bulk_populate(archives_to_populate=archives, cache=True):
         archive = archives_to_populate[archivename]
         archive.populate_collections(cache=cache)
         print("processing data")
-        transcriptioncache = load_cache('transcriptions')
-        translationschache = load_cache('translations')
-        glosseschache = load_cache('glosses')
-        entitieschache = load_cache('entities')
+        transcriptioncache, translationschache, glosseschache, entitieschache = None, None, None, None
+        if cache:
+            transcriptioncache = load_cache('transcriptions')
+            translationschache = load_cache('translations')
+            glosseschache = load_cache('glosses')
+            entitieschache = load_cache('entities')
         for c in archive.collections:
             archive.collections[c].acquire_elans(cache=cache)
             archive.collections[c].populate_transcriptions(jsoncache=transcriptioncache)
