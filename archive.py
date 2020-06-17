@@ -160,7 +160,78 @@ class Archive:
                         print(collectionbasename, bundle, basename)
                         paradisecpaths[bundle].append(basename)
                 self.collections[collectionbasename].elanpaths = paradisecpaths
-                #pprint.pprint([self.collections[c].elanpaths for c in self.collections])
+            if self.name in ["TLA"]:  # to be extended
+                collections = glob.glob("./%s/*" % self.name.lower())
+                print(collections)
+                for collection in collections:
+                    collectionbasename =  collection.split("/")[-1]
+                    #print(collectionbasename)
+                    self.collections[collectionbasename] = Collection(
+                        collectionbasename,
+                        self.landingpage_template % collectionbasename,
+                        archive=self.name.lower(),
+                        urlprefix=self.collectionprefix,
+                        url_template=self.collection_url_template,
+                    )
+                    filenames = glob.glob("%s/*eaf" % collection)
+                    tlapaths = defaultdict(list)
+                    for filename in filenames:
+                        basename = filename.split("/")[-1]
+                        bundle = collectionbasename #we treat TLA as having collections with exactly 1 member for the time being.
+                        #print(collectionbasename, bundle, basename)
+                        #print(basename, basename)
+                        tlapaths[bundle].append(basename)
+                    pprint.pprint(tlapaths)
+                    #pprint.pprint(self.collections[collectionbasename].__dict__)
+                print(6)
+                self.collections[collectionbasename].elanpaths = tlapaths
+                pprint.pprint(self.collections[collectionbasename].elanpaths)
+            if self.name in ["ELAR"]:  # to be extended
+                collections = glob.glob("./%s/*" % self.name.lower())
+                print(collections)
+                for collection in collections:
+                    collectionbasename =  collection.split("/")[-1]
+                    #print(collectionbasename)
+                    self.collections[collectionbasename] = Collection(
+                        collectionbasename,
+                        self.landingpage_template % collectionbasename,
+                        archive=self.name.lower(),
+                        urlprefix=self.collectionprefix,
+                        url_template=self.collection_url_template,
+                    )
+                    filenames = glob.glob("%s/*eaf" % collection)
+                    tlapaths = defaultdict(list)
+                    for filename in filenames:
+                        basename = filename.split("/")[-1]
+                        bundle = collectionbasename #we treat ELAR as having collections with exactly 1 member for the time being.
+                        #print(collectionbasename, bundle, basename)
+                        #print(basename, basename)
+                        tlapaths[bundle].append(basename)
+                    pprint.pprint(tlapaths)
+                    #pprint.pprint(self.collections[collectionbasename].__dict__)
+                print(6)
+                self.collections[collectionbasename].elanpaths = tlapaths
+                pprint.pprint(self.collections[collectionbasename].elanpaths)
+            if self.name in ["AILLA"]:  # to be extended
+                collections = glob.glob("./%s/*" % self.name.lower())
+                for collection in collections:
+                    collectionbasename = collection.split("/")[-1]
+                    print(collectionbasename)
+                    self.collections[collectionbasename] = Collection(
+                        collectionbasename,
+                        self.landingpage_template % collectionbasename,
+                        archive=self.name.lower(),
+                        urlprefix=self.collectionprefix,
+                        url_template=self.collection_url_template,
+                    )
+                    filenames = glob.glob("%s/*eaf" % collection)
+                    aillapaths = defaultdict(list)
+                    for filename in filenames:
+                        basename = filename.split("/")[-1]
+                        bundle = collectionbasename
+                        print(collectionbasename, bundle, basename)
+                        aillapaths[bundle].append(basename)
+                self.collections[collectionbasename].elanpaths = aillapaths
 
     def get_fingerprints(self):
         """map filenames to fingerprints"""

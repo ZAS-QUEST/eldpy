@@ -60,8 +60,11 @@ class Collection:
         self.fingerprints = []
 
     def acquire_elans(self, cache=True):
+        print(self.ID)
+        pprint.pprint(self.elanpaths)
         collectionpathpart = self.ID
         for bundle in self.elanpaths:
+            print(bundle)
             for path in self.elanpaths[bundle]:
                 print(self.ID, bundle, path)
                 #print(" ", path)
@@ -99,11 +102,11 @@ class Collection:
             self.transcriptions = jsoncache[self.name]
         else:
             for eaf in self.elanfiles:
-                logging.info("transcriptions for", eaf.path)
+                print("transcriptions for", eaf.path)
                 eaf.populate_transcriptions()
                 transcriptions = eaf.get_transcriptions()
                 counts = [len(t) for t in transcriptions]
-                logging.info(
+                print(
                     "  number of words in transcriptions tiers: %s" % str(counts)
                 )
                 if transcriptions:
@@ -117,7 +120,7 @@ class Collection:
         if jsoncache:
             self.glosses = jsoncache[self.name]
         else:
-            logging.info("getting glosses for %i elans" % len(self.elanfiles))
+            print("getting glosses for %i elans" % len(self.elanfiles))
             filecount = 0
             tiercount = 0
             sentencecount = 0
@@ -197,7 +200,7 @@ class Collection:
 
 
     def get_fingerprints(self):
-        #logging.info("getting fingerprints for %i elans" % len(self.elanfiles))
+        #print("getting fingerprints for %i elans" % len(self.elanfiles))
         self.fingerprints = [eaf.fingerprint() for eaf in self.elanfiles]
 
     def paradisec_eaf_download(self, filename):

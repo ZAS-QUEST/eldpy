@@ -18,8 +18,9 @@ def bulk_populate(archives_to_populate=archives, cache=True):
             glosseschache = load_cache('glosses')
             entitieschache = load_cache('entities')
         for c in archive.collections:
+            print(c)
             archive.collections[c].acquire_elans(cache=cache)
-            archive.collections[c].populate_transcriptions(jsoncache=transcriptioncache)
+            archive.collections[c].populate_transcriptions(jsoncache=False)
             archive.collections[c].populate_translations(jsoncache=translationschache)
             archive.collections[c].populate_glosses(jsoncache=glosseschache)
             archive.collections[c].populate_entities(jsoncache=entitieschache)

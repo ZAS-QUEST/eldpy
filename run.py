@@ -6,7 +6,7 @@ def run():
     #for archive in archives:
         #bulk_download(archive=archive, filetype=1)#1=ELAN
     bulk_populate(cache=False)
-    bulk_cache()
     bulk_fingerprints()
+    bulk_cache()
     bulk_statistics()
     bulk_rdf()
