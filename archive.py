@@ -18,8 +18,8 @@ from matplotlib import cm
 import squarify
 from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
 
-from collection import Collection
-import lod
+from .collection import Collection
+from . import lod
 
 # from collections import defaultdict
 

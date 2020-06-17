@@ -1,6 +1,6 @@
 import json
-from archive import Archive
-from delaman import archives
+from .archive import Archive
+from .delaman import archives
 
 def bulk_populate(archives_to_populate=archives, cache=True):
     def load_cache(type_):

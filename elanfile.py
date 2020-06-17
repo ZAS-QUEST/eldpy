@@ -11,7 +11,7 @@ import requests
 from collections import Counter, defaultdict
 from lxml import etree
 from langdetect import detect_langs, lang_detect_exception
-import lod
+from . import lod
 
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)

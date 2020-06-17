@@ -2,7 +2,7 @@ import json
 import glob
 from rdflib import Namespace, Graph, Literal, RDF, RDFS #, URIRef, BNode
 from rdflib.namespace import NamespaceManager, DC #, FOAF
-from resolver import get_URI_for_AILLA, get_URI_for_ANLA, get_URI_for_TLA, get_URI_for_Paradisec, get_URI_for_ELAR
+from .resolver import get_URI_for_AILLA, get_URI_for_ANLA, get_URI_for_TLA, get_URI_for_Paradisec, get_URI_for_ELAR
 
 
 #define general namespaces
@@ -332,30 +332,30 @@ acceptable_gloss_tier_types = [
 acceptable_pos_tier_types = ["ps", "parts of speech"]
 
 
-AILLAMAPPER = dict(
-    [(line.strip().split()[::-1]) for line in open("aillaeaf.tsv").readlines()]
-)
-ANLAMAPPER = dict(
-    [(line.strip().split("/")[::-1][:2]) for line in open("anla-eaffiles").readlines()]
-)
-ELARMAPPER = dict(
-    [(line.strip().split()[::-1]) for line in open("elar2.tsv").readlines()]
-)
+#AILLAMAPPER = dict(
+    #[(line.strip().split()[::-1]) for line in open("aillaeaf.tsv").readlines()]
+#)
+#ANLAMAPPER = dict(
+    #[(line.strip().split("/")[::-1][:2]) for line in open("anla-eaffiles").readlines()]
+#)
+#ELARMAPPER = dict(
+    #[(line.strip().split()[::-1]) for line in open("elar2.tsv").readlines()]
+#)
 
-TLAMAPPER = {}
-tlajson = json.loads(open("tla.json").read())
-for k in tlajson:
-    vs = tlajson[k]
-    for v in vs:
-        TLAMAPPER[v] = k.replace("/datastream/OBJ/download", "").split("/")[-1]
+#TLAMAPPER = {}
+#tlajson = json.loads(open("tla.json").read())
+#for k in tlajson:
+    #vs = tlajson[k]
+    #for v in vs:
+        #TLAMAPPER[v] = k.replace("/datastream/OBJ/download", "").split("/")[-1]
 
 
-PARADISECMAPPER = {}
-paradisecjson = json.loads(open("paradisec.json").read())
-for k in paradisecjson:
-    vs = paradisecjson[k]
-    for v in vs:
-        PARADISECMAPPER[v] = k.replace("/collections/", "")
+#PARADISECMAPPER = {}
+#paradisecjson = json.loads(open("paradisec.json").read())
+#for k in paradisecjson:
+    #vs = paradisecjson[k]
+    #for v in vs:
+        #PARADISECMAPPER[v] = k.replace("/collections/", "")
 
 # def get_URI(eaf, archive):
 # if archive == "AILLA":

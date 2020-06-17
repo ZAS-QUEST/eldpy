@@ -10,8 +10,8 @@ import json
 from lxml.etree import XMLSyntaxError
 from lxml.html.soupparser import fromstring
 import requests
-from elanfile import ElanFile
-import lod
+from .elanfile import ElanFile
+from . import lod
 
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)
