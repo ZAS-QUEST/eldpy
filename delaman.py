@@ -46,13 +46,13 @@ testarchives = {
         #collectionprefix="https://uafanlc.alaska.edu/Online",
         #landingpage_template = "https://www.uaf.edu/anla/collections/search/resultDetail.xml?resource=%s"
     #),
-    #"PARADISEC2": Archive(
-        #"PARADISEC2",
-        #"https://catalog.paradisec.org.au/",
-        #collectionprefix="http://catalog.paradisec.org.au/repository",
-        #collection_url_template="http://catalog.paradisec.org.au/repository/%s/%s/%s",
-        #landingpage_template = "https://catalog.paradisec.org.au/collections/%s"
-    #),
+    "PARADISEC2": Archive(
+        "PARADISEC2",
+        "https://catalog.paradisec.org.au/",
+        collectionprefix="http://catalog.paradisec.org.au/repository",
+        collection_url_template="http://catalog.paradisec.org.au/repository/%s/%s/%s",
+        landingpage_template = "https://catalog.paradisec.org.au/collections/%s"
+    ),
     "ELAR2": Archive(
         "ELAR2",
         "elar.soas.ac.uk",
@@ -60,18 +60,18 @@ testarchives = {
         collection_url_template="https://elar.soas.ac.uk/Collection/%s",
         landingpage_template = "https://elar.soas.ac.uk/Collection/%s"
     ),
-    #"TLA2": Archive(
-        #"TLA2",
-        #"https://archive.mpi.nl",
-        #collectionprefix="https://archive.mpi.nl/islandora/object/",
-        #collection_url_template="https://archive.mpi.nl/islandora/object/%s",
-        #landingpage_template = "https://archive.mpi.nl/islandora/object/%s"
-    #),
-    #"AILLA2": Archive(
-        #"AILLA2",
-        #"https://ailla.utexas.org",
-        #collectionprefix="https://ailla.utexas.org/islandora/object/",
-        #collection_url_template="https://ailla.utexas.org/islandora/object/%s",
-        #landingpage_template = "https://ailla.utexas.org/islandora/object/%s"
-    #),
+    "TLA2": Archive(
+        "TLA2",
+        "https://archive.mpi.nl",
+        collectionprefix="https://archive.mpi.nl/islandora/object/",
+        collection_url_template="https://archive.mpi.nl/islandora/object/%s",
+        landingpage_template = "https://archive.mpi.nl/islandora/object/%s"
+    ),
+    "AILLA2": Archive(
+        "AILLA2",
+        "https://ailla.utexas.org",
+        collectionprefix="https://ailla.utexas.org/islandora/object/",
+        collection_url_template="https://ailla.utexas.org/islandora/object/%s",
+        landingpage_template = "https://ailla.utexas.org/islandora/object/%s"
+    ),
 }
