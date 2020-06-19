@@ -140,11 +140,11 @@ class Archive:
                 with open("cache/links/anla.json", "w") as json_out:
                     json_out.write(json.dumps(cached_links, sort_keys=True, indent=4))
         else:  # if not cache
-            if self.name in ["PARADISEC"]:  # to be extended
+            if self.name in ["PARADISEC","PARADISEC2"]:  # to be extended
                 collections = glob.glob("./%s/*" % self.name.lower())
                 for collection in collections:
                     collectionbasename = collection.split("/")[-1]
-                    print(collectionbasename)
+                    #print(collectionbasename)
                     self.collections[collectionbasename] = Collection(
                         collectionbasename,
                         self.landingpage_template % collectionbasename,
@@ -157,12 +157,12 @@ class Archive:
                     for filename in filenames:
                         basename = filename.split("/")[-1]
                         collectionthrowaway, bundle, recordingthrowaway = basename.split("-")
-                        print(collectionbasename, bundle, basename)
+                        #print(collectionbasename, bundle, basename)
                         paradisecpaths[bundle].append(basename)
                 self.collections[collectionbasename].elanpaths = paradisecpaths
-            if self.name in ["TLA"]:  # to be extended
+            if self.name in ["TLA","TLA2"]:  # to be extended
                 collections = glob.glob("./%s/*" % self.name.lower())
-                print(collections)
+                #print(collections)
                 for collection in collections:
                     collectionbasename =  collection.split("/")[-1]
                     #print(collectionbasename)
@@ -181,14 +181,14 @@ class Archive:
                         #print(collectionbasename, bundle, basename)
                         #print(basename, basename)
                         tlapaths[bundle].append(basename)
-                    pprint.pprint(tlapaths)
+                    #pprint.pprint(tlapaths)
                     #pprint.pprint(self.collections[collectionbasename].__dict__)
-                print(6)
+                #print(6)
                 self.collections[collectionbasename].elanpaths = tlapaths
-                pprint.pprint(self.collections[collectionbasename].elanpaths)
-            if self.name in ["ELAR"]:  # to be extended
+                #pprint.pprint(self.collections[collectionbasename].elanpaths)
+            if self.name in ["ELAR","ELAR2"]:  # to be extended
                 collections = glob.glob("./%s/*" % self.name.lower())
-                print(collections)
+                #print(collections)
                 for collection in collections:
                     collectionbasename =  collection.split("/")[-1]
                     #print(collectionbasename)
@@ -207,16 +207,16 @@ class Archive:
                         #print(collectionbasename, bundle, basename)
                         #print(basename, basename)
                         tlapaths[bundle].append(basename)
-                    pprint.pprint(tlapaths)
+                    #pprint.pprint(tlapaths)
                     #pprint.pprint(self.collections[collectionbasename].__dict__)
-                print(6)
+                #print(6)
                 self.collections[collectionbasename].elanpaths = tlapaths
-                pprint.pprint(self.collections[collectionbasename].elanpaths)
-            if self.name in ["AILLA"]:  # to be extended
+                #pprint.pprint(self.collections[collectionbasename].elanpaths)
+            if self.name in ["AILLA","AILLA2"]:  # to be extended
                 collections = glob.glob("./%s/*" % self.name.lower())
                 for collection in collections:
                     collectionbasename = collection.split("/")[-1]
-                    print(collectionbasename)
+                    #print(collectionbasename)
                     self.collections[collectionbasename] = Collection(
                         collectionbasename,
                         self.landingpage_template % collectionbasename,
@@ -229,7 +229,7 @@ class Archive:
                     for filename in filenames:
                         basename = filename.split("/")[-1]
                         bundle = collectionbasename
-                        print(collectionbasename, bundle, basename)
+                        #print(collectionbasename, bundle, basename)
                         aillapaths[bundle].append(basename)
                 self.collections[collectionbasename].elanpaths = aillapaths
 

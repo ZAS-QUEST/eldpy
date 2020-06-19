@@ -60,16 +60,16 @@ class Collection:
         self.fingerprints = []
 
     def acquire_elans(self, cache=True):
-        print(self.ID)
-        pprint.pprint(self.elanpaths)
+        #print(self.ID)
+        #pprint.pprint(self.elanpaths)
         collectionpathpart = self.ID
         for bundle in self.elanpaths:
-            print(bundle)
+            #print(bundle)
             for path in self.elanpaths[bundle]:
-                print(self.ID, bundle, path)
+                #print(self.ID, bundle, path)
                 #print(" ", path)
                 localpath = "/".join((self.archive, self.ID, path))
-                print(localpath)
+                #print(localpath)
                 eaf_url = "/".join((self.urlprefix, self.name, bundle,  path))
                 #print(".", end="", flush=True)
                 #print(".")

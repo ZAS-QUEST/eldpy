@@ -292,6 +292,7 @@ class ElanFile:
                     except KeyError:
                         translations[candidate] = {}
                         translations[candidate][tierID] = wordlist
+        print(len(translations), "translations")
         self.translations = translations
 
     def get_translations(self):
@@ -431,6 +432,7 @@ class ElanFile:
                     # pprint.pprint(glossed_sentences)
                     retrieved_glosstiers[candidate][tierID] = glossed_sentences
         self.glossed_sentences = retrieved_glosstiers
+        print(len(self.glossed_sentences),"glossed sentences")
 
     def create_parent_dic(self):
         """
@@ -580,7 +582,7 @@ class Annotation:
             self.text = av.text
         except AttributeError:
             self.text = ""
-        if aa:  # time aligned
+        if aa is not None:  # time aligned
             self.ID = aa.attrib["ANNOTATION_ID"]
             self.parentID = None
             try:
@@ -590,7 +592,7 @@ class Annotation:
                 self.starttime = 0
                 self.endtime = 0
         else:
-            if ra:
+            if ra is not None:
                 self.ID = ra.attrib["ANNOTATION_ID"]
                 self.parentID = ra.attrib["ANNOTATION_REF"]
             else:

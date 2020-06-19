@@ -2,13 +2,15 @@ import json
 from .archive import Archive
 from .delaman import archives
 
-def bulk_populate(archives_to_populate=archives, cache=True):
+def bulk_populate(archives_to_populate=archives, cache=True,exclude=None):
     def load_cache(type_):
         return json.loads(open("cache/%s/%s.json" % (type_, archivename)).read())
 
     for archivename in archives_to_populate:
+        #print(archivename)
         print("processing", archivename)
         archive = archives_to_populate[archivename]
+        #print(archive)
         archive.populate_collections(cache=cache)
         print("processing data")
         transcriptioncache, translationschache, glosseschache, entitieschache = None, None, None, None
@@ -20,11 +22,26 @@ def bulk_populate(archives_to_populate=archives, cache=True):
         for c in archive.collections:
             print(c)
             archive.collections[c].acquire_elans(cache=cache)
-            archive.collections[c].populate_transcriptions(jsoncache=False)
-            archive.collections[c].populate_translations(jsoncache=False)
-            archive.collections[c].populate_glosses(jsoncache=False)
-            #archive.collections[c].populate_entities(jsoncache=entitieschache)
-            archive.get_metadata()
+            if 'transcriptions'  in exclude:
+                print('transcriptions excluded')
+            else:
+                archive.collections[c].populate_transcriptions(jsoncache=transcriptioncache)
+            if 'translations'  in exclude:
+                print('translations excluded')
+            else:
+                archive.collections[c].populate_translations(jsoncache=translationschache)
+            if 'glosses' in exclude:
+                print('glosses excluded')
+            else:
+                archive.collections[c].populate_glosses(jsoncache=glosseschache)
+            if 'entities'  in exclude:
+                print('entities excluded')
+            else:
+                archive.collections[c].populate_entities(jsoncache=entitieschache)
+            if 'metadata'  in exclude:
+                print('metadata excluded')
+            else:
+                archive.get_metadata()
 
 
 def bulk_cache(cachearchives=archives, exclude=[]):
@@ -42,6 +59,7 @@ def bulk_cache(cachearchives=archives, exclude=[]):
     types = ["translations", "transcriptions", "glosses", "entities"]
     for type_ in types:
         if type_ in exclude:
+            print(type_, "excluded")
             continue
         print(type_)
         write_jsons(type_)
