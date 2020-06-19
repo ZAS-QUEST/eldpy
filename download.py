@@ -7,7 +7,8 @@ from lxml import etree
 from lxml.html.soupparser import fromstring
 from tqdm import tqdm
 import requests
-
+import glob
+import json
 
 class DownloadProgressBar(tqdm):
     """Container for the download bar
@@ -172,7 +173,7 @@ def retrieve_elar(extension, username=None, password=None):
         elar_download(globalidentifier, phpsessid, extension)
 
 
-def retrieve_tla(extension, username=None, password=None):
+def retrieve_tla(extension, username=None, password=None, pagelimit=999999):
     """identify and download all accessible files of a given type from TLA"""
 
     if extension != 'eaf':
@@ -210,7 +211,7 @@ def retrieve_tla(extension, username=None, password=None):
         country_restrictors = "f%5B1%5D=-cmd.Country%3A%22Netherlands%22&f%5B2%5D=-cmd.Country%3A%22Belgium%22&f%5B3%5D=-cmd.Country%3A%22Germany%22&"
         resultpages = ["https://archive.mpi.nl/tla/islandora/search/%%2A%%3A%%2A?page=%i&f%%5B0%%5D=cmd.Format%%3A%%22%s%%22&%slimit=%i"%(i, tla_mime, country_restrictors, TLA_LIMIT) for i in range(5)]
         #retrieve collections from resultpages
-        for resultpage in resultpages:
+        for resultpage in resultpages[:pagelimit]:
             print(resultpage)
             #base_request = s.get(resultpage)
             #base_html = base_request.text
@@ -230,32 +231,41 @@ def retrieve_tla(extension, username=None, password=None):
         for i, c_url in enumerate(collection_urls[OFFSET:]):
             #print("collection ", c_url)
             collection_id = c_url.split("%3A")[-1]
-            print(collection_id, "%i (+%i)/%i"%(i+1, OFFSET, collection_length))
+            print(collection_id, "%i(+%i)/%i"%(i+1, OFFSET, collection_length))
             #c_request = s.get(c_url)
             #c_html = c_request.text
             #c_root = fromstring(c_html)
             c_root = url2root(s, c_url)
             file_links = c_root.findall('.//a[@class="flat-compound-caption-link"]')
             file_tuples = [
-                (a.attrib["href"], a.text)
+                (a.attrib["href"],
+                 a.text,
+                 a.getparent().getparent().find('div[@class="flat-compound-buttons"]/div[@class="permission-labels"]').find('span').text)
                 for a in file_links
-                if a.text is not None and a.text.endswith(extension)
-            ]
+                if a.text is not None
+                and a.text.endswith(extension)
+                ]
             #download files
             for file_tuple in file_tuples:
                 # print("  f: ", file_tuple)
-                f_url, filename = file_tuple
-                download_url = "https://archive.mpi.nl/%s" % f_url
-                filepath = os.path.join('tla', collection_id, filename)
-                print("  downloading %s as %s:" % (download_url, filepath))
-                os.makedirs(os.path.dirname(filepath), exist_ok=True)
-                save_file(s, filepath, download_url, {"SESSd8112b76bc7d4802dc104c36df341519": session_id})
+                f_url, filename, access = file_tuple
+                tla_eaf_id = f_url.split('/')[-1]
+                local_basename = '.'.join((tla_eaf_id, extension))
+                if access.strip() == 'Restricted':
+                    print('  %s: no access' % f_url)
+                else:
+                    download_url = "https://archive.mpi.nl/%s/datastream/OBJ/download" % f_url
+                    filepath = os.path.join('tla', collection_id, local_basename)
+                    print("  downloading %s as %s:" % (download_url, filepath))
+                    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                    save_file(s, filepath, download_url, {"SESSd8112b76bc7d4802dc104c36df341519": session_id})
 
 
 
-def retrieve_ailla(extension, username=None, password=None):
+def retrieve_ailla(extension, username=None, password=None, offset=0):
     """identify and download all accessible files of a given type from AILLA"""
 
+    print("offset is", offset)
     base_url = "https://ailla.utexas.org/islandora/object/ailla%3Acollection_collection?page=1&rows=1000"
     if username and password:
         pass
@@ -286,7 +296,7 @@ def retrieve_ailla(extension, username=None, password=None):
             "https://ailla.utexas.org/%s" % a.attrib["href"] for a in collection_links
         ]
         collections_length = len(collection_urls)
-        for i, c_url in enumerate(collection_urls):
+        for i, c_url in enumerate(collection_urls[offset:]):
             print("collection ", c_url)
             collection_id = c_url.split("%3A")[-1]
             #c_request = s.get(c_url)
@@ -300,8 +310,8 @@ def retrieve_ailla(extension, username=None, password=None):
             sessions_length = len(session_urls)
             for j, s_url in enumerate(session_urls):
                 print(
-                    " session %s (c :%s/%s; s:%s/%s)"
-                    % (s_url[51:], i + 1, collections_length, j + 1, sessions_length,)
+                    " session %s (c :%i(+%i)/%i; s:%i/%i)"
+                    % (s_url[51:], i + 1, offset, collections_length, j + 1, sessions_length,)
                 )
                 #s_request = s.get(s_url)
                 #s_html = s_request.text
@@ -423,7 +433,7 @@ def retrieve_paradisec(extension, sessionkey=None):
                     save_file(s, filepath, download_url, cookies)
 
 
-def bulk_download(archive=None, filetype=None, username=None, password=None, sessionkey=None):
+def bulk_download(archive=None, filetype=None, username=None, password=None, pagelimit=9999999, sessionkey=None, limit=9999999, offset=0):
     filetypes = {
         1: ("ELAN", "text/x-eaf+xml", "eaf"),
         2: ("Toolbox", "text/x-toolbox-text", "tbx"),
@@ -472,8 +482,34 @@ def bulk_download(archive=None, filetype=None, username=None, password=None, ses
     if archiveinput == 1:  # ELAR
         retrieve_elar(chosen_extension, username=username, password=password)
     if archiveinput == 2:  # TLA
-        retrieve_tla(chosen_extension, username=username, password=password)
+        retrieve_tla(chosen_extension, username=username, password=password, pagelimit=pagelimit)
     if archiveinput == 3:  # PARADISEC
         retrieve_paradisec(chosen_extension, sessionkey=sessionkey)
     if archiveinput == 4:  # ailla
-        retrieve_ailla(chosen_extension, username=username, password=password)
+        retrieve_ailla(chosen_extension, username=username, password=password, offset=offset)
+
+
+def download_ailla_metadata():
+    d = {}
+    for collection_id in glob.glob('ailla/*'):
+        basename = collection_id.split('/')[-1]
+        url =  "https://ailla.utexas.org/islandora/object/ailla%3A"+basename
+        print(url)
+        with requests.Session() as s:
+            r = s.get(url)
+            html = r.text
+            try:
+                trs = fromstring(html).findall('.//div[@id="block-utailla-utailla-object-metadata"]/div/table/tbody/tr')
+                for tr in trs:
+                    field, value = tr.findall('td')
+                    if field.text.strip() ==  'Collection Language':
+                        collection_language = value.text.strip()
+                        print('', basename, collection_language)
+                        d[basename] = collection_language
+                        break
+                else:
+                    print(" found no language metadata")
+            except ValueError:
+                print("could not parse HTML")
+    with open('aillametada.json','w') as out:
+        out.write(json.dumps(d, indent=4, sort_keys=True))

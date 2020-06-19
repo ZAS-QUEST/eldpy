@@ -1,6 +1,6 @@
-from .download import bulk_download
-from .bulk import *
-from .delaman import archives
+from download import bulk_download
+from bulk import *
+from delaman import archives
 
 def run():
     for archive in archives:

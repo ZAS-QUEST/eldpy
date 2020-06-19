@@ -21,9 +21,9 @@ def bulk_populate(archives_to_populate=archives, cache=True):
             print(c)
             archive.collections[c].acquire_elans(cache=cache)
             archive.collections[c].populate_transcriptions(jsoncache=False)
-            archive.collections[c].populate_translations(jsoncache=translationschache)
-            archive.collections[c].populate_glosses(jsoncache=glosseschache)
-            archive.collections[c].populate_entities(jsoncache=entitieschache)
+            archive.collections[c].populate_translations(jsoncache=False)
+            archive.collections[c].populate_glosses(jsoncache=False)
+            #archive.collections[c].populate_entities(jsoncache=entitieschache)
             archive.get_metadata()
 
 
