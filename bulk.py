@@ -2,7 +2,7 @@ import json
 from .archive import Archive
 from .delaman import archives
 
-def bulk_populate(archives_to_populate=archives, cache=True,exclude=None):
+def bulk_populate(archives_to_populate=archives, cache=True, exclude=[]):
     def load_cache(type_):
         return json.loads(open("cache/%s/%s.json" % (type_, archivename)).read())
 

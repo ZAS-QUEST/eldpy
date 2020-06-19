@@ -193,6 +193,7 @@ class ElanFile:
                     if re.search("[0-9]{3}$", wordlist[0]) or re.match("[0-9]+", wordlist[0]) :
                         if len(wordlist)>1:
                            if re.search("[0-9]{3}$", wordlist[1]) or re.match("[0-9]+", wordlist[1]) : #this is an ID tier
+                                print("skipping ID tier")
                                 continue
                     timelist = [
                         Annotation(aa, self.timeslots).get_duration()
@@ -201,17 +202,19 @@ class ElanFile:
                     ]
                     # get a list of durations from time slots mentioned in parent elements
                     aas = self.get_alignable_annotations(root)
-                    try:
-                        annotation_list = [
-                            Annotation(
-                                aas.get(ra.attrib["ANNOTATION_REF"]), self.timeslots
-                            )
-                            for ra in tier.findall(".//REF_ANNOTATION")
-                            if ra.find(".//ANNOTATION_VALUE").text is not None
-                        ]
-                    except ValueError:
-                        continue
-                    timelistannno = [anno.get_duration for anno in annotation_list]
+                    #print(aas)
+                    annotation_list = []
+                    for ref_annotation in tier.findall(".//REF_ANNOTATION"):
+                        if ref_annotation.find(".//ANNOTATION_VALUE").text is not None:
+                            annotation = Annotation(
+                                    aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
+                                    self.timeslots
+                                )
+                            annotation_list.append(annotation)
+                    #except KeyError:
+                        #print("problem with annotation list")
+                        #continue
+                    timelistannno = [anno.get_duration() for anno in annotation_list]
                     secs = sum(timelist + timelistannno) / 1000
                     time_in_seconds.append(secs)
                     try:  # detect candidate languages and retrieve most likely one
@@ -572,29 +575,33 @@ class Annotation:
     def __init__(self, element, timeslots):
         if element is None:
             raise ValueError("Annotation is None")
-        if element.tag != "ANNOTATION":
-            logger.warning(element.tag, "is not an <ANNOTATION> element")
+        if element.tag not in ["ANNOTATION", "ALIGNABLE_ANNOTATION"]:
+            print(element.tag)
+            logger.warning(element.tag, "is not an <(ALIGNABLE_)ANNOTATION> element")
             raise ValueError
-        aa = element.find(".//ALIGNABLE_ANNOTATION")
-        av = element.find(".//ANNOTATION_VALUE")
-        ra = element.find(".//REF_ANNOTATION")
+        if element.tag == "ANNOTATION":
+            alignable_annotation = element.find(".//ALIGNABLE_ANNOTATION")
+        else:
+            alignable_annotation = element
+        annotation_value = element.find(".//ANNOTATION_VALUE")
+        ref_annotation = element.find(".//REF_ANNOTATION")
         try:
-            self.text = av.text
+            self.text = annotation_value.text
         except AttributeError:
             self.text = ""
-        if aa is not None:  # time aligned
-            self.ID = aa.attrib["ANNOTATION_ID"]
+        if alignable_annotation:  # time aligned
+            self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
             self.parentID = None
             try:
-                self.starttime = int(timeslots[aa.attrib["TIME_SLOT_REF1"]])
-                self.endtime = int(timeslots[aa.attrib["TIME_SLOT_REF2"]])
+                self.starttime = int(timeslots[alignable_annotation.attrib["TIME_SLOT_REF1"]])
+                self.endtime = int(timeslots[alignable_annotation.attrib["TIME_SLOT_REF2"]])
             except KeyError:
                 self.starttime = 0
                 self.endtime = 0
         else:
-            if ra is not None:
-                self.ID = ra.attrib["ANNOTATION_ID"]
-                self.parentID = ra.attrib["ANNOTATION_REF"]
+            if ref_annotation:
+                self.ID = ref_annotation.attrib["ANNOTATION_ID"]
+                self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
             else:
                 print("Annotation without ID in", self.text)
                 print(element[0].text)

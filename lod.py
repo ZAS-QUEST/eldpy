@@ -35,6 +35,11 @@ ARCHIVE_NAMESPACES = {
     'tla': Namespace("https://archive.mpi.nl/islandora/object/")
     }
 
+#duplicate for test purposes
+keylist = list(ARCHIVE_NAMESPACES.keys())
+for key in keylist:
+    ARCHIVE_NAMESPACES["%s2"%key] = ARCHIVE_NAMESPACES[key]
+
 for archive in ARCHIVE_NAMESPACES:
     ELD_NAMESPACE_MANAGER.bind(archive, ARCHIVE_NAMESPACES[archive])
 
