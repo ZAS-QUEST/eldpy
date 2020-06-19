@@ -21,7 +21,6 @@ bulk_populate(cache=False)
 ```
 - cache for future usage: as above and add
 ```
-bulk_populate(cache=False)
 bulk_cache()
 ```
 - read cached information
