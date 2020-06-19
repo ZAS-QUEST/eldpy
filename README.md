@@ -19,9 +19,8 @@ download.bulk_download(archive='AILLA', filetype=1, username='janedoe', password
 from eldpy.bulk import *
 bulk_populate(cache=False)
 ```
-- cache for future usage
+- cache for future usage: as above and add
 ```
-from eldpy.bulk import *
 bulk_populate(cache=False)
 ```
 - read cached information
@@ -32,14 +31,18 @@ bulk_populate(cache=True)
 - compute tokens and durations
 ```
 from eldpy.bulk import *
+bulk_populate()
 bulk_statistics()
 ```
 - analyze ELAN tier hierarchies
 ```
 from eldpy.bulk import *
+bulk_populate()
 bulk_fingerprints()
+```
 -export as rdf
 ```
 from eldpy.bulk import *
+bulk_populate()
 bulk_rdf()
 ```
