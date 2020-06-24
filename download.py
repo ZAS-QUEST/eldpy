@@ -95,17 +95,22 @@ def elar_download(bundle_id, phpsessid, extension):
             return
         for location in locations:
             download_url = location
-            filename = location.split("/")[-1]
-            filename = "%s.%s" % (
-                filename[:-4][:200],
-                extension,
-            )  # avoid overlong file names
-            filepath = os.path.join('elar', 'elar', filename)
+            bs = location.split("/")[-1].split('-b-')
+            if len(bs) == 1:
+                collectionname = 'no_collection'
+                basename = bs[0]
+            else:
+                collectionname = bs[0]
+                basename = '-b-'.join(bs[1:])
+            filepath = os.path.join('elar', collectionname, basename)
+            if len(filepath) > 150:
+                filepath = os.path.join('elar', collectionname, "%s.%s" % (hash(basename[:-4]),extension))
             print("  downloading %s as %s:" % (location, filepath))
             os.makedirs(os.path.dirname(filepath), exist_ok=True)
             save_file(s, filepath, download_url, cookies)
 
-def retrieve_elar(extension, username=None, password=None):
+
+def retrieve_elar(extension, username=None, password=None, mimetype=None, offset=0):
     """identify and download  all accessible files from ELAR"""
 
     try:
@@ -141,7 +146,7 @@ def retrieve_elar(extension, username=None, password=None):
     print("found %i relevant records" % len(globalidentifiers))
 
     LIMIT = 9999999
-    subset = list(globalidentifiers.keys())[:LIMIT]
+    subset = list(globalidentifiers.keys())[offset:LIMIT]
     print("preparing to download %i files" % len(subset))
     # print(subset)
 
@@ -170,6 +175,7 @@ def retrieve_elar(extension, username=None, password=None):
     phpsessid = session.cookies.get_dict().get("PHPSESSID")
 
     for globalidentifier in subset:
+        print("offset is", offset)
         elar_download(globalidentifier, phpsessid, extension)
 
 
@@ -480,7 +486,7 @@ def bulk_download(archive=None, filetype=None, username=None, password=None, pag
     archivename = archives[archiveinput]
     print("You have chosen %s" % archivename)
     if archiveinput == 1:  # ELAR
-        retrieve_elar(chosen_extension, username=username, password=password)
+        retrieve_elar(chosen_extension, username=username, password=password, mimetype=mimetype, offset=offset)
     if archiveinput == 2:  # TLA
         retrieve_tla(chosen_extension, username=username, password=password, pagelimit=pagelimit)
     if archiveinput == 3:  # PARADISEC

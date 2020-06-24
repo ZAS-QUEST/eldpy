@@ -107,7 +107,7 @@ class Collection:
                 transcriptions = eaf.get_transcriptions()
                 counts = [len(t) for t in transcriptions]
                 print(
-                    "  number of words in transcriptions tiers: %s" % str(counts)
+                    "%i transcription tiers: %s words" % (len(transcriptions),str(counts))
                 )
                 if transcriptions:
                     self.transcriptionfiles += 1
@@ -120,7 +120,7 @@ class Collection:
         if jsoncache:
             self.glosses = jsoncache[self.name]
         else:
-            print("getting glosses for %i elans" % len(self.elanfiles))
+            #print("getting glosses for %i elans" % len(self.elanfiles))
             filecount = 0
             tiercount = 0
             sentencecount = 0

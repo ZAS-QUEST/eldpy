@@ -206,11 +206,14 @@ class ElanFile:
                     annotation_list = []
                     for ref_annotation in tier.findall(".//REF_ANNOTATION"):
                         if ref_annotation.find(".//ANNOTATION_VALUE").text is not None:
-                            annotation = Annotation(
-                                    aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
-                                    self.timeslots
-                                )
-                            annotation_list.append(annotation)
+                            try:
+                                annotation = Annotation(
+                                        aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
+                                        self.timeslots
+                                    )
+                                annotation_list.append(annotation)
+                            except ValueError:
+                                continue
                     #except KeyError:
                         #print("problem with annotation list")
                         #continue

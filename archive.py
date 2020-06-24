@@ -510,12 +510,12 @@ class Archive:
                                            lod.LIGT.Word,
                                          ))
                                     g.add((lod.QUESTRESOLVER[gloss_id],
-                                           RDFS.label,
-                                           Literal(gloss, lang="qqq"),
+                                           lod.FLEX.gls,
+                                           Literal(gloss, lang="eng"),
                                            # we use qqq since glossed text is not natural language
                                          ))
                                     g.add((lod.QUESTRESOLVER[gloss_id],
-                                           RDFS.label,
+                                           lod.FLEX.txt,
                                            Literal(vernacular, lang="und"),
                                            # we use "und" until we can retrieve the proper metadata
                                          ))
@@ -582,7 +582,7 @@ class Archive:
         lod.write_graph(g, "rdf/%s-entities.n3" % self.name)
 
     def write_rdf(self):
-        print("writing rdf")
+        print("writing rdf for", self.name)
         print("  meta")
         self.write_metadata_rdf()
         print("  transcriptions")

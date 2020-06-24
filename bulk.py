@@ -61,7 +61,7 @@ def bulk_cache(cachearchives=archives, exclude=[]):
         if type_ in exclude:
             print(type_, "excluded")
             continue
-        print(type_)
+        print('',type_)
         write_jsons(type_)
 
 
