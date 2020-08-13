@@ -13,6 +13,7 @@ WIKIDATA = Namespace("http://www.wikidata.org/entity/")
 LGR = Namespace("https://www.eva.mpg.de/lingua/resources/glossing-rules.php/")
 LIGT = Namespace("http://purl.org/liodi/ligt/")
 FLEX = Namespace("http://example.org/flex/")
+NIF = Namespace("http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#")
 
 #define archive namespaces
 ELD_NAMESPACE_MANAGER = NamespaceManager(Graph())
@@ -25,6 +26,7 @@ ELD_NAMESPACE_MANAGER.bind("dc", DC)
 ELD_NAMESPACE_MANAGER.bind("lgr", LGR)
 ELD_NAMESPACE_MANAGER.bind("ligt", LIGT)
 ELD_NAMESPACE_MANAGER.bind("flex", FLEX)
+ELD_NAMESPACE_MANAGER.bind("nif", NIF)
 
 ARCHIVE_NAMESPACES = {
     'paradisec': Namespace("https://catalog.paradisec.org.au/collections/"),

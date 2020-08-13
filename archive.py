@@ -468,10 +468,23 @@ class Archive:
         lod.write_graph(g, "rdf/%s-translations.n3" % self.name)
 
     def write_glosses_rdf(self):
-        ID_template = "%s-%s-%s"
-        gloss_template = "%s-%s-%s-%s"
+        #https://github.com/acoli-repo/ligt/blob/master/samples/nordhoff-1.ttl
+        example_ID_template = "%s-%s-%s_u"
+        word_tier_ID_template = "%s-%s-%s_wt"
+        morph_tier_ID_template = "%s-%s-%s_mt"
+        word_template = "%s-%s-%s-%s_w"
+        morph_ID_template = "%s-%s-%s-%s_m"
+        gloss_template = "%s-%s-%s-%s_g"
         eaf_template = "%s-%s"
         g = lod.create_graph()
+        g.add((lod.QUEST.morph2,#TODO needs better label
+                lod.RDFS.subPropertyOf,
+                lod.LIGT.annotation
+                ))
+        g.add((lod.QUEST.gloss2, #TODO needs better label
+                lod.RDFS.subPropertyOf,
+                lod.LIGT.annotation
+                ))
         for collection in self.collections:
             for eafname in self.collections[collection].glosses:
                 hashed_eaf = self.get_eaf_hash(eafname)
@@ -480,53 +493,91 @@ class Archive:
                     for tierID in self.collections[collection].glosses[eafname][tiertype]:
                         for dictionary in self.collections[collection].glosses[eafname][tiertype][tierID]:
                             for sentenceID in dictionary:
-                                sentence_lod_ID = ID_template % (collection, hashed_eaf, sentenceID)
-                                g.add((lod.QUESTRESOLVER[sentence_lod_ID],
-                                       # TODO better use archive specific resolvers
-                                       RDF.type,
-                                       # lod.QUEST.Transcripton_tier
-                                       lod.LIGT.WordTier,
-                                     ))
-                                # wordstring = " ".join([t[0] for t in dictionary[sentenceID]])
-                                # glossstring = " ".join([t[1] for t in dictionary[sentenceID]])
+                                example_block_ID = example_ID_template % (collection, hashed_eaf, sentenceID)
+                                sentence_word_tier_lod_ID = word_tier_ID_template % (collection, hashed_eaf, sentenceID)
+                                sentence_morph_tier_lod_ID = word_tier_ID_template % (collection, hashed_eaf, sentenceID)
+                                wordstring = " ".join(['' if t[0] is None else t[0] for t in dictionary[sentenceID]])
+                                glossstring = " ".join(['' if t[1] is None else t[1] for t in dictionary[sentenceID]])
+                                example_block_nif_label =  wordstring
+                                words_nif_label =  wordstring
+                                vernacular_language_id = "und"
+                                gloss_language_id = "en-x-lgr"
                                 g.add((lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id],
                                         lod.LIGT.hasTier,
-                                        lod.QUESTRESOLVER[sentence_lod_ID],
+                                        lod.QUESTRESOLVER[example_block_ID],
                                     ))
-                                vernaculars = [t[0] if t[0] else "" for t in dictionary[sentenceID]]
+                                #example block (=utterance in LIGT lingo)
+                                g.add((lod.QUESTRESOLVER[example_block_ID],
+                                       # TODO better use archive specific resolvers
+                                       RDF.type,
+                                       lod.LIGT.InterlinearText
+                                     ))
+                                g.add((lod.QUESTRESOLVER[example_block_ID],
+                                       RDF.type,
+                                       lod.LIGT.Utterance
+                                     ))
+                                g.add((lod.QUESTRESOLVER[example_block_ID],
+                                       lod.NIF.anchorOf,
+                                       Literal(example_block_nif_label, lang=vernacular_language_id),
+                                     ))
+                                g.add((lod.QUESTRESOLVER[example_block_ID],
+                                       lod.LIGT.hasTier,
+                                       lod.QUESTRESOLVER[sentence_word_tier_lod_ID],
+                                     ))
+                                g.add((lod.QUESTRESOLVER[example_block_ID],
+                                       lod.LIGT.hasTier,
+                                       lod.QUESTRESOLVER[sentence_morph_tier_lod_ID],
+                                     ))
+                                #words
+                                g.add((lod.QUESTRESOLVER[sentence_word_tier_lod_ID],
+                                       RDF.type,
+                                       lod.LIGT.WordTier,
+                                     ))
+                                g.add((lod.QUESTRESOLVER[sentence_word_tier_lod_ID],
+                                       lod.NIF.anchorOf,
+                                       Literal(example_block_ID, lang=vernacular_language_id),
+                                     ))
+                                #morphs
+                                g.add((lod.QUESTRESOLVER[sentence_morph_tier_lod_ID],
+                                       RDF.type,
+                                       lod.LIGT.MorphTier,
+                                     ))
+                                g.add((lod.QUESTRESOLVER[sentence_morph_tier_lod_ID],
+                                       lod.NIF.anchorOf,
+                                       Literal(example_block_ID, lang=vernacular_language_id),
+                                     ))
+                                #subelements of word, morph and gloss tier
+                                #TODO unclear whether we need word tier
+                                morphs = [t[0] if t[0] else "" for t in dictionary[sentenceID]]
                                 glosses = [t[1] if t[1] else "" for t in dictionary[sentenceID]]
-                                for i, gloss in enumerate(glosses):
-                                    vernacular = vernaculars[i]
+                                for i in range(len(morphs)):
+                                    morph = morphs[i]
+                                    morph_id = morph_ID_template % (
+                                                collection,
+                                                hashed_eaf,
+                                                sentenceID,
+                                                i,
+                                            )
+                                    gloss = glosses[i]
                                     try:
                                         gloss = gloss.strip()
                                     except TypeError:
                                         gloss = ""
-                                    gloss_id = urllib.parse.quote(
-                                        gloss_template % (collection, hashed_eaf, sentenceID, i)
-                                    )
-                                    g.add((lod.QUESTRESOLVER[gloss_id],
-                                           RDF.type,
-                                           # lod.QUEST.gloss
-                                           lod.LIGT.Word,
-                                         ))
-                                    g.add((lod.QUESTRESOLVER[gloss_id],
-                                           lod.FLEX.gls,
-                                           Literal(gloss, lang="eng"),
-                                           # we use qqq since glossed text is not natural language
-                                         ))
-                                    g.add((lod.QUESTRESOLVER[gloss_id],
-                                           lod.FLEX.txt,
-                                           Literal(vernacular, lang="und"),
-                                           # we use "und" until we can retrieve the proper metadata
-                                         ))
-                                    g.add((lod.QUESTRESOLVER[sentence_lod_ID],
-                                           lod.LIGT.hasWord,
-                                           lod.QUESTRESOLVER[gloss_id],
-                                         ))
+                                    #add items to tier
+                                    g.add((lod.QUESTRESOLVER[sentence_morph_tier_lod_ID],
+                                        lod.LIGT.item,
+                                        lod.QUESTRESOLVER[morph_id]
+                                        ))
+                                    #anchor in superstring about items
+                                    g.add((lod.QUESTRESOLVER[morph_id],
+                                        lod.NIF.anchorOf,
+                                        lod.QUESTRESOLVER[sentence_word_tier_lod_ID] #TODO this should probably sentence_word_id, but we have no notion of "word" right now, hence resorting to a larger substring
+                                        ))
+                                    #forward link to create linked list
                                     try:
-                                        nextgloss = glosses[i + 1]
-                                        nextgloss_id = urllib.parse.quote(
-                                            gloss_template
+                                        nextmorph = morphs[i + 1]
+                                        nextmorph_id = urllib.parse.quote(
+                                            morph_ID_template
                                             % (
                                                 collection,
                                                 hashed_eaf,
@@ -534,16 +585,24 @@ class Archive:
                                                 i + 1,
                                             )
                                         )
-                                        g.add((lod.QUESTRESOLVER[gloss_id],
+                                        g.add((lod.QUESTRESOLVER[morph_id],
                                                lod.LIGT.nextWord,
-                                               lod.QUESTRESOLVER[nextgloss_id],
+                                               lod.QUESTRESOLVER[nextmorph_id]
                                              ))
                                     except IndexError:  # we have reached the end of the list
-                                        g.add((lod.QUESTRESOLVER[gloss_id],
+                                        g.add((lod.QUESTRESOLVER[nextmorph_id],
                                                lod.LIGT.nextWord,
                                                lod.RDF.nil,
                                             ))
-
+                                    #give labels for morphs
+                                    g.add((lod.QUESTRESOLVER[morph_id],
+                                               lod.QUEST.morph2, #TODO probably use not   "morph2" here
+                                               Literal(morph, lang=vernacular_language_id),
+                                            ))
+                                    g.add((lod.QUESTRESOLVER[morph_id],
+                                               lod.QUEST.gloss2, #TODO probably use not   "gloss2" here
+                                               Literal(gloss, lang=gloss_language_id)
+                                            ))
                                     for subgloss in re.split("[-=.:]", gloss):
                                         subgloss = (
                                             subgloss.replace("1", "")
@@ -551,10 +610,41 @@ class Archive:
                                             .replace("3", "")
                                         )
                                         if subgloss in lod.LGRLIST:
-                                            g.add((lod.QUESTRESOLVER[gloss_id],
+                                            g.add((lod.QUESTRESOLVER[morph_id],
                                                    lod.QUEST.has_lgr_value,
-                                                   lod.LGR[subgloss],
-                                                ))
+                                                   lod.LGR[subgloss]
+                                                  ))
+
+
+                                #TODO not sure in how far the specific ligt modeling from 2019 is needed anymore
+                                #for i, gloss in enumerate(glosses):
+                                    #vernacular = vernaculars[i]
+                                    #try:
+                                        #gloss = gloss.strip()
+                                    #except TypeError:
+                                        #gloss = ""
+                                    #gloss_id = urllib.parse.quote(
+                                        #gloss_template % (collection, hashed_eaf, sentenceID, i)
+                                    #)
+                                    #g.add((lod.QUESTRESOLVER[gloss_id],
+                                           #RDF.type,
+                                           ## lod.QUEST.gloss
+                                           #lod.LIGT.Word,
+                                         #))
+                                    #g.add((lod.QUESTRESOLVER[gloss_id],
+                                           #lod.FLEX.gls,
+                                           #Literal(gloss, lang="eng"),
+                                           ## we use qqq since glossed text is not natural language
+                                         #))
+                                    #g.add((lod.QUESTRESOLVER[gloss_id],
+                                           #lod.FLEX.txt,
+                                           #Literal(vernacular, lang="und"),
+                                           ## we use "und" until we can retrieve the proper metadata
+                                         #))
+                                    #g.add((lod.QUESTRESOLVER[sentence_lod_ID],
+                                           #lod.LIGT.hasWord,
+                                           #lod.QUESTRESOLVER[gloss_id],
+                                         #))
         lod.write_graph(g, "rdf/%s-glosses.n3" % self.name)
 
     def write_entities_rdf(self):
@@ -574,8 +664,7 @@ class Archive:
                         ))
                     for q_value in tier:
                         g.add((
-                            lod.QUESTRESOLVER[tier_id],
-                            # TODO better use archive specific resolvers
+                            lod.QUESTRESOLVER[tier_id],   # TODO better use archive specific resolvers
                             lod.DC.topic,
                             lod.WIKIDATA[q_value],
                             ))
