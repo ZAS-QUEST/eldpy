@@ -6,7 +6,7 @@ import wptools
 import wikidata_ids
 
 
-def process(ID):
+def process(ID, first=False):
     """find all classes this ID subclasses and recurse"""
     global d  # stores the found items
     global queuelength
@@ -33,7 +33,10 @@ def process(ID):
     # 279 is the code for sublass_of
     p279s = page.data["claims"].get("P279")
     # 31 is the code for instance_of
-    p31s = page.data["claims"].get("P31")
+    if first: #we only allow instance_of at leaves of the tree, otherwise we get "class is_instance of metaclass" predicates, which we do not want.
+        p31s = page.data["claims"].get("P31")
+    else:
+        p31s = []
     # store retrieved data
     d[ID] = {"p31s": p31s, "p279s": p279s}
     if p279s is None:
@@ -73,7 +76,7 @@ if __name__ == "__main__":
     print "retrieving parents for %i items from wikidata" % len(initqueue)
     for wikidata_id in initqueue:
         print (wikidata_id)
-        process(wikidata_id)
+        process(wikidata_id, first=True)
     # store cached data
     with open("superclasses.json", "w") as out:
         out.write(json.dumps(d, indent=4, sort_keys=True))
