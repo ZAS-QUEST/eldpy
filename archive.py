@@ -383,7 +383,8 @@ class Archive:
 
     def get_eaf_hash(self, eafname):
         eafbasename = eafname.split("/")[-1]
-        hashed_eaf = hash(eafbasename)
+        hashed_eaf = str(hash(eafbasename))[-7:]
+
         return hashed_eaf
 
     def write_transcriptions_rdf(self):
