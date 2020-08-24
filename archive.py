@@ -666,7 +666,7 @@ class Archive:
                     for q_value in tier:
                         g.add((
                             lod.QUESTRESOLVER[tier_id],   # TODO better use archive specific resolvers
-                            lod.DC.topic,
+                            lod.DC.subject,
                             lod.WIKIDATA[q_value],
                             ))
         lod.write_graph(g, "rdf/%s-entities.n3" % self.name)
