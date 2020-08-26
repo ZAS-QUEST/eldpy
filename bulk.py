@@ -7,7 +7,6 @@ def bulk_populate(archives_to_populate=archives, cache=True, exclude=[]):
         return json.loads(open("cache/%s/%s.json" % (type_, archivename)).read())
 
     for archivename in archives_to_populate:
-        #print(archivename)
         print("processing", archivename)
         archive = archives_to_populate[archivename]
         #print(archive)
@@ -56,7 +55,7 @@ def bulk_cache(cachearchives=archives, exclude=[]):
                 out.write(json.dumps(d_for_json, indent=4, sort_keys=True))
 
     print("caching json")
-    types = ["translations", "transcriptions", "glosses", "entities"]
+    types = ["eafs", "translations", "transcriptions", "glosses", "entities"]
     for type_ in types:
         if type_ in exclude:
             print(type_, "excluded")

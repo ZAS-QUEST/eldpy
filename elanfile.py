@@ -53,6 +53,28 @@ class ElanFile:
         self.timeslottedancestors = self.get_timeslotted_parents()
         # print(len(self.timeslottedancestors))
 
+
+    def __eq__(self, other): #this is needed for some rdflib function which throws unclear errors
+        return (self.path == other.path)
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    def __lt__(self, other):
+        return (self.path < other.path)
+
+    def __gt__(self, other):
+        return (self.path > other.path)
+
+
+    def __le__(self, other):
+        return (self.path <= other.path)
+
+    def __ge__(self, other):
+        return (self.path >= other.path)
+
+
+
     def get_timeslotted_parents(self):
         def get_timeslotted_parent(ID, d):
             parent_id = self.ref_annotations[ID]

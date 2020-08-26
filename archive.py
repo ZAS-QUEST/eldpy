@@ -142,6 +142,7 @@ class Archive:
         else:  # if not cache
             if self.name in ["PARADISEC","PARADISEC2"]:  # to be extended
                 collections = glob.glob("./%s/*" % self.name.lower())
+                print(collections)
                 for collection in collections:
                     collectionbasename = collection.split("/")[-1]
                     #print(collectionbasename)
@@ -152,14 +153,14 @@ class Archive:
                         urlprefix=self.collectionprefix,
                         url_template=self.collection_url_template,
                     )
-                    filenames = glob.glob("%s/*eaf" % collection)
                     paradisecpaths = defaultdict(list)
+                    filenames = glob.glob("%s/*eaf" % collection)
                     for filename in filenames:
                         basename = filename.split("/")[-1]
                         collectionthrowaway, bundle, recordingthrowaway = basename.split("-")
                         #print(collectionbasename, bundle, basename)
                         paradisecpaths[bundle].append(basename)
-                self.collections[collectionbasename].elanpaths = paradisecpaths
+                    self.collections[collectionbasename].elanpaths = paradisecpaths
             if self.name in ["TLA","TLA2"]:  # to be extended
                 collections = glob.glob("./%s/*" % self.name.lower())
                 #print(collections)
@@ -183,9 +184,9 @@ class Archive:
                         tlapaths[bundle].append(basename)
                     #pprint.pprint(tlapaths)
                     #pprint.pprint(self.collections[collectionbasename].__dict__)
-                #print(6)
-                self.collections[collectionbasename].elanpaths = tlapaths
-                #pprint.pprint(self.collections[collectionbasename].elanpaths)
+                    #print(6)
+                    self.collections[collectionbasename].elanpaths = tlapaths
+                    #pprint.pprint(self.collections[collectionbasename].elanpaths)
             if self.name in ["ELAR","ELAR2"]:  # to be extended
                 collections = glob.glob("./%s/*" % self.name.lower())
                 #print(collections)
@@ -209,9 +210,9 @@ class Archive:
                         tlapaths[bundle].append(basename)
                     #pprint.pprint(tlapaths)
                     #pprint.pprint(self.collections[collectionbasename].__dict__)
-                #print(6)
-                self.collections[collectionbasename].elanpaths = tlapaths
-                #pprint.pprint(self.collections[collectionbasename].elanpaths)
+                    #print(6)
+                    self.collections[collectionbasename].elanpaths = tlapaths
+                    #pprint.pprint(self.collections[collectionbasename].elanpaths)
             if self.name in ["AILLA","AILLA2"]:  # to be extended
                 collections = glob.glob("./%s/*" % self.name.lower())
                 for collection in collections:
@@ -231,7 +232,7 @@ class Archive:
                         bundle = collectionbasename
                         #print(collectionbasename, bundle, basename)
                         aillapaths[bundle].append(basename)
-                self.collections[collectionbasename].elanpaths = aillapaths
+                    self.collections[collectionbasename].elanpaths = aillapaths
 
     def get_fingerprints(self):
         """map filenames to fingerprints"""
@@ -379,6 +380,7 @@ class Archive:
                         lod.QUESTRESOLVER[collection],
                     )
                 )
+        print(len(g), "metadata triples")
         lod.write_graph(g, "rdf/%s-metadata.n3" % self.name)
 
     def get_eaf_hash(self, eafname):
@@ -427,6 +429,7 @@ class Archive:
                                 lod.QUESTRESOLVER[tier_id],
                             )
                         )
+        print(len(g), "transcription triples")
         lod.write_graph(g, "rdf/%s-transcriptions.n3" % self.name)
 
     def write_translations_rdf(self):
@@ -466,6 +469,7 @@ class Archive:
                                 lod.ARCHIVE_NAMESPACES[self.name.lower()][eaf_id],
                             )
                         )
+        print(len(g), "translation triples")
         lod.write_graph(g, "rdf/%s-translations.n3" % self.name)
 
     def write_glosses_rdf(self):
@@ -591,7 +595,7 @@ class Archive:
                                                lod.QUESTRESOLVER[nextmorph_id]
                                              ))
                                     except IndexError:  # we have reached the end of the list
-                                        g.add((lod.QUESTRESOLVER[nextmorph_id],
+                                        g.add((lod.QUESTRESOLVER[morph_id],
                                                lod.LIGT.nextWord,
                                                lod.RDF.nil,
                                             ))
@@ -646,6 +650,7 @@ class Archive:
                                            #lod.LIGT.hasWord,
                                            #lod.QUESTRESOLVER[gloss_id],
                                          #))
+        print(len(g), "gloss triples")
         lod.write_graph(g, "rdf/%s-glosses.n3" % self.name)
 
     def write_entities_rdf(self):
@@ -669,6 +674,7 @@ class Archive:
                             lod.DC.subject,
                             lod.WIKIDATA[q_value],
                             ))
+        print(len(g), "entity triples")
         lod.write_graph(g, "rdf/%s-entities.n3" % self.name)
 
     def write_rdf(self):

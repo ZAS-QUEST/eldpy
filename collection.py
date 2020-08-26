@@ -61,7 +61,7 @@ class Collection:
 
     def acquire_elans(self, cache=True):
         #print(self.ID)
-        #pprint.pprint(self.elanpaths)
+        pprint.pprint(self.elanpaths)
         collectionpathpart = self.ID
         for bundle in self.elanpaths:
             #print(bundle)

@@ -24,8 +24,15 @@ for fn in glob.glob('../cache/glosses/*'):
                                     gloss = gloss.lower().strip()
                                 except AttributeError:
                                     continue
-                                if " " in gloss: #most likely a multi-gloss item
+                                flag = False
+                                for c in " 123*АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяҷөғ":
+                                    if c in gloss:
+                                        flag = True
+                                if flag:
                                     continue
+                                if gloss in ("stem", "suffix", "prefix", "n", "v", "nprop", "adj","pron","adv", "q", "mrph", "cl", "interj", "intr", "stat", "rus", "cardnum", "ordnum", "coordconn", "adp", "root", "seq", "attr"):
+                                    continue
+
                                 dico[word][gloss] = True
     #print(dico)
     for word in dico:
@@ -38,4 +45,5 @@ for fn in glob.glob('../cache/glosses/*'):
             meaning2 = meaninglist[i+1]
             colexification_dic[(meaning1,meaning2)][collection] = True
 
-pprint.pprint(colexification_dic)
+strippeddic = {key:colexification_dic[key] for key in colexification_dic if len(colexification_dic[key].keys())>3}
+pprint.pprint([(x,len(strippeddic[x])) for x in strippeddic.keys()])
