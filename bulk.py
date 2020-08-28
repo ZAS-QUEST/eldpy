@@ -55,7 +55,7 @@ def bulk_cache(cachearchives=archives, exclude=[]):
                 out.write(json.dumps(d_for_json, indent=4, sort_keys=True))
 
     print("caching json")
-    types = ["eafs", "translations", "transcriptions", "glosses", "entities"]
+    types = ["elanpaths", "translations", "transcriptions", "glosses", "entities"]
     for type_ in types:
         if type_ in exclude:
             print(type_, "excluded")

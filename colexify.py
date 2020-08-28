@@ -25,12 +25,12 @@ for fn in glob.glob('../cache/glosses/*'):
                                 except AttributeError:
                                     continue
                                 flag = False
-                                for c in " 123*АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяҷөғ":
+                                for c in " 123*АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяҷөғɨβŋñ?":
                                     if c in gloss:
                                         flag = True
                                 if flag:
                                     continue
-                                if gloss in ("stem", "suffix", "prefix", "n", "v", "nprop", "adj","pron","adv", "q", "mrph", "cl", "interj", "intr", "stat", "rus", "cardnum", "ordnum", "coordconn", "adp", "root", "seq", "attr"):
+                                if gloss in ("stem", "suffix", "prefix", "n", "v", "nprop", "adj","pron","adv", "q", "mrph", "cl", "interj", "intr", "stat", "rus", "cardnum", "ordnum", "coordconn", "adp", "root", "seq", "attr", "exi.neg", "verb","adj>adv", "vd", "num>n", "adj>adv","postp","conj"):
                                     continue
 
                                 dico[word][gloss] = True
