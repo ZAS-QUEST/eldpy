@@ -137,7 +137,7 @@ if __name__ == "__main__":
     print("found %i files in %s" % (len(files), directory))
     language = 'xxx'
     glossesd = defaultdict(int)
-    excludechars = ".\\}{=~:"
+    excludechars = ".\\}{=~:/"
     for filename in files:
         try:
             s = open(filename).read()
