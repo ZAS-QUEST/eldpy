@@ -1,9 +1,12 @@
+import glob
 import sys
 import re
 import sre_constants
 import pprint
 import json
+import operator
 import os
+from collections import defaultdict
 
 #GLL = re.compile(
     #r"\\gll[ \t]*(.*?) *?\\\\\\\\\n[ \t]*(.*?) *?\\\\\\\\\n+[ \t]*\\\\glt[ \t\n]*(.*?)\n"
@@ -16,7 +19,7 @@ TRSLINE = r"\\glt[ \t\n]*(.*?)\n"
     #r"\\gll[ \t]*(.*?) *?\\\\\n[ \t]*(.*?) *?\\\\\n+[ \t]*\\glt[ \t\n]*(.*?)\n"
 #)
 GLL = re.compile(SOURCELINE+IMTLINE+TRSLINE)
-TEXTEXT = re.compile(r"\text(.*?)\{(.*?)\}")
+TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
 STARTINGQUOTE = "`‘"
 ENDINGQUOTE = "'’"
 TEXREPLACEMENTS = [
@@ -58,12 +61,12 @@ class gll:
             self.trs = self.trs[:-1]
         self.srcwordstex = self.src.split()
         self.imtwordstex = self.imt.split()
-        try:
-            assert len(self.srcwordstex) == len(self.imtwordstex)
-        except AssertionError:
-            pass
-            #print(len(self.srcwordstex), len(self.imtwordstex))
-            #print(self.srcwordstex, self.imtwordstex)
+        #try:
+        assert len(self.srcwordstex) == len(self.imtwordstex)
+        #except AssertionError:
+        #pass
+        #print(len(self.srcwordstex), len(self.imtwordstex))
+        #print(self.srcwordstex, self.imtwordstex)
         self.categories = self.tex2categories(imt)
         self.srcwordshtml = [self.tex2html(w) for w in self.srcwordstex]
         self.imtwordshtml = [self.tex2html(w) for w in self.imtwordstex]
@@ -129,29 +132,50 @@ class gll:
 
 
 if __name__ == "__main__":
-    filename = sys.argv[1]
-    language = sys.argv[2]
-    #try:
-    s = open(filename).read()
-    #except IndexError:
-        #s = ""
-    examples = []
-    glls = GLL.findall(s)
-    print(filename, end=": ")
-    print(len(glls))
-    for g in glls:
-        #try:
-        examples.append(gll(*g, filename=filename, language=language))
-        #except AssertionError:
-            #pass
-        #except IndexError:
-            #pass
-        #except sre_constants.error:
-            #pass
-    if examples != []:
-        jsons = json.dumps([ex.__dict__ for ex in examples], sort_keys=True, indent=4)
-        with open('langscijson/%sexamples.json'%filename[:-4].replace('/','-').replace('-chapters', ''), 'w') as jsonout:
-            jsonout.write(jsons)
+    directory = sys.argv[1]
+    files = glob.glob("%s/*/chapters/*tex" % directory)
+    print("found %i files in %s" % (len(files), directory))
+    language = 'xxx'
+    glossesd = defaultdict(int)
+    excludechars = ".\\}{=~:"
+    for filename in files:
+        try:
+            s = open(filename).read()
+        except UnicodeDecodeError:
+            print("Unicode problem in %s"% filename)
+        examples = []
+        glls = GLL.findall(s)
+        #print(filename, end=": ")
+        #print(len(glls))
+        for g in glls:
+            try:
+                thisgll = gll(*g, filename=filename, language=language)
+            except AssertionError:
+                continue
+            examples.append(thisgll)
+            for word in thisgll.imtwordsbare:
+                if not word.isupper():
+                    flag = False
+                    for ch in excludechars:
+                        if ch in word:
+                            flag = True
+                    if flag:
+                        continue
+                    glossesd[word] += 1
+            #except IndexError:
+                #pass
+            #except sre_constants.error:
+                #pass
+        if examples != []:
+            jsons = json.dumps([ex.__dict__ for ex in examples], sort_keys=True, indent=4)
+            with open('langscijson/%sexamples.json'%filename[:-4].replace('/','-').replace('-chapters', ''), 'w') as jsonout:
+                jsonout.write(jsons)
+    with open('imtwords.json', 'w') as glossout:
+        sorted_glosses = sorted(glossesd.items(), key=operator.itemgetter(1))
+        glossout.write("\n".join(
+                                ["%s: %i" % (x[0], x[1]) for x in sorted_glosses[::-1]]
+                            )
+                    )
         #out = open("xigtdata/%sexamples.xml" % filename[:-4].replace("/", "-"), "w")
         #out.write(
             #"""
