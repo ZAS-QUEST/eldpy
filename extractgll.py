@@ -16,7 +16,7 @@ TRSLINE = r"\\glt[ \t\n]*(.*?)\n"
     #r"\\gll[ \t]*(.*?) *?\\\\\n[ \t]*(.*?) *?\\\\\n+[ \t]*\\glt[ \t\n]*(.*?)\n"
 #)
 GLL = re.compile(SOURCELINE+IMTLINE+TRSLINE)
-TEXTEXT = re.compile("\\\\text(.*?)\{(.*?)\}")
+TEXTEXT = re.compile(r"\text(.*?)\{(.*?)\}")
 STARTINGQUOTE = "`‘"
 ENDINGQUOTE = "'’"
 TEXREPLACEMENTS = [
@@ -58,7 +58,12 @@ class gll:
             self.trs = self.trs[:-1]
         self.srcwordstex = self.src.split()
         self.imtwordstex = self.imt.split()
-        assert len(self.srcwordstex) == len(self.imtwordstex)
+        try:
+            assert len(self.srcwordstex) == len(self.imtwordstex)
+        except AssertionError:
+            pass
+            #print(len(self.srcwordstex), len(self.imtwordstex))
+            #print(self.srcwordstex, self.imtwordstex)
         self.categories = self.tex2categories(imt)
         self.srcwordshtml = [self.tex2html(w) for w in self.srcwordstex]
         self.imtwordshtml = [self.tex2html(w) for w in self.imtwordstex]
@@ -81,7 +86,10 @@ class gll:
     def striptex(self, s, sc2upper=False):
         if sc2upper:
             for c in self.categories:
-                s = re.sub("\\\\textsc{%s}" % c, c.upper(), s)
+                try:
+                    s = re.sub("\\\\textsc{%s}" % c, c.upper(), s)
+                except sre_constants.error:
+                    pass
         result = re.sub(TEXTEXT, "\\2", s)
 
         for r in TEXREPLACEMENTS:
@@ -127,23 +135,23 @@ if __name__ == "__main__":
     s = open(filename).read()
     #except IndexError:
         #s = ""
-    print(len(s))
     examples = []
     glls = GLL.findall(s)
     print(filename, end=": ")
     print(len(glls))
     for g in glls:
-        try:
-            examples.append(gll(*g, filename=filename, language=language))
-        except AssertionError:
-            pass
-        except IndexError:
-            pass
-        except sre_constants.error:
-            pass
+        #try:
+        examples.append(gll(*g, filename=filename, language=language))
+        #except AssertionError:
+            #pass
+        #except IndexError:
+            #pass
+        #except sre_constants.error:
+            #pass
     if examples != []:
         jsons = json.dumps([ex.__dict__ for ex in examples], sort_keys=True, indent=4)
-        out = open('langscijson/%sexamples.json'%filename[:-4].replace('/','-'), 'w')
+        with open('langscijson/%sexamples.json'%filename[:-4].replace('/','-').replace('-chapters', ''), 'w') as jsonout:
+            jsonout.write(jsons)
         #out = open("xigtdata/%sexamples.xml" % filename[:-4].replace("/", "-"), "w")
         #out.write(
             #"""
