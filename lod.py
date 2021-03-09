@@ -36,7 +36,8 @@ ARCHIVE_NAMESPACES = {
     'elar': Namespace("https://elar.soas.ac.uk/resources/"),
     'ailla': Namespace("http://ailla.utexas.org/islandora/object/"),
     'anla': Namespace("https://www.uaf.edu/anla/collections/search/resultDetail.xml?id="),
-    'tla': Namespace("https://archive.mpi.nl/islandora/object/")
+    'tla': Namespace("https://archive.mpi.nl/islandora/object/"),
+    'langsci': Namespace("https://langsci-press.org/catalog/book/")
     }
 
 #duplicate for test purposes
