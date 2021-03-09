@@ -181,7 +181,7 @@ def langsciextract(directory):
                 except AssertionError:
                     continue
                 examples.append(thisgll)
-                example_block_ID = book_lod_ID+thisgll.ID
+                example_block_ID = f"{book_lod_ID}_{thisgll.ID}"
                 sentence_word_tier_lod_ID = f"{example_block_ID}_wt"
                 sentence_morph_tier_lod_ID = f"{example_block_ID}_mt"
                 wordstring =  " ".join(thisgll.srcwordsbare)
