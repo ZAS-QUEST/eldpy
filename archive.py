@@ -15,7 +15,7 @@ from lxml.html.soupparser import fromstring
 # from random import shuffle
 import matplotlib.pyplot as plt
 from matplotlib import cm
-import squarify
+# import squarify
 from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
 
 from .collection import Collection

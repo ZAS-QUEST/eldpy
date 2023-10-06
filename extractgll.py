@@ -163,7 +163,12 @@ def langsciextract(directory):
             lod.LIGT.annotation
             ))
     for book in books:
-        book_ID = int(book.split("/")[-1])
+        try:
+            basename = book.split("/")[-1]
+            book_ID = int(basename)
+        except ValueError:
+            print(f"{basename} is not a valid langsciID")
+            continue
         book_lod_ID = f"book{book_ID}"
         #print("found %i books in %s" % (len(books), directory))
         language = langsci_d.get(int(book_ID), "und")

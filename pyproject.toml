@@ -1,0 +1,31 @@
+[project]
+name = "eldpy"
+description = "A Python package to download and analyze data from endangered language archives"
+version = "0.1.0"
+authors = [
+    { name = "Sebastian Nordhoff", email = "sebastian.nordhoff@glottotopia.de" }
+]
+dependencies = [
+    "pyspark[ml]",
+    "sklearn"
+]
+
+[project.optional-dependencies]
+dev = [
+        "pycryptodome",
+        "lxml",
+        "matplotlib",
+        "rdflib",
+        "sklearn",
+        "tqdm",
+        "requests",
+        "urllib",
+        "wptools",
+        "squarify",
+        "langdetect",
+        "random2",
+]
+
+# [build-system]
+# build-backend = "flit_core.buildapi"
+# requires = ["flit_core >=3.2,<4"]
