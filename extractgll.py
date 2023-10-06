@@ -52,7 +52,6 @@ TEXREPLACEMENTS = [
 
 class gll:
     def __init__(self, src, imt, trs, filename=None, language=None):
-        self.filename = filename
         self.src = src
         self.imt = imt
         self.language = language
@@ -70,16 +69,22 @@ class gll:
         #print(len(self.srcwordstex), len(self.imtwordstex))
         #print(self.srcwordstex, self.imtwordstex)
         self.categories = self.tex2categories(imt)
-        self.srcwordshtml = [self.tex2html(w) for w in self.srcwordstex]
-        self.imtwordshtml = [self.tex2html(w) for w in self.imtwordstex]
+        #self.srcwordshtml = [self.tex2html(w) for w in self.srcwordstex]
+        #self.imtwordshtml = [self.tex2html(w) for w in self.imtwordstex]
+        imt_html = '\n'.join(['\t<div class="imtblock">\n\t\t<div class="srcblock">' + self.tex2html(t[0]) + '</div>\n\t\t<div class="glossblock">' + self.tex2html(t[1]) + '</div>\n\t</div>'
+                    for t
+                    in zip(self.srcwordstex, self.imtwordstex)
+                    ])
+        self.html = f'<div class="imtblocks">\n{imt_html}\n</div>\n'
         self.srcwordsbare = [self.striptex(w) for w in self.srcwordstex]
         self.imtwordsbare = [self.striptex(w, sc2upper=True) for w in self.imtwordstex]
         self.clength = len(self.src)
         self.wlength = len(self.srcwordsbare)
         self.ID = "%s-%s" % (
-            self.filename.replace(".tex", "").split("/")[-1],
+            filename.replace(".tex", "").split("/")[-1],
             str(hash(self.src))[:6],
         )
+        self.bookID = filename.split('/')[3]
         self.analyze()
 
     def tex2html(self, s):
@@ -160,7 +165,7 @@ def langsciextract(directory):
     for book in books:
         book_ID = int(book.split("/")[-1])
         book_lod_ID = f"book{book_ID}"
-        print("found %i books in %s" % (len(books), directory))
+        #print("found %i books in %s" % (len(books), directory))
         language = langsci_d.get(int(book_ID), "und")
         glossesd = defaultdict(int)
         excludechars = ".\\}{=~:/"
@@ -174,7 +179,7 @@ def langsciextract(directory):
             examples = []
             glls = GLL.findall(s)
             #print(filename, end=": ")
-            print(f"  {len(glls)}")
+            #print(f"  {len(glls)}")
             for g in glls:
                 try:
                     thisgll = gll(*g, filename=filename, language=language)
@@ -281,7 +286,7 @@ def langsciextract(directory):
                     try:
                         assert len(morphs) == len(morphglosses)
                     except AssertionError:
-                        print(len(morphs), len(morphglosses), morphs, morphglosses)
+                        #print(len(morphs), len(morphglosses), morphs, morphglosses)
                         continue
 
                     for j in range(len(morphs)):
@@ -349,18 +354,21 @@ def langsciextract(directory):
                 #pass
             #except sre_constants.error:
                 #pass
-        if examples != []:
-            jsons = json.dumps([ex.__dict__ for ex in examples], sort_keys=True, indent=4)
-            with open('langscijson/%sexamples.json'%filename[:-4].replace('/','-').replace('-chapters', ''), 'w') as jsonout:
-                jsonout.write(jsons)
-    print(len(graph), "gloss triples")
-    lod.write_graph(graph, "langsci-glosses.n3")
-    with open('imtwords.json', 'w') as glossout:
-        sorted_glosses = sorted(glossesd.items(), key=operator.itemgetter(1))
-        glossout.write("\n".join(
-                                ["%s: %i" % (x[0], x[1]) for x in sorted_glosses[::-1]]
-                            )
-                    )
+            if examples != []:
+                jsons = json.dumps([ex.__dict__ for ex in examples], sort_keys=True, indent=4, ensure_ascii=False)
+                jsonname = 'langscijson/%sexamples.json'%filename[:-4].replace('/','-').replace('eldpy-langscitex--','').replace('-chapters', '')
+                #print(filename)
+                print("   ", jsonname)
+                with open(jsonname, 'w', encoding='utf8') as jsonout:
+                    jsonout.write(jsons)
+    #print(len(graph), "gloss triples")
+    #lod.write_graph(graph, "langsci-glosses.n3")
+    #with open('imtwords.json', 'w') as glossout:
+        #sorted_glosses = sorted(glossesd.items(), key=operator.itemgetter(1))
+        #glossout.write("\n".join(
+                                #["%s: %i" % (x[0], x[1]) for x in sorted_glosses[::-1]]
+                            #)
+                    #)
 
 
 
