@@ -6,12 +6,19 @@ import sys
 
 
 def analyze_colexifications(directory, threshold=3, double_files=[]):
-    #language = 'abc'
+    """return  a list of colexifications found in a directory with json files
+
+    directory -- the directory where the json files are found
+    threshold -- how many files should have occurrences of (word,gloss) for it to count as colexification
+    double_files -- a list of known double tfile names to be skipped
+    """
+
     colexification_dic = defaultdict(dict)
-    print(directory)
-    double_files = ("268837","WEW2018","zauzou-li-0535")
-    for fn in glob.glob(f"{directory}/*json"):
-        print(f"reading {fn}")
+    print(f"scanning {directory}")
+    json_files = glob.glob(f"{directory}/*json")
+    print(f"found {len(json_files)} json files")
+    for fn in json_files:
+        print(f"\nreading {fn}")
         j = json.loads(open(fn).read())
         for a in j: #there is only one archive in the json file
             oldskip = None
@@ -26,11 +33,9 @@ def analyze_colexifications(directory, threshold=3, double_files=[]):
                     if collection == oldskip:
                         print(".", end="")
                     else:
-                        print(f"skipping {collection}")
+                        print(f"\nskipping doublet file {collection}")
                         oldskip = collection
                     continue
-                if oldskip is not None:
-                    print("")
                 oldskip = None
                 for tiertype in j[a][eaf]:
                     for tiername in j[a][eaf][tiertype]:
@@ -79,4 +84,7 @@ if __name__ == "__main__":
     dic = analyze_colexifications(directory,double_files=["268837","WEW2018","zauzou-li-0535"])
     # pprint.pprint(dic)
     sorted_list = sorted([(len(dic[x]),x) for x in dic.keys()],reverse=True)
-    pprint.pprint(sorted_list)
+    print(f"\nfound {len(sorted_list)} colexification candidates")
+    print("writing to colexification.json")
+    with open("colexification.json", "w") as out:
+        out.write(json.dumps(sorted_list))
