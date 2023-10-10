@@ -2,7 +2,7 @@ import json
 import glob
 from rdflib import Namespace, Graph, Literal, RDF, RDFS #, URIRef, BNode
 from rdflib.namespace import NamespaceManager, DC #, FOAF
-from .resolver import get_URI_for_AILLA, get_URI_for_ANLA, get_URI_for_TLA, get_URI_for_Paradisec, get_URI_for_ELAR
+# from .resolver import get_URI_for_AILLA, get_URI_for_ANLA, get_URI_for_TLA, get_URI_for_Paradisec, get_URI_for_ELAR
 
 
 #define general namespaces
