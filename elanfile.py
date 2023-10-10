@@ -259,7 +259,21 @@ class ElanFile:
                     )
                 )
             return True
-        return False
+        if toplanguage is None:
+            if logtype == "False":
+                logger.warning(
+                                "could not detect language for %s in %s"
+                                % (list_, self.path)
+                            )
+            return False
+        if toplanguage.prob < self.LANGDETECTTHRESHOLD:
+            # language is English or Spanish, but likelihood is too small
+            if logtype == "False":
+                logger.warning(
+                    'ignored %.2f%% probability English for "%s ..."'
+                    % (toplanguage.prob * 100, " ".join(list_)[:100])
+                )
+            return False
 
 
     def tier_to_wordlist(self,t):
@@ -286,6 +300,25 @@ class ElanFile:
                     ]
         timelistannno = [anno.get_duration() for anno in self.get_annotation_list(t)]
         return sum(timelist + timelistannno) / 1000
+
+    def has_minimal_translation_length(self, t):
+        """
+        how many words should the average annotation have for this
+        tier to be counted as translation?
+        Very short stretches are typically not translations but something else
+        """
+
+        translation_minimum = 1.5
+        avg_annotation_length = sum(
+            [len(x.strip().split()) for x in t]
+        ) / len(t)
+        if avg_annotation_length < translation_minimum:
+            logger.warning(
+                "%s has too short annotations (%s) for the tier to be a translation (%s ,...)"
+                % (tierID, avg_annotation_length, ", ".join(t[:3]))
+            )
+            return False
+        return True
 
     def populate_transcriptions(self):
         """fill the attribute transcriptions with translations from the ELAN file"""
@@ -333,41 +366,14 @@ class ElanFile:
             if translationtiers != []:  # we found a tier of the linguistic type
                 for tier in translationtiers:
                     tierID = tier.attrib["TIER_ID"]
-                    # create a list of all words in that tier
                     wordlist = self.tier_to_wordlist(tier)
                     if wordlist == []:
                         continue
-                    # sometimes, annotators put non-English contents in translation tiers
-                    # for our purposes, we want to discard such content
-                    try:  # detect candidate languages and retrieve most likely one
-                        toplanguage = detect_langs(" ".join(wordlist))[0]
-                    except lang_detect_exception.LangDetectException:
-                        logger.warning(
-                            "could not detect language for %s in %s"
-                            % (wordlist, self.path)
-                        )
+                    # Sometimes, annotators put non-English contents in translation tiers
+                    # For our purposes, we want to discard such content
+                    if not self.is_major_language(wordlist):
                         continue
-                    if toplanguage.lang != "en":
-                        continue
-                    if toplanguage.prob < self.LANGDETECTTHRESHOLD:
-                        # language is English, but likelihood is too small
-                        logger.warning(
-                            'ignored %.2f%% probability English for "%s ..."'
-                            % (toplanguage.prob * 100, " ".join(wordlist)[:100])
-                        )
-                        continue
-                    # how many words should the average annotation have for this
-                    # tier to be counted as translation?
-                    # Very short stretches are typically not translations but something else
-                    translation_minimum = 1.5
-                    avg_annotation_length = sum(
-                        [len(x.strip().split()) for x in wordlist]
-                    ) / len(wordlist)
-                    if avg_annotation_length < translation_minimum:
-                        logger.warning(
-                            "%s has too short annotations (%s) for the tier to be a translation (%s ,...)"
-                            % (tierID, avg_annotation_length, ", ".join(wordlist[:3]))
-                        )
+                    if not self.has_minimal_translation_length(wordlist):
                         continue
                     translations[candidate][tierID] = wordlist
         self.translations = translations
