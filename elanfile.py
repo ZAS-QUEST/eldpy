@@ -21,7 +21,7 @@ class ElanFile:
     def __init__(self, path, url, namespace=None):
         # self.name = name
         self.path = path
-        self.ID = self.path.split('/')[-1]
+        self.ID = self.path.split("/")[-1]
         self.url = url
         self.namespace = namespace
         self.tiers = []
@@ -34,6 +34,7 @@ class ElanFile:
         self.reftypes = {}
         self.transcriptions = {}
         self.translations = {}
+        self.fingerprint = None
         try:
             self.timeslots = self.get_timeslots()
         except KeyError:
@@ -53,27 +54,27 @@ class ElanFile:
         self.timeslottedancestors = self.get_timeslotted_parents()
         # print(len(self.timeslottedancestors))
 
+    LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
 
-    def __eq__(self, other): #this is needed for some rdflib function which throws unclear errors
-        return (self.path == other.path)
+    def __eq__(
+        self, other
+    ):  # this is needed for some rdflib function which throws unclear errors
+        return self.path == other.path
 
     def __ne__(self, other):
         return not (self == other)
 
     def __lt__(self, other):
-        return (self.path < other.path)
+        return self.path < other.path
 
     def __gt__(self, other):
-        return (self.path > other.path)
-
+        return self.path > other.path
 
     def __le__(self, other):
-        return (self.path <= other.path)
+        return self.path <= other.path
 
     def __ge__(self, other):
-        return (self.path >= other.path)
-
-
+        return self.path >= other.path
 
     def get_timeslotted_parents(self):
         def get_timeslotted_parent(ID, d):
@@ -95,7 +96,6 @@ class ElanFile:
         a = {ra: get_timeslotted_parent(ra, d) for ra in self.ref_annotations}
         return a
 
-    LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
 
     def xml(self):
         root = etree.parse(self.path)
@@ -128,7 +128,7 @@ class ElanFile:
         # NER triples
         pass
 
-    def fingerprint(self):
+    def get_fingerprint(self):
         """
         check the tiers there are in a given file and
         return a fingerprint describing the structure
@@ -138,17 +138,20 @@ class ElanFile:
         - a: association
         - x: anything else
         """
-
-        tree = self.xml()
-        self.fingerprint = "["
-        # start with dummy tier
-        self.analyze_tier(
-            {"id": self.path, "constraint": "root", "ltype": ""},
-            0,
-            # lump=lump
-        )
-        self.fingerprint += "]"
-        return self.fingerprint
+        if self.fingerprint:
+            return self.fingerprint
+        else:
+            tree = self.xml()
+            #the fingerprint is computed recursively, hence we store it as an attribute
+            self.fingerprint = "["
+            # start with dummy tier
+            self.analyze_tier(
+                {"id": self.path, "constraint": "root", "ltype": ""},
+                0,
+                # lump=lump
+            )
+            self.fingerprint += "]"
+            return self.fingerprint
 
     def analyze_tier(self, d, level, lump=False):
         """analyze a tier and its children"""
@@ -211,10 +214,14 @@ class ElanFile:
                     # get a list of duration from the time slots directly mentioned in annotations
                     if wordlist == []:
                         continue
-                    #check for ID tiers. ID tiers either have only digits, or they have an ID consisting of the filename and a running number. We have to find at least three digits since some tone languages use two digit tone indications like "ma24ma52"
-                    if re.search("[0-9]{3}$", wordlist[0]) or re.match("[0-9]+", wordlist[0]) :
-                        if len(wordlist)>1:
-                           if re.search("[0-9]{3}$", wordlist[1]) or re.match("[0-9]+", wordlist[1]) : #this is an ID tier
+                    # check for ID tiers. ID tiers either have only digits, or they have an ID consisting of the filename and a running number. We have to find at least three digits since some tone languages use two digit tone indications like "ma24ma52"
+                    if re.search("[0-9]{3}$", wordlist[0]) or re.match(
+                        "[0-9]+", wordlist[0]
+                    ):
+                        if len(wordlist) > 1:
+                            if re.search("[0-9]{3}$", wordlist[1]) or re.match(
+                                "[0-9]+", wordlist[1]
+                            ):  # this is an ID tier
                                 print("skipping ID tier")
                                 continue
                     timelist = [
@@ -224,21 +231,21 @@ class ElanFile:
                     ]
                     # get a list of durations from time slots mentioned in parent elements
                     aas = self.get_alignable_annotations(root)
-                    #print(aas)
+                    # print(aas)
                     annotation_list = []
                     for ref_annotation in tier.findall(".//REF_ANNOTATION"):
                         if ref_annotation.find(".//ANNOTATION_VALUE").text is not None:
                             try:
                                 annotation = Annotation(
-                                        aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
-                                        self.timeslots
-                                    )
+                                    aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
+                                    self.timeslots,
+                                )
                                 annotation_list.append(annotation)
                             except ValueError:
                                 continue
-                    #except KeyError:
-                        #print("problem with annotation list")
-                        #continue
+                    # except KeyError:
+                    # print("problem with annotation list")
+                    # continue
                     timelistannno = [anno.get_duration() for anno in annotation_list]
                     secs = sum(timelist + timelistannno) / 1000
                     time_in_seconds.append(secs)
@@ -248,14 +255,19 @@ class ElanFile:
                         # we are happy that this is an unknown language
                         toplanguage = None
                     # print(toplanguage)
-                    if (toplanguage
+                    if (
+                        toplanguage
                         and toplanguage.lang in ("en", "es")
                         and toplanguage.prob > self.LANGDETECTTHRESHOLD
-                       ):
+                    ):
                         # language is English
                         logger.warning(
                             'ignored vernacular tier with "%s" language content at %.2f%% probability ("%s ...")'
-                            % (toplanguage.lang, toplanguage.prob * 100, " ".join(wordlist)[:100])
+                            % (
+                                toplanguage.lang,
+                                toplanguage.prob * 100,
+                                " ".join(wordlist)[:100],
+                            )
                         )
                         continue
                     try:
@@ -460,7 +472,7 @@ class ElanFile:
                     # pprint.pprint(glossed_sentences)
                     retrieved_glosstiers[candidate][tierID] = glossed_sentences
         self.glossed_sentences = retrieved_glosstiers
-        print(len(self.glossed_sentences),"glossed sentences")
+        print(len(self.glossed_sentences), "glossed sentences")
 
     def create_parent_dic(self):
         """
@@ -472,7 +484,6 @@ class ElanFile:
         d = {}
         for tier_ID in self.tier_hierarchy:
             for child in self.tier_hierarchy[tier_ID]:
-
                 d[child["id"]] = tier_ID
         self.child_parent_dic = d
 
@@ -556,7 +567,6 @@ class Tier:
         return []
 
     def get_glossed_categories(self):
-
         self.rawglosses = [
             supergloss
             for string in self.annotations
@@ -594,8 +604,6 @@ class Tier:
         return result
 
 
-
-
 class Annotation:
     def __init__(self, element, timeslots):
         if element is None:
@@ -618,8 +626,12 @@ class Annotation:
             self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
             self.parentID = None
             try:
-                self.starttime = int(timeslots[alignable_annotation.attrib["TIME_SLOT_REF1"]])
-                self.endtime = int(timeslots[alignable_annotation.attrib["TIME_SLOT_REF2"]])
+                self.starttime = int(
+                    timeslots[alignable_annotation.attrib["TIME_SLOT_REF1"]]
+                )
+                self.endtime = int(
+                    timeslots[alignable_annotation.attrib["TIME_SLOT_REF2"]]
+                )
             except KeyError:
                 self.starttime = 0
                 self.endtime = 0
@@ -820,4 +832,3 @@ ACCEPTABLE_GLOSS_TIER_TYPES = [
 ]
 
 ACCEPTABLE_POS_TIER_TYPES = ["ps", "parts of speech"]
-

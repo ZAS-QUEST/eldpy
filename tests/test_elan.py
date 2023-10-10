@@ -4,7 +4,7 @@ from elanfile import ElanFile
 
 def test_fingerprint():
     ef = ElanFile("goemai_test.eaf", "www")
-    fp = ef.fingerprint()
+    fp = ef.get_fingerprint()
     assert fp == "[R[x[aaas[s[aa]]]x[aaaaasa]]]"
 
 def test_translations():
