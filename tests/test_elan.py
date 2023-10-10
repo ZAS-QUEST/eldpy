@@ -14,6 +14,13 @@ def test_translations():
     assert t[0][6] == "Two people would now move around in front of him, who are the people who look after him."
     assert t[0][4] != "Two people would now move around in front of him, who are the people who look after him."
 
+
+def test_transcriptions():
+    ef = ElanFile("goemai_test.eaf", "www")
+    ef.populate_transcriptions()
+    t = ef.get_transcriptions()
+    t[0][23] == 'To, a bi goegoeme ndoe goeshin mûep pûanang goe yil Dorok.'
+
 def test_glosses():
     ef = ElanFile("goemai_test.eaf", "www")
     ef.populate_glosses()

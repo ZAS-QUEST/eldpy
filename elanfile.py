@@ -29,7 +29,7 @@ class ElanFile:
         self.translationtiers = []
         self.glosstiers = []
         self.get_tier_hierarchy()
-        self.create_parent_dic()
+        self.create_parent_tier_dic()
         self.timecodes = {}
         self.reftypes = {}
         self.transcriptions = {}
@@ -40,6 +40,7 @@ class ElanFile:
         except KeyError:
             self.timeslots = {}
         tmpxml = self.xml()
+        self.root = tmpxml
         self.alignable_annotations = {
             el.attrib["ANNOTATION_ID"]: (
                 el.attrib["TIME_SLOT_REF1"],
@@ -154,8 +155,22 @@ class ElanFile:
             return self.fingerprint
 
     def analyze_tier(self, d, level, lump=False):
-        """analyze a tier and its children"""
-        # print(d)
+        """
+        analyze a tier and its children
+
+        Recursively analyze a tier and its children for their types.
+        Tier types are indicated by the letters x, s(ubdivision), a(ssociation),
+        t, i, R, and x.
+        The Boolean keyword "lump" will subsume i(nclude in) and t(ime subdivision)
+        under s(ubdivision).
+
+        Children are an ordered list, whose start is indicated by [. After the last
+        child, the list is closed by ]. Lists can be nested for grandchildren etc.
+
+        The root of the document is indicated by R. Tiers of unkown types are indicated
+        by x.
+
+        """
         constraint = d["constraint"]
         code = "x"
         if constraint in ("Symbolic_Subdivision", "Symbolic Subdivision"):
@@ -178,9 +193,6 @@ class ElanFile:
             code = "x"
         elif constraint is None:
             code = "x"
-        else:
-            print(repr(constraint))
-            0 / 0
         self.fingerprint += code
         children = self.tier_hierarchy[d["id"]]
         if children == []:
@@ -190,110 +202,139 @@ class ElanFile:
             self.analyze_tier(child, level + 1, lump=lump)
         self.fingerprint += "]"
 
+    def is_ID_tier(self,wl):
+        """
+        check for ID tiers.
+
+        ID tiers either have only digits, or they have an ID consisting of the filename
+        and a running number. We have to find at least three digits since some tone languages
+        use two digit tone indications like "ma24ma52"
+        """
+
+        if re.search("[0-9]{3}$", wl[0]) or re.match(
+                        "[0-9]+", wl[0]
+                    ):
+            if len(wl) > 1:
+                if re.search("[0-9]{3}$", wl[1]) or re.match(
+                    "[0-9]+", wl[1]
+                ):  # this is an ID tier
+                    return true
+
+    def get_annotation_list(self, t):
+        aas = self.get_alignable_annotations(self.root)
+        result = []
+        for ref_annotation in t.findall(".//REF_ANNOTATION"):
+            if ref_annotation.find(".//ANNOTATION_VALUE").text is not None:
+                try:
+                    annotation = Annotation(
+                        aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
+                        self.timeslots,
+                    )
+                    result.append(annotation)
+                except ValueError:
+                    continue
+        return result
+
+    def is_major_language(self,list_,spanish=False,logtype="False"):
+        try:  # detect candidate languages and retrieve most likely one
+            toplanguage = detect_langs(" ".join(list_))[0]
+        except lang_detect_exception.LangDetectException:
+            # we are happy that this is an unknown language
+            toplanguage = None
+        accepted_languages = ["en"]
+        if spanish:
+            accepted_languages.append("es")
+        if (
+            toplanguage
+            and toplanguage.lang in accepted_languages
+            and toplanguage.prob > self.LANGDETECTTHRESHOLD
+        ):
+            if logtype == "True":
+                logger.warning(
+                    'ignored vernacular tier with "%s" language content at %.2f%% probability ("%s ...")'
+                    % (
+                        toplanguage.lang,
+                        toplanguage.prob * 100,
+                        " ".join(list_)[:100],
+                    )
+                )
+            return True
+        return False
+
+
+    def tier_to_wordlist(self,t):
+        """
+        create a list of all words in that tier by splitting
+        and collating all annotation values of that tier
+        """
+
+        return [
+                        av.text.strip()
+                        for av in t.findall(".//ANNOTATION_VALUE")
+                        if av.text is not None
+                    ]
+
+    def get_seconds_from_tier(self, t):
+        """
+        get a list of duration from the time slots directly mentioned in annotations
+        """
+
+        timelist = [
+                        Annotation(aa, self.timeslots).get_duration()
+                        for aa in t.findall("./ANNOTATION")
+                        if aa.text is not None
+                    ]
+        timelistannno = [anno.get_duration() for anno in self.get_annotation_list(t)]
+        return sum(timelist + timelistannno) / 1000
+
     def populate_transcriptions(self):
-        # TODO refactor this into smaller methods and functions
+        """fill the attribute transcriptions with translations from the ELAN file"""
+
         transcriptioncandidates = ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
-        transcriptions = {}
-        root = self.xml()
+        transcriptions = defaultdict(dict)
+        root = self.root
+        # we check the XML file which of the frequent names for translation tiers it uses
+        # there might be several translation tiers with different names, hence we store them
+        # in a dictionary
         time_in_seconds = []
         for candidate in transcriptioncandidates:
             # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             vernaculartiers = root.findall(querystring)
-            if vernaculartiers != []:  # we found a tier of the linguistic type
-                tierfound = True
-                for tier in vernaculartiers:
-                    tierID = tier.attrib["TIER_ID"]
-                    # create a list of all words in that tier by splitting
-                    # and collating all annotation values of that tier
-                    wordlist = [
-                        av.text.strip()
-                        for av in tier.findall(".//ANNOTATION_VALUE")
-                        if av.text is not None
-                    ]
-                    # get a list of duration from the time slots directly mentioned in annotations
-                    if wordlist == []:
-                        continue
-                    # check for ID tiers. ID tiers either have only digits, or they have an ID consisting of the filename and a running number. We have to find at least three digits since some tone languages use two digit tone indications like "ma24ma52"
-                    if re.search("[0-9]{3}$", wordlist[0]) or re.match(
-                        "[0-9]+", wordlist[0]
-                    ):
-                        if len(wordlist) > 1:
-                            if re.search("[0-9]{3}$", wordlist[1]) or re.match(
-                                "[0-9]+", wordlist[1]
-                            ):  # this is an ID tier
-                                print("skipping ID tier")
-                                continue
-                    timelist = [
-                        Annotation(aa, self.timeslots).get_duration()
-                        for aa in tier.findall("./ANNOTATION")
-                        if aa.text is not None
-                    ]
-                    # get a list of durations from time slots mentioned in parent elements
-                    aas = self.get_alignable_annotations(root)
-                    # print(aas)
-                    annotation_list = []
-                    for ref_annotation in tier.findall(".//REF_ANNOTATION"):
-                        if ref_annotation.find(".//ANNOTATION_VALUE").text is not None:
-                            try:
-                                annotation = Annotation(
-                                    aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
-                                    self.timeslots,
-                                )
-                                annotation_list.append(annotation)
-                            except ValueError:
-                                continue
-                    # except KeyError:
-                    # print("problem with annotation list")
-                    # continue
-                    timelistannno = [anno.get_duration() for anno in annotation_list]
-                    secs = sum(timelist + timelistannno) / 1000
-                    time_in_seconds.append(secs)
-                    try:  # detect candidate languages and retrieve most likely one
-                        toplanguage = detect_langs(" ".join(wordlist))[0]
-                    except lang_detect_exception.LangDetectException:
-                        # we are happy that this is an unknown language
-                        toplanguage = None
-                    # print(toplanguage)
-                    if (
-                        toplanguage
-                        and toplanguage.lang in ("en", "es")
-                        and toplanguage.prob > self.LANGDETECTTHRESHOLD
-                    ):
-                        # language is English
-                        logger.warning(
-                            'ignored vernacular tier with "%s" language content at %.2f%% probability ("%s ...")'
-                            % (
-                                toplanguage.lang,
-                                toplanguage.prob * 100,
-                                " ".join(wordlist)[:100],
-                            )
-                        )
-                        continue
-                    try:
-                        transcriptions[candidate][tierID] = wordlist
-                    except KeyError:
-                        transcriptions[candidate] = {}
-                        transcriptions[candidate][tierID] = wordlist
+            for tier in vernaculartiers:
+                tierID = tier.attrib["TIER_ID"]
+                wordlist = self.tier_to_wordlist(tier)
+                if wordlist == []:
+                    continue
+                if self.is_ID_tier(wordlist):
+                    print("skipping ID tier")
+                    continue
+                time_in_seconds.append(self.get_seconds_from_tier(tier))
+                if self.is_major_language(wordlist,spanish=True):
+                    continue
+                transcriptions[candidate][tierID] = wordlist
         self.secondstranscribed = sum(time_in_seconds)
         self.transcriptions = transcriptions
 
+
     def populate_translations(self):
+        """fill the attribute translation with translations from the ELAN file"""
+
         translationcandidates = ACCEPTABLE_TRANSLATION_TIER_TYPES
-        root = self.xml()
-        translations = {}
+        root = self.root
+        # we check the XML file which of the frequent names for translation tiers it uses
+        # there might be several translation tiers with different names, hence we store them
+        # in a dictionary
+        translations = defaultdict(dict)
         for candidate in translationcandidates:
+            # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             translationtiers = root.findall(querystring)
             if translationtiers != []:  # we found a tier of the linguistic type
                 for tier in translationtiers:
                     tierID = tier.attrib["TIER_ID"]
                     # create a list of all words in that tier
-                    wordlist = [
-                        av.text.strip()
-                        for av in tier.findall(".//ANNOTATION_VALUE")
-                        if av.text is not None
-                    ]
+                    wordlist = self.tier_to_wordlist(tier)
                     if wordlist == []:
                         continue
                     # sometimes, annotators put non-English contents in translation tiers
@@ -317,6 +358,7 @@ class ElanFile:
                         continue
                     # how many words should the average annotation have for this
                     # tier to be counted as translation?
+                    # Very short stretches are typically not translations but something else
                     translation_minimum = 1.5
                     avg_annotation_length = sum(
                         [len(x.strip().split()) for x in wordlist]
@@ -327,15 +369,12 @@ class ElanFile:
                             % (tierID, avg_annotation_length, ", ".join(wordlist[:3]))
                         )
                         continue
-                    try:
-                        translations[candidate][tierID] = wordlist
-                    except KeyError:
-                        translations[candidate] = {}
-                        translations[candidate][tierID] = wordlist
-        print(len(translations), "translations")
+                    translations[candidate][tierID] = wordlist
         self.translations = translations
 
     def get_translations(self):
+        """return a list of lists of translations per tier"""
+
         return [
             self.translations[tier_type][tierID]
             for tier_type in self.translations
@@ -343,6 +382,8 @@ class ElanFile:
         ]
 
     def get_transcriptions(self):
+        """return a list of lists of transcriptions per tier"""
+
         return [
             self.transcriptions[tier_type][tierID]
             for tier_type in self.transcriptions
@@ -474,7 +515,7 @@ class ElanFile:
         self.glossed_sentences = retrieved_glosstiers
         print(len(self.glossed_sentences), "glossed sentences")
 
-    def create_parent_dic(self):
+    def create_parent_tier_dic(self):
         """
         match all tier IDs with the referenced parent IDs
 
@@ -493,25 +534,25 @@ class ElanFile:
         linguistic_types = tree.findall(".//LINGUISTIC_TYPE")
         # map tier IDs to their constraints
         tierconstraints = {
-            lt.attrib["LINGUISTIC_TYPE_ID"]: lt.attrib.get("CONSTRAINTS")
-            for lt in linguistic_types
+            linguistic_type.attrib["LINGUISTIC_TYPE_ID"]: linguistic_type.attrib.get("CONSTRAINTS")
+            for linguistic_type in linguistic_types
         }
         tiers = tree.findall(".//TIER")
         for tier in tiers:
             ID = tier.attrib["TIER_ID"]
             # map all tiers to their parent tiers, defaulting to the file itself
             PARENT_REF = tier.attrib.get("PARENT_REF", (self.path))
-            ltype = tier.attrib["LINGUISTIC_TYPE_REF"]
+            linguistic_type = tier.attrib["LINGUISTIC_TYPE_REF"]
             try:
-                constraint = tierconstraints[ltype]
+                constraint = tierconstraints[linguistic_type]
             except KeyError:
                 print(
                     "reference to unknown LINGUISTIC_TYPE_ID  %s when establishing constraints in %s"
-                    % (ltype, self.path)
+                    % (linguistic_type, self.path)
                 )
                 continue
             dico[PARENT_REF].append(
-                {"id": ID, "constraint": constraint, "ltype": ltype}
+                {"id": ID, "constraint": constraint, "ltype": linguistic_type}
             )
         self.tier_hierarchy = dico
 
@@ -532,11 +573,11 @@ class ElanFile:
         Create a dictionary with time slot ID as keys and offset in ms as values
         """
 
-        timeorder = self.xml().find(".//TIME_ORDER")
+        time_order = self.xml().find(".//TIME_ORDER")
         try:
             timeslots = {
                 slot.attrib["TIME_SLOT_ID"]: slot.attrib["TIME_VALUE"]
-                for slot in timeorder.findall("TIME_SLOT")
+                for slot in time_order.findall("TIME_SLOT")
             }
         except AttributeError:
             timeslots = {}
@@ -587,8 +628,8 @@ class Tier:
             "3PL": ["3", "PL"],
         }
         cleanglosses = Counter(self.rawglosses)
-        # split fused personnumber glosses
 
+        # split fused personnumber glosses
         for k in personnumberdic:
             if k in cleanglosses:
                 cleanglosses[person] += occurrences
@@ -635,7 +676,7 @@ class Annotation:
             except KeyError:
                 self.starttime = 0
                 self.endtime = 0
-        else:
+        else: #not time aligned
             if ref_annotation is not None:
                 self.ID = ref_annotation.attrib["ANNOTATION_ID"]
                 self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
@@ -650,7 +691,7 @@ class Annotation:
 
     def get_duration(self):
         """
-        compute a list of durations of each annotation by substracting start times from end times
+        compute the duration by substracting star times from end time
         """
 
         return self.endtime - self.starttime
