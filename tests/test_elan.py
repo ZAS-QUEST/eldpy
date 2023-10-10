@@ -13,3 +13,8 @@ def test_translations():
     t = ef.get_translations()
     assert t[0][6] == "Two people would now move around in front of him, who are the people who look after him."
     assert t[0][4] != "Two people would now move around in front of him, who are the people who look after him."
+
+def test_glosses():
+    ef = ElanFile("goemai_test.eaf", "www")
+    ef.populate_glosses()
+    ef.glossed_sentences['gl']['gl@A'][23]['a24'][2] == ('ya', 'catch')

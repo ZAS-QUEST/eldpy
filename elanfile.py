@@ -614,7 +614,7 @@ class Annotation:
             self.text = annotation_value.text
         except AttributeError:
             self.text = ""
-        if alignable_annotation:  # time aligned
+        if alignable_annotation is not None:  # time aligned
             self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
             self.parentID = None
             try:
@@ -624,7 +624,7 @@ class Annotation:
                 self.starttime = 0
                 self.endtime = 0
         else:
-            if ref_annotation:
+            if ref_annotation is not None:
                 self.ID = ref_annotation.attrib["ANNOTATION_ID"]
                 self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
             else:
