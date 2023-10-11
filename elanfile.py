@@ -440,7 +440,7 @@ class ElanFile:
         def get_glossed_sentences(annos):
             ws = [mapping.get(annotation.parentID, "") for annotation in annotations]
             ids = [
-                self.timeslottedancestors[annotation.ID] for annotation in annotations
+                self.timeslottedancestors.get(annotation.ID,None) for annotation in annotations
             ]
             current_sentence_ID = None
             d = {}
