@@ -12,6 +12,7 @@ from collections import Counter, defaultdict
 from lxml import etree
 from langdetect import detect_langs, lang_detect_exception
 import constants
+import time
 
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)
@@ -33,6 +34,7 @@ class ElanFile:
         self.transcriptions = {}
         self.translations = {}
         self.fingerprint = None
+        self.secondstranscribed = 0
         tmpxml = self.xml()
         self.root = tmpxml
         if self.root is None:
@@ -440,7 +442,7 @@ class ElanFile:
         def get_glossed_sentences(annos):
             ws = [mapping.get(annotation.parentID, "") for annotation in annotations]
             ids = [
-                self.timeslottedancestors.get(annotation.ID,None) for annotation in annotations
+                self.timeslottedancestors.get(annotation.ID, None) for annotation in annotations
             ]
             current_sentence_ID = None
             d = {}
@@ -586,23 +588,26 @@ class ElanFile:
 
     def print_overview(self):
         filename = self.path.split('/')[-1]
-        outputstring = f"{filename[:28]}...{filename[-8:-4]}"
+        outputstring = f"{filename[:4]}...{filename[-8:-4]}"
         print(outputstring, end=" ")
         if self.transcriptions:
-            print(str(len(self.get_transcriptions()[0])).rjust(4,' '),end=" ")
+            print(str(len(self.get_transcriptions()[0])).rjust(4,' '),end=" vrn ")
         else:
-            print("0".rjust(4,' ') ,end=" ")
+            print("0".rjust(4,' ') ,end=" vrn ")
         if self.translations:
-            print(str(len(self.get_translations()[0])).rjust(4,' '),end=" ")
+            print(str(len(self.get_translations()[0])).rjust(4,' '),end=" trs ")
         else:
-            print("0".rjust(4,' ') ,end=" ")
+            print("0".rjust(4,' ') ,end=" trs ")
         try:
             if self.glossed_sentences:
-                print(str(len(self.glossed_sentences.popitem()[1].popitem()[1])).rjust(4,' '))
+                print(str(len(self.glossed_sentences.popitem()[1].popitem()[1])).rjust(4,' '),end=" gls ")
             else:
-                print("0".rjust(4,' ') ,end=" ")
+                print("0".rjust(4,' ') ,end=" gls ")
         except AttributeError:
-            print("0".rjust(4,' ') ,end=" ")
+            print("0".rjust(4,' ') ,end=" gls ")
+        timestring = time.strftime("%H:%M:%S", time.gmtime(self.secondstranscribed))
+        print(timestring, end = "h")
+        # print(str(int(self.secondstranscribed)).rjust(5,' '), end=" secs")
 
 class Tier:
     def __init__(self):
