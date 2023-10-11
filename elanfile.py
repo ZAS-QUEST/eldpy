@@ -28,19 +28,21 @@ class ElanFile:
         self.vernaculartiers = []
         self.translationtiers = []
         self.glosstiers = []
-        self.get_tier_hierarchy()
-        self.create_parent_tier_dic()
         self.timecodes = {}
         self.reftypes = {}
         self.transcriptions = {}
         self.translations = {}
         self.fingerprint = None
+        tmpxml = self.xml()
+        self.root = tmpxml
+        if self.root is None:
+            return None
+        self.get_tier_hierarchy()
+        self.create_parent_tier_dic()
         try:
             self.timeslots = self.get_timeslots()
         except KeyError:
             self.timeslots = {}
-        tmpxml = self.xml()
-        self.root = tmpxml
         self.alignable_annotations = {
             el.attrib["ANNOTATION_ID"]: (
                 el.attrib["TIME_SLOT_REF1"],
@@ -98,7 +100,10 @@ class ElanFile:
         return a
 
     def xml(self):
-        root = etree.parse(self.path)
+        try:
+            root = etree.parse(self.path)
+        except etree.XMLSyntaxError:
+            return None
         return root
 
     def write(self):
@@ -504,7 +509,7 @@ class ElanFile:
         self.child_parent_dic = d
 
     def get_tier_hierarchy(self):
-        tree = self.xml()
+        tree = self.root
         dico = defaultdict(list)
         linguistic_types = tree.findall(".//LINGUISTIC_TYPE")
         # map tier IDs to their constraints
@@ -624,12 +629,23 @@ class Tier:
 
 class Annotation:
     def __init__(self, element, timeslots):
+        """
+        """
+
         if element is None:
             raise ValueError("Annotation is None")
         if element.tag not in ["ANNOTATION", "ALIGNABLE_ANNOTATION"]:
-            print(element.tag)
-            logger.warning(element.tag, "is not an <(ALIGNABLE_)ANNOTATION> element")
-            raise ValueError
+            logger.warning(f"{element.tag} is not an <(ALIGNABLE_)ANNOTATION> element")
+            raise ValueError(f"{element.tag} is not an <(ALIGNABLE_)ANNOTATION> element")
+        self.text = ""
+        self.starttime = 0
+        self.endtime = 0
+        self.ID = None
+        self.parentID = None
+        # ELAN stores the annotation information in two different types of elements.
+        # One is ANNOTATION, the other one is ALIGNABLE_ANNOTATION. We do not know which
+        # kind is submitted to the constructor. If it is ANNOTATION, we have to drill
+        # down the DOM to find ALIGNABLE_ANNOTATION
         if element.tag == "ANNOTATION":
             alignable_annotation = element.find(".//ALIGNABLE_ANNOTATION")
         else:
@@ -639,8 +655,18 @@ class Annotation:
         try:
             self.text = annotation_value.text
         except AttributeError:
-            self.text = ""
-        if alignable_annotation is not None:  # time aligned
+            pass
+        if alignable_annotation is None:  # not time aligned
+            if ref_annotation is  None:
+                print("Annotation without ID in", self.text)
+                print(element[0].text)
+                raise ValueError
+                self.ID = None
+                self.parentID = None
+            else:
+                self.ID = ref_annotation.attrib["ANNOTATION_ID"]
+                self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
+        else: #   time aligned
             self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
             self.parentID = None
             try:
@@ -651,24 +677,11 @@ class Annotation:
                     timeslots[alignable_annotation.attrib["TIME_SLOT_REF2"]]
                 )
             except KeyError:
-                self.starttime = 0
-                self.endtime = 0
-        else:  # not time aligned
-            if ref_annotation is not None:
-                self.ID = ref_annotation.attrib["ANNOTATION_ID"]
-                self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
-            else:
-                print("Annotation without ID in", self.text)
-                print(element[0].text)
-                0 / 0
-                self.ID = None
-                self.parentID = None
-            self.starttime = 0
-            self.endtime = 0
+                pass
 
     def get_duration(self):
         """
-        compute the duration by substracting star times from end time
+        compute the duration by subtracting start times from end time
         """
 
         return self.endtime - self.starttime

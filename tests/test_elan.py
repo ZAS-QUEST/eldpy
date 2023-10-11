@@ -1,5 +1,6 @@
 import rdflib
 import lod
+import glob
 from elanfile import ElanFile
 
 def test_fingerprint():
@@ -25,3 +26,11 @@ def test_glosses():
     ef = ElanFile("goemai_test.eaf", "www")
     ef.populate_glosses()
     ef.glossed_sentences['gl']['gl@A'][23]['a24'][2] == ('ya', 'catch')
+
+def test_fuzz(capsys):
+    eafs = glob.glob('test_eafs/*eaf')
+    with capsys.disabled():
+        print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
+
+    for eaf in eafs:
+        ElanFile(eaf, "www")
