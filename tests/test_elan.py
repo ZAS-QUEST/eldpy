@@ -27,10 +27,34 @@ def test_glosses():
     ef.populate_glosses()
     ef.glossed_sentences['gl']['gl@A'][23]['a24'][2] == ('ya', 'catch')
 
+
+def test_overview(capsys):
+    ef = ElanFile("goemai_test.eaf", "www")
+    ef.populate_transcriptions()
+    ef.populate_translations()
+    ef.populate_glosses()
+    with capsys.disabled():
+        print()
+        ef.print_overview()
+
+
 def test_fuzz(capsys):
-    eafs = glob.glob('test_eafs/*eaf')
+    eafs = glob.glob('quarantine/*eaf')
+    # eafs = glob.glob('testeafs/*eaf')
+    eafs.sort()
     with capsys.disabled():
         print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
-
-    for eaf in eafs:
-        ElanFile(eaf, "www")
+    offset = 10
+    # offset = 16920
+    for i, eaf in enumerate(eafs[offset:]):
+        ef = ElanFile(eaf, "www")
+        ef.populate_transcriptions()
+        transcriptions = ef.get_transcriptions()
+        ef.populate_translations()
+        translations = ef.get_translations()
+        ef.populate_glosses()
+        with capsys.disabled():
+            print(eaf)
+            print()
+            print(str(offset+i).rjust(5, ' '), end = " ")
+            ef.print_overview()

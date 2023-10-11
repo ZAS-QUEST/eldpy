@@ -220,7 +220,7 @@ class ElanFile:
                 if re.search("[0-9]{3}$", wl[1]) or re.match(
                     "[0-9]+", wl[1]
                 ):  # this is an ID tier
-                    return true
+                    return True
 
     def get_annotation_list(self, t):
         aas = self.get_alignable_annotations(self.root)
@@ -301,7 +301,7 @@ class ElanFile:
         timelistannno = [anno.get_duration() for anno in self.get_annotation_list(t)]
         return sum(timelist + timelistannno) / 1000
 
-    def has_minimal_translation_length(self, t):
+    def has_minimal_translation_length(self, t, tierID):
         """
         how many words should the average annotation have for this
         tier to be counted as translation?
@@ -324,6 +324,9 @@ class ElanFile:
         transcriptioncandidates = ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
         transcriptions = defaultdict(dict)
         root = self.root
+        if root is None:
+            self.transcriptions = []
+            return
         # we check the XML file which of the frequent names for transcription tiers it uses
         # there might be several transcription tiers with different names, hence we store them
         # in a dictionary
@@ -338,7 +341,7 @@ class ElanFile:
                 if wordlist == []:
                     continue
                 if self.is_ID_tier(wordlist):
-                    print("skipping ID tier")
+                    # print("skipping ID tier")
                     continue
                 time_in_seconds.append(self.get_seconds_from_tier(tier))
                 if self.is_major_language(wordlist, spanish=True):
@@ -352,6 +355,9 @@ class ElanFile:
 
         translationcandidates = ACCEPTABLE_TRANSLATION_TIER_TYPES
         root = self.root
+        if root is None:
+            self.transcriptions = []
+            return
         # we check the XML file which of the frequent names for translation tiers it uses
         # there might be several translation tiers with different names, hence we store them
         # in a dictionary
@@ -370,7 +376,7 @@ class ElanFile:
                     # For our purposes, we want to discard such content
                     if not self.is_major_language(wordlist):
                         continue
-                    if not self.has_minimal_translation_length(wordlist):
+                    if not self.has_minimal_translation_length(wordlist, tierID):
                         continue
                     translations[candidate][tierID] = wordlist
         self.translations = translations
@@ -410,6 +416,9 @@ class ElanFile:
             # querystring = (
             # ".//REF_ANNOTATION[@ANNOTATION_ID='%s']/ANNOTATION_VALUE" % annotation_ref
             # )
+
+            if root is None:
+                return {}
             textdic = {
                 ref_annotation.attrib.get("ANNOTATION_ID"): ref_annotation.find(
                     "./ANNOTATION_VALUE"
@@ -459,6 +468,8 @@ class ElanFile:
             return glossed_sentences
 
         root = self.root
+        if root is None:
+            return {}
         glosscandidates = ACCEPTABLE_GLOSS_TIER_TYPES
         mapping = get_annotation_text_mapping(root)
         retrieved_glosstiers = {}
@@ -493,7 +504,7 @@ class ElanFile:
                     # continue
                     retrieved_glosstiers[candidate][tierID] = get_glossed_sentences(annotations)
         self.glossed_sentences = retrieved_glosstiers
-        print(len(self.glossed_sentences), "glossed sentences")
+        # print(len(self.glossed_sentences), "glossed sentences")
 
     def create_parent_tier_dic(self):
         """
@@ -573,6 +584,25 @@ class ElanFile:
         aas = root.findall(".//ALIGNABLE_ANNOTATION")
         return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
 
+    def print_overview(self):
+        filename = self.path.split('/')[-1]
+        outputstring = f"{filename[:28]}...{filename[-8:-4]}"
+        print(outputstring, end=" ")
+        if self.transcriptions:
+            print(str(len(self.get_transcriptions()[0])).rjust(4,' '),end=" ")
+        else:
+            print("0".rjust(4,' ') ,end=" ")
+        if self.translations:
+            print(str(len(self.get_translations()[0])).rjust(4,' '),end=" ")
+        else:
+            print("0".rjust(4,' ') ,end=" ")
+        try:
+            if self.glossed_sentences:
+                print(str(len(self.glossed_sentences.popitem()[1].popitem()[1])).rjust(4,' '))
+            else:
+                print("0".rjust(4,' ') ,end=" ")
+        except AttributeError:
+            print("0".rjust(4,' ') ,end=" ")
 
 class Tier:
     def __init__(self):
@@ -685,6 +715,10 @@ class Annotation:
         """
 
         return self.endtime - self.starttime
+
+
+
+
 
 
 ACCEPTABLE_TRANSLATION_TIER_TYPES = [
