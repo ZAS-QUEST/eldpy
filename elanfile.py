@@ -401,6 +401,35 @@ class ElanFile:
             for tierID in self.transcriptions[tier_type]
         ]
 
+    def get_cldfs(self):
+        lines = []
+        #FIXME check for several tiers
+        sentences = self.glossed_sentences.popitem()[1].popitem()[1]
+        for sentence in sentences:
+            word_gloss_pairs = sentence.popitem()[1]
+            vernacular_subcells = []
+            gloss_subcells = []
+            for tupl in word_gloss_pairs:
+                vernacular = tupl[0]
+                if vernacular is None: #FIXME this should raise an error
+                    vernacular = ""
+                gloss = tupl[1]
+                if gloss is None: #FIXME this should raise an error
+                    gloss = ""
+                vernacular_subcells.append(vernacular)
+                gloss_subcells.append(gloss)
+            vernacular_cell = "\t".join(vernacular_subcells)
+            gloss_cell = "\t".join(gloss_subcells)
+            translation_cell = "FIXME"
+            # lines.append((vernacular_cell,gloss_cell,translation_cell))
+            #FIXME use proper csv library
+            line = f'"{vernacular_cell}","{gloss_cell}","{translation_cell}"'
+            lines.append(line)
+        cldf =  "\n".join(lines)
+        print(cldf[108:140])
+        return cldf
+
+
     def populate_glosses(self):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
 
@@ -439,7 +468,7 @@ class ElanFile:
             }
             return get_parent_element_ID_dic
 
-        def get_glossed_sentences(annos):
+        def get_glossed_sentences(annos): #FIXME
             ws = [mapping.get(annotation.parentID, "") for annotation in annotations]
             ids = [
                 self.timeslottedancestors.get(annotation.ID, None) for annotation in annotations
