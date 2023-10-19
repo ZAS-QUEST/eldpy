@@ -13,6 +13,9 @@ from lxml import etree
 from langdetect import detect_langs, lang_detect_exception
 import constants
 import time
+import csv
+import io
+
 
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)
@@ -284,18 +287,21 @@ class ElanFile:
         and collating all annotation values of that tier
         """
 
-        return [
-            av.text.strip()
-            for av in t.findall(".//ANNOTATION_VALUE")
-        ]
+        result = []
+        for av in t.findall(".//ANNOTATION_VALUE"):
+            try:
+                result.append(av.text.strip())
+            except AttributeError:
+                result.append("")
+        return result
 
     def tier_to_annotation_ID_list(self, t):
         """
         create a list of all IDs in that tier
         """
 
-        return [#FIXME use generic method
-            (ra.attrib["ANNOTATION_ID"],ra.attrib["ANNOTATION_REF"])
+        return [  # FIXME use generic method
+            (ra.attrib["ANNOTATION_ID"], ra.attrib["ANNOTATION_REF"])
             for ra in t.findall(".//REF_ANNOTATION")
         ]
 
@@ -368,6 +374,7 @@ class ElanFile:
         root = self.root
         if root is None:
             self.transcriptions = []
+            self.translations_with_IDs = []
             return
         # we check the XML file which of the frequent names for translation tiers it uses
         # there might be several translation tiers with different names, hence we store them
@@ -392,8 +399,9 @@ class ElanFile:
                         continue
                     translations[candidate][tierID] = wordlist
                     tmp = self.tier_to_annotation_ID_list(tier)
-                    print(tmp)
-                    translations_with_IDs[candidate][tierID] = {x[1]:wordlist[i] for i,x in enumerate(tmp)}
+                    translations_with_IDs[candidate][tierID] = {
+                        x[1]: wordlist[i] for i, x in enumerate(tmp)
+                    }
         self.translations = translations
         self.translations_with_IDs = translations_with_IDs
 
@@ -417,34 +425,50 @@ class ElanFile:
 
     def get_cldfs(self):
         lines = []
-        #FIXME check for several tiers
+        # FIXME check for several tiers
         tmp_dict = copy.deepcopy(self.translations_with_IDs)
-        translation_ID_dict = tmp_dict.popitem()[1].popitem()[1]
-        for g in self.glossed_sentences['gl']['gl@A']:
+        try:
+            translation_ID_dict = tmp_dict.popitem()[1].popitem()[1]
+        except KeyError:
+            return ""
+        except AttributeError:  # FIXME should not throw attribute error at 5489
+            return ""
+        try:
+            glosses = copy.deepcopy(self.glossed_sentences.popitem()[1].popitem()[1])
+        except KeyError:
+            return ""
+        for g in glosses:
+            if g == {}:
+                return ""
             vernacular_subcells = []
             gloss_subcells = []
             ID, word_gloss_list = g.popitem()
             for tupl in word_gloss_list:
                 vernacular = tupl[0]
-                if vernacular is None: #FIXME this should raise an error
+                if vernacular is None:  # FIXME this should raise an error
                     vernacular = ""
                 gloss = tupl[1]
-                if gloss is None: #FIXME this should raise an error
+                if gloss is None:  # FIXME this should raise an error
                     gloss = ""
                 vernacular_subcells.append(vernacular)
                 gloss_subcells.append(gloss)
-            # translation = self.translations_with_IDs['ft']['ft@A'][ID]
-            translation = translation_ID_dict[ID]
+            try:
+                translation = translation_ID_dict[ID]
+            except KeyError:
+                logger.warning(f"translation ID {ID} not found in {self.path}")
+                return ""
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
             translation_cell = translation
-            # lines.append((vernacular_cell,gloss_cell,translation_cell))
-            #FIXME use proper csv library
-            line = f'"{vernacular_cell}","{gloss_cell}","{translation_cell}"'
+            line = [vernacular_cell, gloss_cell, translation_cell]
             lines.append(line)
-        cldf =  "\n".join(lines)
-        return cldf
-
+        cldfstringbuffer = io.StringIO()
+        csv_writer = csv.writer(
+            cldfstringbuffer, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
+        )
+        for line in lines:
+            csv_writer.writerow(line)
+        return cldfstringbuffer.getvalue()
 
     def populate_glosses(self):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
@@ -484,10 +508,11 @@ class ElanFile:
             }
             return get_parent_element_ID_dic
 
-        def get_glossed_sentences(annos): #FIXME
+        def get_glossed_sentences(annos):  # FIXME
             ws = [mapping.get(annotation.parentID, "") for annotation in annotations]
             ids = [
-                self.timeslottedancestors.get(annotation.ID, None) for annotation in annotations
+                self.timeslottedancestors.get(annotation.ID, None)
+                for annotation in annotations
             ]
             current_sentence_ID = None
             d = {}
@@ -549,7 +574,9 @@ class ElanFile:
                     # except KeyError:
                     # print("problematic parent relations in ", self.path, tierID)
                     # continue
-                    retrieved_glosstiers[candidate][tierID] = get_glossed_sentences(annotations)
+                    retrieved_glosstiers[candidate][tierID] = get_glossed_sentences(
+                        annotations
+                    )
         self.glossed_sentences = retrieved_glosstiers
         # print(len(self.glossed_sentences), "glossed sentences")
 
@@ -632,27 +659,33 @@ class ElanFile:
         return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
 
     def print_overview(self):
-        filename = self.path.split('/')[-1]
+        filename = self.path.split("/")[-1]
         outputstring = f"{filename[:4]}...{filename[-8:-4]}"
         print(outputstring, end=" ")
         if self.transcriptions:
-            print(str(len(self.get_transcriptions()[0])).rjust(4,' '),end=" vrn ")
+            print(str(len(self.get_transcriptions()[0])).rjust(4, " "), end=" vrn ")
         else:
-            print("0".rjust(4,' ') ,end=" vrn ")
+            print("0".rjust(4, " "), end=" vrn ")
         if self.translations:
-            print(str(len(self.get_translations()[0])).rjust(4,' '),end=" trs ")
+            print(str(len(self.get_translations()[0])).rjust(4, " "), end=" trs ")
         else:
-            print("0".rjust(4,' ') ,end=" trs ")
+            print("0".rjust(4, " "), end=" trs ")
         try:
             if self.glossed_sentences:
-                print(str(len(self.glossed_sentences.popitem()[1].popitem()[1])).rjust(4,' '),end=" gls ")
+                print(
+                    str(len(self.glossed_sentences.popitem()[1].popitem()[1])).rjust(
+                        4, " "
+                    ),
+                    end=" gls ",
+                )
             else:
-                print("0".rjust(4,' ') ,end=" gls ")
+                print("0".rjust(4, " "), end=" gls ")
         except AttributeError:
-            print("0".rjust(4,' ') ,end=" gls ")
+            print("0".rjust(4, " "), end=" gls ")
         timestring = time.strftime("%H:%M:%S", time.gmtime(self.secondstranscribed))
-        print(timestring, end = "h")
+        print(timestring, end="h")
         # print(str(int(self.secondstranscribed)).rjust(5,' '), end=" secs")
+
 
 class Tier:
     def __init__(self):
@@ -709,14 +742,15 @@ class Tier:
 
 class Annotation:
     def __init__(self, element, timeslots):
-        """
-        """
+        """ """
 
         if element is None:
             raise ValueError("Annotation is None")
         if element.tag not in ["ANNOTATION", "ALIGNABLE_ANNOTATION"]:
             logger.warning(f"{element.tag} is not an <(ALIGNABLE_)ANNOTATION> element")
-            raise ValueError(f"{element.tag} is not an <(ALIGNABLE_)ANNOTATION> element")
+            raise ValueError(
+                f"{element.tag} is not an <(ALIGNABLE_)ANNOTATION> element"
+            )
         self.text = ""
         self.starttime = 0
         self.endtime = 0
@@ -737,7 +771,7 @@ class Annotation:
         except AttributeError:
             pass
         if alignable_annotation is None:  # not time aligned
-            if ref_annotation is  None:
+            if ref_annotation is None:
                 print("Annotation without ID in", self.text)
                 print(element[0].text)
                 raise ValueError
@@ -746,7 +780,7 @@ class Annotation:
             else:
                 self.ID = ref_annotation.attrib["ANNOTATION_ID"]
                 self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
-        else: #   time aligned
+        else:  #   time aligned
             self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
             self.parentID = None
             try:
@@ -765,10 +799,6 @@ class Annotation:
         """
 
         return self.endtime - self.starttime
-
-
-
-
 
 
 ACCEPTABLE_TRANSLATION_TIER_TYPES = [
