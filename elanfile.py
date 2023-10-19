@@ -287,7 +287,16 @@ class ElanFile:
         return [
             av.text.strip()
             for av in t.findall(".//ANNOTATION_VALUE")
-            if av.text is not None
+        ]
+
+    def tier_to_annotation_ID_list(self, t):
+        """
+        create a list of all IDs in that tier
+        """
+
+        return [#FIXME use generic method
+            (ra.attrib["ANNOTATION_ID"],ra.attrib["ANNOTATION_REF"])
+            for ra in t.findall(".//REF_ANNOTATION")
         ]
 
     def get_seconds_from_tier(self, t):
@@ -364,6 +373,7 @@ class ElanFile:
         # there might be several translation tiers with different names, hence we store them
         # in a dictionary
         translations = defaultdict(dict)
+        translations_with_IDs = defaultdict(dict)
         for candidate in translationcandidates:
             # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
@@ -381,7 +391,11 @@ class ElanFile:
                     if not self.has_minimal_translation_length(wordlist, tierID):
                         continue
                     translations[candidate][tierID] = wordlist
+                    tmp = self.tier_to_annotation_ID_list(tier)
+                    print(tmp)
+                    translations_with_IDs[candidate][tierID] = {x[1]:wordlist[i] for i,x in enumerate(tmp)}
         self.translations = translations
+        self.translations_with_IDs = translations_with_IDs
 
     def get_translations(self):
         """return a list of lists of translations per tier"""
@@ -404,12 +418,13 @@ class ElanFile:
     def get_cldfs(self):
         lines = []
         #FIXME check for several tiers
-        sentences = self.glossed_sentences.popitem()[1].popitem()[1]
-        for sentence in sentences:
-            word_gloss_pairs = sentence.popitem()[1]
+        tmp_dict = copy.deepcopy(self.translations_with_IDs)
+        translation_ID_dict = tmp_dict.popitem()[1].popitem()[1]
+        for g in self.glossed_sentences['gl']['gl@A']:
             vernacular_subcells = []
             gloss_subcells = []
-            for tupl in word_gloss_pairs:
+            ID, word_gloss_list = g.popitem()
+            for tupl in word_gloss_list:
                 vernacular = tupl[0]
                 if vernacular is None: #FIXME this should raise an error
                     vernacular = ""
@@ -418,15 +433,16 @@ class ElanFile:
                     gloss = ""
                 vernacular_subcells.append(vernacular)
                 gloss_subcells.append(gloss)
+            # translation = self.translations_with_IDs['ft']['ft@A'][ID]
+            translation = translation_ID_dict[ID]
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
-            translation_cell = "FIXME"
+            translation_cell = translation
             # lines.append((vernacular_cell,gloss_cell,translation_cell))
             #FIXME use proper csv library
             line = f'"{vernacular_cell}","{gloss_cell}","{translation_cell}"'
             lines.append(line)
         cldf =  "\n".join(lines)
-        print(cldf[108:140])
         return cldf
 
 
