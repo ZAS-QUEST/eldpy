@@ -364,7 +364,7 @@ class ElanFile:
                 if self.is_major_language(wordlist, spanish=True):
                     continue
                 transcriptions[candidate][tierID] = wordlist
-        self.secondstranscribed = sum(time_in_seconds)
+        self.secondstranscribed = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted.
         self.transcriptions = transcriptions
 
     def populate_translations(self):
@@ -658,7 +658,7 @@ class ElanFile:
         aas = root.findall(".//ALIGNABLE_ANNOTATION")
         return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
 
-    def print_overview(self):
+    def print_overview(self):#FIXME print tier ID
         filename = self.path.split("/")[-1]
         outputstring = f"{filename[:4]}...{filename[-8:-4]}"
         print(outputstring, end=" ")
