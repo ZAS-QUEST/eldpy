@@ -661,6 +661,22 @@ class ElanFile:
     def print_overview(self):#FIXME print tier ID
         filename = self.path.split("/")[-1]
         outputstring = f"{filename[:4]}...{filename[-8:-4]}"
+
+#         print(" ".join([filename,
+#                         duration_audio,
+# #
+#                         name_translation_tier,
+#                         number_translation_tokens,
+#                         avg_words_translation,
+#                         duration_translation,
+# #
+#                         name_transcription_tier,
+#                         number_transcription_tokens,
+#                         avg_words_transcription,
+#                         duration_transcription,
+# #
+#                         name_gloss_tier,
+#                         number_gloss_tokens])
         print(outputstring, end=" ")
         if self.transcriptions:
             print(str(len(self.get_transcriptions()[0])).rjust(4, " "), end=" vrn ")
@@ -793,12 +809,14 @@ class Annotation:
             except KeyError:
                 pass
 
-    def get_duration(self):
+    def get_duration(self,include_void_annotations=True):
         """
         compute the duration by subtracting start times from end time
         """
-
-        return self.endtime - self.starttime
+        if include_void_annotations or self.text:
+            return self.endtime - self.starttime
+        else:
+            return 0
 
 
 ACCEPTABLE_TRANSLATION_TIER_TYPES = [
