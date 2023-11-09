@@ -15,6 +15,7 @@ import constants
 import time
 import csv
 import io
+import sys
 
 
 logger = logging.getLogger("eldpy")
@@ -38,6 +39,7 @@ class ElanFile:
         self.translations = {}
         self.fingerprint = None
         self.secondstranscribed = 0
+        self.secondstranslated = 0
         tmpxml = self.xml()
         self.root = tmpxml
         if self.root is None:
@@ -342,7 +344,7 @@ class ElanFile:
         transcriptions = defaultdict(dict)
         root = self.root
         if root is None:
-            self.transcriptions = []
+            self.transcriptions = {}
             return
         # we check the XML file which of the frequent names for transcription tiers it uses
         # there might be several transcription tiers with different names, hence we store them
@@ -360,11 +362,11 @@ class ElanFile:
                 if self.is_ID_tier(wordlist):
                     # print("skipping ID tier")
                     continue
-                time_in_seconds.append(self.get_seconds_from_tier(tier))
                 if self.is_major_language(wordlist, spanish=True):
                     continue
+                time_in_seconds.append(self.get_seconds_from_tier(tier))
                 transcriptions[candidate][tierID] = wordlist
-        self.secondstranscribed = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted.
+        self.secondstranscribed = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
         self.transcriptions = transcriptions
 
     def populate_translations(self):
@@ -373,14 +375,15 @@ class ElanFile:
         translationcandidates = ACCEPTABLE_TRANSLATION_TIER_TYPES
         root = self.root
         if root is None:
-            self.transcriptions = []
-            self.translations_with_IDs = []
+            self.transcriptions = {}
+            self.translations_with_IDs = {}
             return
         # we check the XML file which of the frequent names for translation tiers it uses
         # there might be several translation tiers with different names, hence we store them
         # in a dictionary
         translations = defaultdict(dict)
         translations_with_IDs = defaultdict(dict)
+        time_in_seconds = []
         for candidate in translationcandidates:
             # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
@@ -397,11 +400,13 @@ class ElanFile:
                         continue
                     if not self.has_minimal_translation_length(wordlist, tierID):
                         continue
+                    time_in_seconds.append(self.get_seconds_from_tier(tier))
                     translations[candidate][tierID] = wordlist
                     tmp = self.tier_to_annotation_ID_list(tier)
                     translations_with_IDs[candidate][tierID] = {
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
+        self.secondstranslated = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
         self.translations = translations
         self.translations_with_IDs = translations_with_IDs
 
@@ -624,16 +629,19 @@ class ElanFile:
         self.tier_hierarchy = dico
 
     def translations_from_tiers(self):
-        self.translations = []
+        self.translations = {}
 
     def transcriptions_from_tiers(self):
-        self.transcriptions = []
+        self.transcriptions = {}
 
     def glosses_from_tiers(self):
-        self.glosses = []
+        self.glosses = {}
 
     def annotation_time(self):
         self.annotation_time = 0
+
+    def readable_duration(self, seconds):
+        return time.strftime("%H:%M:%S", time.gmtime(seconds))
 
     def get_timeslots(self):
         """
@@ -658,49 +666,124 @@ class ElanFile:
         aas = root.findall(".//ALIGNABLE_ANNOTATION")
         return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
 
-    def print_overview(self):#FIXME print tier ID
+    def print_overview(self, writer=sys.stdout):#FIXME print tier ID
         filename = self.path.split("/")[-1]
-        outputstring = f"{filename[:4]}...{filename[-8:-4]}"
-
-#         print(" ".join([filename,
-#                         duration_audio,
-# #
-#                         name_translation_tier,
-#                         number_translation_tokens,
-#                         avg_words_translation,
-#                         duration_translation,
-# #
-#                         name_transcription_tier,
-#                         number_transcription_tokens,
-#                         avg_words_transcription,
-#                         duration_transcription,
-# #
-#                         name_gloss_tier,
-#                         number_gloss_tokens])
-        print(outputstring, end=" ")
-        if self.transcriptions:
-            print(str(len(self.get_transcriptions()[0])).rjust(4, " "), end=" vrn ")
-        else:
-            print("0".rjust(4, " "), end=" vrn ")
-        if self.translations:
-            print(str(len(self.get_translations()[0])).rjust(4, " "), end=" trs ")
-        else:
-            print("0".rjust(4, " "), end=" trs ")
+        # outputstring = f"{filename[:4]}...{filename[-8:-4]}"
         try:
-            if self.glossed_sentences:
-                print(
-                    str(len(self.glossed_sentences.popitem()[1].popitem()[1])).rjust(
-                        4, " "
-                    ),
-                    end=" gls ",
-                )
-            else:
-                print("0".rjust(4, " "), end=" gls ")
+            sorted_timecodes =  sorted([int(x) for x in self.timeslots.values()])
         except AttributeError:
-            print("0".rjust(4, " "), end=" gls ")
-        timestring = time.strftime("%H:%M:%S", time.gmtime(self.secondstranscribed))
-        print(timestring, end="h")
-        # print(str(int(self.secondstranscribed)).rjust(5,' '), end=" secs")
+            sorted_timecodes = [0,0]
+        first_timecode = 0
+        last_timecode = 0
+        try:
+            first_timecode = sorted_timecodes[0]
+            last_timecode = sorted_timecodes[-1]
+        except IndexError:
+            pass
+        duration_in_seconds = (last_timecode - first_timecode)/1000
+        duration_timeslots = self.readable_duration(duration_in_seconds)
+        translation_tier_names = list(self.translations.keys())
+        primary_translation_tier_name = ''
+        translated_sentence_count = 0
+        translated_word_count = 0
+        translated_char_count = 0
+        if len(translation_tier_names) > 1:
+            logger.warning(f"{self.path} more than one translation tier found")
+        if len(translation_tier_names) > 0:
+            primary_translation_tier_name = translation_tier_names[0]
+            translation_tier_tokens = self.translations[primary_translation_tier_name]
+            for at_name in translation_tier_tokens.values():
+                for sentence in at_name:
+                    translated_sentence_count += 1
+                    words = sentence.split()
+                    translated_word_count += len(words)
+                    translated_char_count += sum([len(w) for w in words])
+
+        transcription_tier_names = list(self.transcriptions.keys())
+        primary_transcription_tier_name = ''
+        transcribed_sentence_count = 0
+        transcribed_word_count = 0
+        transcribed_char_count = 0
+        if len(transcription_tier_names) > 1:
+            logger.warning(f"{self.path} more than one transcription tier found")
+        if len(transcription_tier_names) > 0:
+            primary_transcription_tier_name = transcription_tier_names[0]
+            transcription_tier_tokens = self.transcriptions[primary_transcription_tier_name]
+            for at_name in transcription_tier_tokens.values():
+                for sentence in at_name:
+                    transcribed_sentence_count += 1
+                    words = sentence.split()
+                    transcribed_word_count += len(words)
+                    transcribed_char_count += sum([len(w) for w in words])
+        try:
+            gloss_tier_names = list(self.glossed_sentences.keys())
+        except AttributeError:
+            gloss_tier_names = []
+        primary_gloss_tier_name = ''
+        glossed_sentences_count = 0
+        gloss_count = 0
+        distinct_glosses = {}
+        if len(gloss_tier_names) > 1:
+            logger.warning(f"{self.path} more than one gloss tier found")
+        if len(gloss_tier_names) > 0:
+            primary_gloss_tier_name = gloss_tier_names[0]
+            gloss_tier_tokens = self.glossed_sentences[primary_gloss_tier_name]
+            for at_name in gloss_tier_tokens.values():
+                for gloss_list in at_name:
+                    glossed_sentences_count += 1
+                    try:
+                        tuples = list(gloss_list.values())[0]
+                    except IndexError:
+                        continue
+                    gloss_count += len(tuples)
+                    for t in tuples:
+                        gloss = t[1]
+                        if gloss is None:
+                            continue
+                        if gloss == "***":
+                            continue
+                        max_ascii = max([ord(c) for c in gloss])
+                        if max_ascii < 65: #we have no letters in gloss
+                            continue
+                        gloss_count += 1
+                        distinct_glosses[gloss] = True
+        if translated_sentence_count == 0:
+            translated_sentence_count = -1
+        if translated_word_count == 0:
+            translated_word_count = -1
+        if transcribed_sentence_count == 0:
+            transcribed_sentence_count = -1
+        if transcribed_word_count == 0:
+            transcribed_word_count = -1
+        if distinct_glosses == {}:
+            distinct_glosses = {None:True}
+        outputstring = "\t".join([filename,
+                        duration_timeslots,
+# #
+                        primary_translation_tier_name,
+                        str(translated_sentence_count),
+                        str(translated_word_count),
+                        str(translated_char_count),
+                        str(round(translated_word_count/translated_sentence_count,2)),
+                        str(round(translated_char_count/translated_word_count,2)),
+                        self.readable_duration(self.secondstranslated),
+# #
+                        primary_transcription_tier_name,
+                        str(transcribed_sentence_count),
+                        str(transcribed_word_count),
+                        str(transcribed_char_count),
+                        str(round(transcribed_word_count/transcribed_sentence_count,2)),
+                        str(round(transcribed_char_count/transcribed_word_count,2)),
+                        self.readable_duration(self.secondstranscribed),#  most probably wrong # FIXME
+# #
+                        primary_gloss_tier_name,
+                        str(glossed_sentences_count),
+                        str(gloss_count),
+                        str(len(distinct_glosses)),
+                        str(round(gloss_count/len(distinct_glosses),2))
+]
+)
+        writer.write(f"{outputstring}\n")
 
 
 class Tier:
