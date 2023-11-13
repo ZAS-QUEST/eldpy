@@ -459,18 +459,24 @@ class ElanFile:
                 gloss_subcells.append(gloss)
             try:
                 translation = translation_ID_dict[ID]
-            except KeyError:
-                logger.warning(f"translation ID {ID} not found in {self.path}")
-                return ""
+            except KeyError: #FIXME gigantic hack to align glosses with translations
+                integer_part = ID.replace("ann","")
+                next_integer = int(integer_part)+1
+                try:
+                    translation = translation_ID_dict[f"ann{next_integer}"]
+                except KeyError:
+                    logger.warning("translation", ID, "could not be retrieved, nor could", next_integer, "be retrieved")
+                    translation = "TRANSLATION NOT RETRIEVED"
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
             translation_cell = translation
-            line = [vernacular_cell, gloss_cell, translation_cell]
+            line = [ID,vernacular_cell, gloss_cell, translation_cell]
             lines.append(line)
         cldfstringbuffer = io.StringIO()
         csv_writer = csv.writer(
             cldfstringbuffer, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
         )
+        csv_writer.writerow("ID Analyzed_Word Gloss Translated_Text".split())
         for line in lines:
             csv_writer.writerow(line)
         return cldfstringbuffer.getvalue()
@@ -503,15 +509,15 @@ class ElanFile:
             }
             return textdic
 
-        def get_parent_element_ID_dic(root):
-            # querystring = (
-            # ".//REF_ANNOTATION[@ANNOTATION_ID='%s']/ANNOTATION_VALUE" % annotation_ref
-            # )
-            get_parent_element_ID_dic = {
-                ref_annotation.attrib.get("ANNOTATION_ID"): ref_annotation.getparent()
-                for ref_annotation in root.findall(".//REF_ANNOTATION")
-            }
-            return get_parent_element_ID_dic
+        # def get_parent_element_ID_dic(root):
+        #     # querystring = (
+        #     # ".//REF_ANNOTATION[@ANNOTATION_ID='%s']/ANNOTATION_VALUE" % annotation_ref
+        #     # )
+        #     get_parent_element_ID_dic = {
+        #         ref_annotation.attrib.get("ANNOTATION_ID"): ref_annotation.getparent()
+        #         for ref_annotation in root.findall(".//REF_ANNOTATION")
+        #     }
+        #     return get_parent_element_ID_dic
 
         def get_glossed_sentences(annos):  # FIXME
             ws = [mapping.get(annotation.parentID, "") for annotation in annotations]
