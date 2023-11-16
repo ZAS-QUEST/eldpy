@@ -460,7 +460,7 @@ class ElanFile:
             try:
                 translation = translation_ID_dict[ID]
             except KeyError: #FIXME gigantic hack to align glosses with translations
-                integer_part = ID.replace("ann","")
+                integer_part = ID.replace("ann","").replace("a","")
                 next_integer = int(integer_part)+1
                 try:
                     translation = translation_ID_dict[f"ann{next_integer}"]
@@ -520,26 +520,36 @@ class ElanFile:
         #     return get_parent_element_ID_dic
 
         def get_glossed_sentences(annos):  # FIXME
-            ws = [mapping.get(annotation.parentID, "") for annotation in annotations]
+            ws = [mapping.get(annotation.parentID, "") for annotation in annos]
             ids = [
                 self.timeslottedancestors.get(annotation.ID, None)
-                for annotation in annotations
+                for annotation in annos
             ]
             current_sentence_ID = None
             d = {}
             glossed_sentences = []
             for i, annotation in enumerate(annos):
+                # print(annotation.__dict__)
                 gloss = annos[i].text
-                word = ws[i]
                 sentenceID = ids[i]
+                if annotation.previous_annotation_ID is None:
+                    word = ws[i]
+                else:
+                    try:
+                        d[sentenceID][-1][1] += gloss
+                    except TypeError:
+                        pass
+                    except KeyError:
+                        logger.warning("tried to update non-existing word for gloss in", sentenceID)
+                    continue
                 if sentenceID != current_sentence_ID:
                     if current_sentence_ID:
                         glossed_sentences.append(d)
                     current_sentence_ID = sentenceID
-                    d = {sentenceID: [(word, gloss)]}
+                    d = {sentenceID: [[word, gloss]]}
                 else:
                     try:
-                        d[sentenceID].append((word, gloss))
+                        d[sentenceID].append([word, gloss])
                     except KeyError:
                         logger.warning(
                             "gloss with no parent",
@@ -861,6 +871,7 @@ class Annotation:
         self.endtime = 0
         self.ID = None
         self.parentID = None
+        self.previous_annotation_ID = None
         # ELAN stores the annotation information in two different types of elements.
         # One is ANNOTATION, the other one is ALIGNABLE_ANNOTATION. We do not know which
         # kind is submitted to the constructor. If it is ANNOTATION, we have to drill
@@ -885,6 +896,7 @@ class Annotation:
             else:
                 self.ID = ref_annotation.attrib["ANNOTATION_ID"]
                 self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
+                self.previous_annotation_ID = ref_annotation.attrib.get("PREVIOUS_ANNOTATION")
         else:  #   time aligned
             self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
             self.parentID = None
@@ -1079,6 +1091,7 @@ ACCEPTABLE_GLOSS_TIER_TYPES = [
     "Gloss",
     "gloss",
     "glosses",
+    "word",
     "word-gls",
     "gl (interlinear gloss)",
 ]

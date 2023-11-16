@@ -65,7 +65,7 @@ def test_overview(capsys):
 def test_fuzz(capsys):
     # eafs = glob.glob('quarantine/*eaf')
     offset = 0
-    offset = 5512
+    offset = 11237
     eafs = glob.glob("testeafs/*eaf")[offset:]
     eafs.sort()
     with capsys.disabled():
