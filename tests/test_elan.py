@@ -85,27 +85,27 @@ def test_ref_po_mb_ge_ps_ft_nt(capsys):
 
 #
 #
-# def test_fuzz(capsys):
-#     # eafs = glob.glob('quarantine/*eaf')
-#     offset = 0
-#     offset = 11237
-#     eafs = glob.glob("testeafs/*eaf")[offset:]
-#     eafs.sort()
-#     with capsys.disabled():
-#         print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
-#     out = open("test.csv", "w")
-#     for i, eaf in enumerate(eafs):
-#         # print(eaf)
-#         ef = ElanFile(eaf, "www")
-#         ef.populate_transcriptions()
-#         transcriptions = ef.get_transcriptions()
-#         ef.populate_translations()
-#         translations = ef.get_translations()
-#         ef.populate_glosses()
-#         ef.get_cldfs()
-#         with capsys.disabled():
-#             # print(eaf)
-#             print()
-#             print(str(offset + i).rjust(5, " "), end=" ")
-#             ef.print_overview(writer=out)
-#     out.close()
+def test_fuzz(capsys):
+    # eafs = glob.glob('quarantine/*eaf')
+    offset = 0
+    offset = 11237
+    eafs = glob.glob("testeafs/*eaf")[offset:]
+    eafs.sort()
+    with capsys.disabled():
+        print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
+    out = open("test.csv", "w")
+    for i, eaf in enumerate(eafs):
+        # print(eaf)
+        ef = ElanFile(eaf, "www")
+        ef.populate_transcriptions()
+        transcriptions = ef.get_transcriptions()
+        ef.populate_translations()
+        translations = ef.get_translations()
+        ef.populate_glosses()
+        ef.get_cldfs()
+        with capsys.disabled():
+            # print(eaf)
+            print()
+            print(str(offset + i).rjust(5, " "), end=" ")
+            ef.print_overview(writer=out)
+    out.close()

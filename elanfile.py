@@ -742,7 +742,9 @@ class ElanFile:
         primary_gloss_tier_name = ''
         glossed_sentences_count = 0
         gloss_count = 0
-        distinct_glosses = {}
+        zipf1 = 0
+        zipf2 = 0
+        distinct_glosses = defaultdict(int)
         if len(gloss_tier_names) > 1:
             logger.warning(f"{self.path} more than one gloss tier found")
         if len(gloss_tier_names) > 0:
@@ -766,7 +768,23 @@ class ElanFile:
                         if max_ascii < 65: #we have no letters in gloss
                             continue
                         gloss_count += 1
-                        distinct_glosses[gloss] = True
+                        distinct_glosses[gloss] += 1
+        max_glosses = sorted([distinct_glosses[k] for k in distinct_glosses], key=lambda x:x,reverse=True)
+
+        try:
+            max1 = float(max_glosses[0])
+            max2 = float(max_glosses[1])
+        except IndexError:
+            max1 = False
+            max2 = False
+        try:
+            max3 = float(max_glosses[2])
+        except IndexError:
+            max3 = False
+        if max3:
+            zipf2 = max2/max3
+        if max2:
+            zipf1 = max1/max2
         if translated_sentence_count == 0:
             translated_sentence_count = -1
         if translated_word_count == 0:
@@ -800,11 +818,13 @@ class ElanFile:
                         str(glossed_sentences_count),
                         str(gloss_count),
                         str(len(distinct_glosses)),
-                        str(round(gloss_count/len(distinct_glosses),2))
+                        str(round(gloss_count/len(distinct_glosses),2)),
+                        str(round(zipf1,2)),
+                        str(round(zipf2,2)),
 ]
 )
         writer.write(f"{outputstring}\n")
-        return outputstring
+        return outputstring.split("\t")
 
 
 class Tier:
