@@ -2,6 +2,7 @@ import rdflib
 # import lod
 import glob
 from elanfile import ElanFile
+from annotation import Annotation
 
 
 def test_fingerprint():
@@ -59,6 +60,27 @@ def test_overview(capsys):
         out = open("test.csv", "w")
         ef.print_overview(writer=out)
         out.close()
+
+def test_ref_tx_ft_wd_mb(capsys):
+    ef = ElanFile("ref_tx_ft_wd_mb.eaf", "www")
+    ef.populate_transcriptions()
+    ef.populate_translations()
+    ef.populate_glosses()
+    output = ef.print_overview()
+    assert output == "ref_tx_ft_wd_mb.eaf\t00:00:59\tft\t15\t108\t434\t7.2\t4.02\t00:00:50\ttx\t15\t72\t339\t4.8\t4.71\t00:00:50\tword\t30\t199\t63\t3.16"
+
+
+
+# def test_ref_po_mb_ge_ps_ft_nt(capsys):
+#     ef = ElanFile("ref_po_mb_ge_ps_ft_nt.eaf", "www")
+#     ef.populate_transcriptions()
+#     ef.populate_translations()
+#     ef.populate_glosses()
+#     with capsys.disabled():
+#         output = ef.print_overview()
+#         assert output == "ref_po_mb_ge_ps_ft_nt.eaf\t00:01:10\tft\t10\t155\t687\t15.5\t4.43\t00:00:50\tpo\t10\t118\t629\t11.8\t5.33\t00:00:59\tge\t10\t313\t59\t5.31"
+
+
 
 
 #

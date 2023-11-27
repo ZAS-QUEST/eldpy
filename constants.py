@@ -105,3 +105,183 @@ NER_BLACKLIST = [
     "Q1477068",# "night and day" Cole Porter song
     "Q1124888",# "CEDA" Spanish Confederation of the Autonomous Righ
     ]
+
+
+
+ACCEPTABLE_TRANSLATION_TIER_TYPES = [
+    "eng",
+    "english translation",
+    "English translation",
+    "fe",
+    "fg",
+    "fn",
+    "fr",
+    "free translation",
+    "Free Translation",
+    "Free-translation",
+    "Free Translation (English)",
+    "ft",
+    "fte",
+    "tf (free translation)",
+    "Translation",
+    "tl",
+    "tn",
+    "tn (translation in lingua franca)",
+    "tf_eng (free english translation)",
+    "trad1",
+    "Traducción Español",
+    "Tradución",
+    "Traduccion",
+    "Translate",
+    "trad",
+    "traduccion",
+    "traducción",
+    "traducción ",
+    "Traducción",
+    "Traducción español",
+    "Traduction",
+    "translation",
+    "translations",
+    "Translation",
+    "xe",
+    "翻译",
+]
+
+
+ACCEPTABLE_TRANSCRIPTION_TIER_TYPES = [
+    "arta",
+    "Arta",
+    "conversación",
+    "default-lt",  # needs qualification
+    "default-lt",
+    "Dusun",
+    "Fonética",
+    "Frases",
+    "Hablado",
+    "Hakhun orthography",
+    "Hija",
+    "hija",
+    "ilokano",
+    "interlinear-text-item",
+    "Ikaan sentences",
+    "Khanty Speech",
+    "main-tier",
+    "Madre",
+    "madre",
+    "Matanvat text",
+    "Matanvat Text",
+    "Nese Utterances",
+    "o",
+    "or",
+    "orth",
+    "orthT",
+    "orthografia",
+    "orthografía",
+    "orthography",
+    "othography",  # sic
+    "po",
+    "po (practical orthography)",
+    "phrase",
+    "phrase-item",
+    "Phrases",
+    "Practical Orthography",
+    "sentence",
+    "sentences",
+    "speech",
+    "Standardised-phonology",
+    "Sumi",
+    "t",  # check this
+    "Tamang",
+    "texo ",
+    "text",
+    "Text",
+    "Text ",
+    "texto",
+    "Texto",
+    "texto ",
+    "Texto principal",
+    "Texto Principal",
+    "tl",  # check this
+    "time aligned",  # check this
+    "timed chunk",
+    "tl",  # check this
+    "Transcribe",
+    "Transcrição",
+    "TRANSCRIÇÃO",
+    "Transcript",
+    "Transcripción chol",
+    "transcripción chol",
+    "Transcripción",
+    "Transcripcion",
+    "transcripción",
+    "Transcripcion chol",
+    "transcript",
+    "Transcription",
+    "transcription",
+    "transcription_orthography",
+    "trs",
+    "trs@",
+    "trs1",
+    "tx",  # check usages of this
+    "tx2",  # check usages of this
+    "txt",
+    "type_utterance",
+    "unit",  # some Dutch texts from TLA
+    "ut",
+    "utt",
+    "Utterance",
+    "utterance",
+    "uterrances",  # sic
+    "utterances",
+    "utterrances",  # sic
+    "Utterances",
+    "utterance transcription",
+    "UtteranceType",
+    "vernacular",
+    "Vernacular",
+    "vilela",
+    "Vilela",
+    "word-txt",
+    #'Word', #probably more often used for glossing
+    #'word', #probably more often used for glossing
+    "word_orthography",
+    #'words', #probably more often used for glossing
+    #'Words', #more often used for glossing
+    "xv",
+    "default transcript",
+    "句子",
+    "句子 ",
+    "句子 ",
+]
+
+ACCEPTABLE_WORD_TIER_TYPES = [
+    "Word",
+    "word",
+    "Words",
+    "words",
+    "word-item",
+    "morpheme",
+    "morphemes",
+    "mb",
+    "mb (morpheme boundaries)",
+    "Morpheme Break",
+    "m",
+    "morph",
+    "mph",
+    "wordT",
+    "word-txt",
+]
+
+ACCEPTABLE_GLOSS_TIER_TYPES = [
+    "ge",
+    "morph-item",
+    "gl",
+    "Gloss",
+    "gloss",
+    "glosses",
+    "word",
+    "word-gls",
+    "gl (interlinear gloss)",
+]
+
+ACCEPTABLE_POS_TIER_TYPES = ["ps", "parts of speech"]

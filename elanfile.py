@@ -11,11 +11,12 @@ import requests
 from collections import Counter, defaultdict
 from lxml import etree
 from langdetect import detect_langs, lang_detect_exception
-import constants
 import time
 import csv
 import io
 import sys
+import annotation
+import constants
 
 
 logger = logging.getLogger("eldpy")
@@ -63,6 +64,10 @@ class ElanFile:
         }
         self.timeslottedancestors = self.get_timeslotted_parents()
         # print(len(self.timeslottedancestors))
+        self.annotationdic = {
+            el[0].attrib["ANNOTATION_ID"]: annotation.Annotation(el, self.timeslots)
+            for el in self.root.findall(".//ANNOTATION")
+        }
 
     LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
 
@@ -235,11 +240,11 @@ class ElanFile:
         for ref_annotation in t.findall(".//REF_ANNOTATION"):
             if ref_annotation.find(".//ANNOTATION_VALUE").text is not None:
                 try:
-                    annotation = Annotation(
+                    anno = annotation.Annotation(
                         aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
                         self.timeslots,
                     )
-                    result.append(annotation)
+                    result.append(anno)
                 except ValueError:
                     continue
         return result
@@ -313,11 +318,13 @@ class ElanFile:
         """
 
         timelist = [
-            Annotation(aa, self.timeslots).get_duration()
+            annotation.Annotation(aa, self.timeslots).get_duration()
             for aa in t.findall("./ANNOTATION")
             if aa.text is not None
         ]
         timelistannno = [anno.get_duration() for anno in self.get_annotation_list(t)]
+        print(timelist)
+        print(timelistannno)
         return sum(timelist + timelistannno) / 1000
 
     def has_minimal_translation_length(self, t, tierID):
@@ -340,7 +347,7 @@ class ElanFile:
     def populate_transcriptions(self):
         """fill the attribute transcriptions with translations from the ELAN file"""
 
-        transcriptioncandidates = ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
+        transcriptioncandidates = constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
         transcriptions = defaultdict(dict)
         root = self.root
         if root is None:
@@ -365,6 +372,7 @@ class ElanFile:
                 if self.is_major_language(wordlist, spanish=True):
                     continue
                 time_in_seconds.append(self.get_seconds_from_tier(tier))
+                print(time_in_seconds)
                 transcriptions[candidate][tierID] = wordlist
         self.secondstranscribed = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
         self.transcriptions = transcriptions
@@ -372,7 +380,7 @@ class ElanFile:
     def populate_translations(self):
         """fill the attribute translation with translations from the ELAN file"""
 
-        translationcandidates = ACCEPTABLE_TRANSLATION_TIER_TYPES
+        translationcandidates = constants.ACCEPTABLE_TRANSLATION_TIER_TYPES
         root = self.root
         if root is None:
             self.transcriptions = {}
@@ -406,6 +414,7 @@ class ElanFile:
                     translations_with_IDs[candidate][tierID] = {
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
+        print(time_in_seconds)
         self.secondstranslated = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
         self.translations = translations
         self.translations_with_IDs = translations_with_IDs
@@ -563,14 +572,11 @@ class ElanFile:
         root = self.root
         if root is None:
             return {}
-        glosscandidates = ACCEPTABLE_GLOSS_TIER_TYPES
+        glosscandidates = constants.ACCEPTABLE_GLOSS_TIER_TYPES
         mapping = get_annotation_text_mapping(root)
         retrieved_glosstiers = {}
 
-        # annotationdic = {
-        #     el[0].attrib["ANNOTATION_ID"]: Annotation(el, self.timeslots)
-        #     for el in root.findall(".//ANNOTATION")
-        # }  # TODO this should probably be in init
+
         for candidate in glosscandidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
@@ -587,7 +593,7 @@ class ElanFile:
                     # )
                     # continue
                     annotations = [
-                        Annotation(el, self.timeslots)
+                        annotation.Annotation(el, self.timeslots)
                         for el in tier.findall(".//ANNOTATION")
                     ]
                     # try:
@@ -800,6 +806,7 @@ class ElanFile:
 ]
 )
         writer.write(f"{outputstring}\n")
+        return outputstring
 
 
 class Tier:
@@ -854,246 +861,3 @@ class Tier:
                 del result[key]
         return result
 
-
-class Annotation:
-    def __init__(self, element, timeslots):
-        """ """
-
-        if element is None:
-            raise ValueError("Annotation is None")
-        if element.tag not in ["ANNOTATION", "ALIGNABLE_ANNOTATION"]:
-            logger.warning(f"{element.tag} is not an <(ALIGNABLE_)ANNOTATION> element")
-            raise ValueError(
-                f"{element.tag} is not an <(ALIGNABLE_)ANNOTATION> element"
-            )
-        self.text = ""
-        self.starttime = 0
-        self.endtime = 0
-        self.ID = None
-        self.parentID = None
-        self.previous_annotation_ID = None
-        # ELAN stores the annotation information in two different types of elements.
-        # One is ANNOTATION, the other one is ALIGNABLE_ANNOTATION. We do not know which
-        # kind is submitted to the constructor. If it is ANNOTATION, we have to drill
-        # down the DOM to find ALIGNABLE_ANNOTATION
-        if element.tag == "ANNOTATION":
-            alignable_annotation = element.find(".//ALIGNABLE_ANNOTATION")
-        else:
-            alignable_annotation = element
-        annotation_value = element.find(".//ANNOTATION_VALUE")
-        ref_annotation = element.find(".//REF_ANNOTATION")
-        try:
-            self.text = annotation_value.text
-        except AttributeError:
-            pass
-        if alignable_annotation is None:  # not time aligned
-            if ref_annotation is None:
-                print("Annotation without ID in", self.text)
-                print(element[0].text)
-                raise ValueError
-                self.ID = None
-                self.parentID = None
-            else:
-                self.ID = ref_annotation.attrib["ANNOTATION_ID"]
-                self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
-                self.previous_annotation_ID = ref_annotation.attrib.get("PREVIOUS_ANNOTATION")
-        else:  #   time aligned
-            self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
-            self.parentID = None
-            try:
-                self.starttime = int(
-                    timeslots[alignable_annotation.attrib["TIME_SLOT_REF1"]]
-                )
-                self.endtime = int(
-                    timeslots[alignable_annotation.attrib["TIME_SLOT_REF2"]]
-                )
-            except KeyError:
-                pass
-
-    def get_duration(self,include_void_annotations=True):
-        """
-        compute the duration by subtracting start times from end time
-        """
-        if include_void_annotations or self.text:
-            return self.endtime - self.starttime
-        else:
-            return 0
-
-
-ACCEPTABLE_TRANSLATION_TIER_TYPES = [
-    "eng",
-    "english translation",
-    "English translation",
-    "fe",
-    "fg",
-    "fn",
-    "fr",
-    "free translation",
-    "Free Translation",
-    "Free-translation",
-    "Free Translation (English)",
-    "ft",
-    "fte",
-    "tf (free translation)",
-    "Translation",
-    "tl",
-    "tn",
-    "tn (translation in lingua franca)",
-    "tf_eng (free english translation)",
-    "trad1",
-    "Traducción Español",
-    "Tradución",
-    "Traduccion",
-    "Translate",
-    "trad",
-    "traduccion",
-    "traducción",
-    "traducción ",
-    "Traducción",
-    "Traducción español",
-    "Traduction",
-    "translation",
-    "translations",
-    "Translation",
-    "xe",
-    "翻译",
-]
-
-
-ACCEPTABLE_TRANSCRIPTION_TIER_TYPES = [
-    "arta",
-    "Arta",
-    "conversación",
-    "default-lt",  # needs qualification
-    "default-lt",
-    "Dusun",
-    "Fonética",
-    "Frases",
-    "Hablado",
-    "Hakhun orthography",
-    "Hija",
-    "hija",
-    "ilokano",
-    "interlinear-text-item",
-    "Ikaan sentences",
-    "Khanty Speech",
-    "main-tier",
-    "Madre",
-    "madre",
-    "Matanvat text",
-    "Matanvat Text",
-    "Nese Utterances",
-    "o",
-    "or",
-    "orth",
-    "orthT",
-    "orthografia",
-    "orthografía",
-    "orthography",
-    "othography",  # sic
-    "po",
-    "po (practical orthography)",
-    "phrase",
-    "phrase-item",
-    "Phrases",
-    "Practical Orthography",
-    "sentence",
-    "sentences",
-    "speech",
-    "Standardised-phonology",
-    "Sumi",
-    "t",  # check this
-    "Tamang",
-    "texo ",
-    "text",
-    "Text",
-    "Text ",
-    "texto",
-    "Texto",
-    "texto ",
-    "Texto principal",
-    "Texto Principal",
-    "tl",  # check this
-    "time aligned",  # check this
-    "timed chunk",
-    "tl",  # check this
-    "Transcribe",
-    "Transcrição",
-    "TRANSCRIÇÃO",
-    "Transcript",
-    "Transcripción chol",
-    "transcripción chol",
-    "Transcripción",
-    "Transcripcion",
-    "transcripción",
-    "Transcripcion chol",
-    "transcript",
-    "Transcription",
-    "transcription",
-    "transcription_orthography",
-    "trs",
-    "trs@",
-    "trs1",
-    "tx",  # check usages of this
-    "tx2",  # check usages of this
-    "txt",
-    "type_utterance",
-    "unit",  # some Dutch texts from TLA
-    "ut",
-    "utt",
-    "Utterance",
-    "utterance",
-    "uterrances",  # sic
-    "utterances",
-    "utterrances",  # sic
-    "Utterances",
-    "utterance transcription",
-    "UtteranceType",
-    "vernacular",
-    "Vernacular",
-    "vilela",
-    "Vilela",
-    "word-txt",
-    #'Word', #probably more often used for glossing
-    #'word', #probably more often used for glossing
-    "word_orthography",
-    #'words', #probably more often used for glossing
-    #'Words', #more often used for glossing
-    "xv",
-    "default transcript",
-    "句子",
-    "句子 ",
-    "句子 ",
-]
-
-ACCEPTABLE_WORD_TIER_TYPES = [
-    "Word",
-    "word",
-    "Words",
-    "words",
-    "word-item",
-    "morpheme",
-    "morphemes",
-    "mb",
-    "mb (morpheme boundaries)",
-    "Morpheme Break",
-    "m",
-    "morph",
-    "mph",
-    "wordT",
-    "word-txt",
-]
-
-ACCEPTABLE_GLOSS_TIER_TYPES = [
-    "ge",
-    "morph-item",
-    "gl",
-    "Gloss",
-    "gloss",
-    "glosses",
-    "word",
-    "word-gls",
-    "gl (interlinear gloss)",
-]
-
-ACCEPTABLE_POS_TIER_TYPES = ["ps", "parts of speech"]
