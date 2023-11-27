@@ -71,14 +71,14 @@ def test_ref_tx_ft_wd_mb(capsys):
 
 
 
-# def test_ref_po_mb_ge_ps_ft_nt(capsys):
-#     ef = ElanFile("ref_po_mb_ge_ps_ft_nt.eaf", "www")
-#     ef.populate_transcriptions()
-#     ef.populate_translations()
-#     ef.populate_glosses()
-#     with capsys.disabled():
-#         output = ef.print_overview()
-#         assert output == "ref_po_mb_ge_ps_ft_nt.eaf\t00:01:10\tft\t10\t155\t687\t15.5\t4.43\t00:00:50\tpo\t10\t118\t629\t11.8\t5.33\t00:00:59\tge\t10\t313\t59\t5.31"
+def test_ref_po_mb_ge_ps_ft_nt(capsys):
+    ef = ElanFile("ref_po_mb_ge_ps_ft_nt.eaf", "www")
+    ef.populate_transcriptions()
+    ef.populate_translations()
+    ef.populate_glosses()
+    with capsys.disabled():
+        output = ef.print_overview()
+        assert output == "ref_po_mb_ge_ps_ft_nt.eaf\t00:01:10\tft\t10\t155\t687\t15.5\t4.43\t00:00:59\tpo\t10\t118\t629\t11.8\t5.33\t00:00:59\tge\t10\t313\t59\t5.31"
 
 
 

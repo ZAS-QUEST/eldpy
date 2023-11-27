@@ -1,6 +1,6 @@
 
 class Annotation:
-    def __init__(self, element, timeslots):
+    def __init__(self, element, timeslots, ref_annotations, alignable_annotations):
         """ """
 
         if element is None:
@@ -41,9 +41,15 @@ class Annotation:
                 self.ID = ref_annotation.attrib["ANNOTATION_ID"]
                 self.parentID = ref_annotation.attrib["ANNOTATION_REF"]
                 self.previous_annotation_ID = ref_annotation.attrib.get("PREVIOUS_ANNOTATION")
-                # parentAnno = Annotation(annotationdic[self.parentID],timeslots)
-                # self.starttime = parentAnno.starttime
-                # self.endtime = parentAnno.endtime
+                try:
+                    parentAnnoID = ref_annotations[self.parentID]
+                    parentAnno = alignable_annotations[parentAnnoID]
+                    startslot = parentAnno[0]
+                    endslot =  parentAnno[1]
+                    self.starttime = timeslots[startslot]
+                    self.endtime = timeslots[endslot]
+                except KeyError:
+                    pass
         else:  #   time aligned
             self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
             self.parentID = None
@@ -62,7 +68,7 @@ class Annotation:
         compute the duration by subtracting start times from end time
         """
         if include_void_annotations or self.text:
-            return self.endtime - self.starttime
+            return int(self.endtime) - int(self.starttime)
         else:
             return 0
 

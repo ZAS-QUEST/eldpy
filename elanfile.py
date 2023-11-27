@@ -65,7 +65,7 @@ class ElanFile:
         self.timeslottedancestors = self.get_timeslotted_parents()
         # print(len(self.timeslottedancestors))
         self.annotationdic = {
-            el[0].attrib["ANNOTATION_ID"]: annotation.Annotation(el, self.timeslots)
+            el[0].attrib["ANNOTATION_ID"]: annotation.Annotation(el, self.timeslots, self.ref_annotations, self.alignable_annotations )
             for el in self.root.findall(".//ANNOTATION")
         }
 
@@ -243,6 +243,8 @@ class ElanFile:
                     anno = annotation.Annotation(
                         aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
                         self.timeslots,
+                        self.ref_annotations,
+                        self.alignable_annotations
                     )
                     result.append(anno)
                 except ValueError:
@@ -318,13 +320,11 @@ class ElanFile:
         """
 
         timelist = [
-            annotation.Annotation(aa, self.timeslots).get_duration()
+            annotation.Annotation(aa, self.timeslots, self.ref_annotations, self.alignable_annotations).get_duration()
             for aa in t.findall("./ANNOTATION")
             if aa.text is not None
         ]
         timelistannno = [anno.get_duration() for anno in self.get_annotation_list(t)]
-        print(timelist)
-        print(timelistannno)
         return sum(timelist + timelistannno) / 1000
 
     def has_minimal_translation_length(self, t, tierID):
@@ -372,7 +372,6 @@ class ElanFile:
                 if self.is_major_language(wordlist, spanish=True):
                     continue
                 time_in_seconds.append(self.get_seconds_from_tier(tier))
-                print(time_in_seconds)
                 transcriptions[candidate][tierID] = wordlist
         self.secondstranscribed = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
         self.transcriptions = transcriptions
@@ -414,7 +413,6 @@ class ElanFile:
                     translations_with_IDs[candidate][tierID] = {
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
-        print(time_in_seconds)
         self.secondstranslated = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
         self.translations = translations
         self.translations_with_IDs = translations_with_IDs
@@ -593,7 +591,7 @@ class ElanFile:
                     # )
                     # continue
                     annotations = [
-                        annotation.Annotation(el, self.timeslots)
+                        annotation.Annotation(el, self.timeslots, self.ref_annotations, self.alignable_annotations)
                         for el in tier.findall(".//ANNOTATION")
                     ]
                     # try:
