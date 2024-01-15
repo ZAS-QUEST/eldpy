@@ -290,19 +290,25 @@ class ElanFile:
                 )
             return False
 
-    def tier_to_wordlist(self, t):
+    def tier_to_ID_wordlist(self, t):
         """
         create a list of all words in that tier by splitting
         and collating all annotation values of that tier
         """
 
         result = []
-        for av in t.findall(".//ANNOTATION_VALUE"):
+        for ref_ann in t.findall(".//REF_ANNOTATION"):
+            ID = ref_ann.attrib['ANNOTATION_ID']
             try:
-                result.append(av.text.strip())
+                annotation_text = ref_ann.find(".//ANNOTATION_VALUE").text.strip()
             except AttributeError:
-                result.append("")
+                annotation_text = ""
+            result.append((ID, annotation_text))
         return result
+
+    def tier_to_wordlist(self, t):
+        tier_with_IDs = self.tier_to_ID_wordlist(t)
+        return [el[1] for el in tier_with_IDs]
 
     def tier_to_annotation_ID_list(self, t):
         """
@@ -349,6 +355,7 @@ class ElanFile:
 
         transcriptioncandidates = constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
         transcriptions = defaultdict(dict)
+        transcriptions_with_IDs = defaultdict(dict)
         root = self.root
         if root is None:
             self.transcriptions = {}
@@ -363,7 +370,8 @@ class ElanFile:
             vernaculartiers = root.findall(querystring)
             for tier in vernaculartiers:
                 tierID = tier.attrib["TIER_ID"]
-                wordlist = self.tier_to_wordlist(tier)
+                wordlist = self.tier_to_wordlist(tier) #FIXME avoid duplication
+                wordlist_with_IDs = self.tier_to_ID_wordlist(tier)
                 if wordlist == []:
                     continue
                 if self.is_ID_tier(wordlist):
@@ -373,8 +381,10 @@ class ElanFile:
                     continue
                 time_in_seconds.append(self.get_seconds_from_tier(tier))
                 transcriptions[candidate][tierID] = wordlist
+                transcriptions_with_IDs[candidate][tierID] = wordlist_with_IDs
         self.secondstranscribed = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
         self.transcriptions = transcriptions
+        self.transcriptions_with_IDs = transcriptions_with_IDs
 
     def populate_translations(self):
         """fill the attribute translation with translations from the ELAN file"""
@@ -382,7 +392,7 @@ class ElanFile:
         translationcandidates = constants.ACCEPTABLE_TRANSLATION_TIER_TYPES
         root = self.root
         if root is None:
-            self.transcriptions = {}
+            self.translations = {}
             self.translations_with_IDs = {}
             return
         # we check the XML file which of the frequent names for translation tiers it uses
@@ -437,10 +447,12 @@ class ElanFile:
 
     def get_cldfs(self):
         lines = []
+        tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_IDs).popitem()[1].popitem()[1]
+        transcription_ID_dict = {t[0]:t[1] for t in tmp_transcription_dic}
         # FIXME check for several tiers
-        tmp_dict = copy.deepcopy(self.translations_with_IDs)
+        tmp_translations_dict = copy.deepcopy(self.translations_with_IDs)
         try:
-            translation_ID_dict = tmp_dict.popitem()[1].popitem()[1]
+            translation_ID_dict = tmp_translations_dict.popitem()[1].popitem()[1]
         except KeyError:
             return ""
         except AttributeError:  # FIXME should not throw attribute error at 5489
@@ -449,7 +461,6 @@ class ElanFile:
             glosses = copy.deepcopy(self.glossed_sentences).popitem()[1].popitem()[1]
         except KeyError:
             return ""
-        print(self.glossed_sentences)
         for g in glosses:
             if g == {}:
                 return ""
@@ -466,6 +477,16 @@ class ElanFile:
                 vernacular_subcells.append(vernacular)
                 gloss_subcells.append(gloss)
             try:
+                primary_text = transcription_ID_dict[ID]
+            except KeyError: #FIXME gigantic hack to align glosses with transcriptions
+                integer_part = ID.replace("ann","").replace("a","")
+                next_integer = int(integer_part)+1
+                try:
+                    primary_text = transcription_ID_dict[f"ann{next_integer}"]
+                except KeyError:
+                    logger.warning("translation", ID, "could not be retrieved, nor could", next_integer, "be retrieved")
+                    primary_text = "PRIMARY TEXT NOT RETRIEVED"
+            try:
                 translation = translation_ID_dict[ID]
             except KeyError: #FIXME gigantic hack to align glosses with translations
                 integer_part = ID.replace("ann","").replace("a","")
@@ -475,16 +496,18 @@ class ElanFile:
                 except KeyError:
                     logger.warning("translation", ID, "could not be retrieved, nor could", next_integer, "be retrieved")
                     translation = "TRANSLATION NOT RETRIEVED"
+            primary_text_cell = primary_text
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
             translation_cell = translation
-            line = [ID,vernacular_cell, gloss_cell, translation_cell]
+            lgr_cell = "WORD_ALIGNED" #FIXME check for morpheme alignment
+            line = [ID, primary_text_cell, vernacular_cell, gloss_cell, translation_cell, lgr_cell]
             lines.append(line)
         cldfstringbuffer = io.StringIO()
         csv_writer = csv.writer(
             cldfstringbuffer, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
         )
-        csv_writer.writerow("ID Analyzed_Word Gloss Translated_Text".split())
+        csv_writer.writerow("ID Primary_Text Analyzed_Word Gloss Translated_Text LGRConformance".split())
         for line in lines:
             csv_writer.writerow(line)
         return cldfstringbuffer.getvalue()
