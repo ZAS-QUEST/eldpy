@@ -63,6 +63,10 @@ class ElanFile:
             for el in tmpxml.findall(".//REF_ANNOTATION")
         }
         self.timeslottedancestors = self.get_timeslotted_parents()
+        self.timeslotted_reversedic = defaultdict(list)
+        for k in self.timeslottedancestors:
+            v = self.timeslottedancestors[k]
+            self.timeslotted_reversedic[v].append(k)
         # print(len(self.timeslottedancestors))
         self.annotationdic = {
             el[0].attrib["ANNOTATION_ID"]: annotation.Annotation(el, self.timeslots, self.ref_annotations, self.alignable_annotations )
@@ -297,7 +301,7 @@ class ElanFile:
         """
 
         result = []
-        for ref_ann in t.findall(".//REF_ANNOTATION"):
+        for ref_ann in t.findall(".//REF_ANNOTATION")+t.findall(".//ALIGNABLE_ANNOTATION"):
             ID = ref_ann.attrib['ANNOTATION_ID']
             try:
                 annotation_text = ref_ann.find(".//ANNOTATION_VALUE").text.strip()
@@ -308,7 +312,8 @@ class ElanFile:
 
     def tier_to_wordlist(self, t):
         tier_with_IDs = self.tier_to_ID_wordlist(t)
-        return [el[1] for el in tier_with_IDs]
+        result = [el[1] for el in tier_with_IDs]
+        return result
 
     def tier_to_annotation_ID_list(self, t):
         """
@@ -447,8 +452,14 @@ class ElanFile:
 
     def get_cldfs(self):
         lines = []
-        tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_IDs).popitem()[1].popitem()[1]
-        transcription_ID_dict = {t[0]:t[1] for t in tmp_transcription_dic}
+        tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_IDs)
+        d = {}
+        for candidate in tmp_transcription_dic:
+            for tier in tmp_transcription_dic[candidate]:
+                for tupl in tmp_transcription_dic[candidate][tier]:
+                    d[tupl[0]]=tupl[1]
+        transcription_ID_dict =  d
+        # 0/0
         # FIXME check for several tiers
         tmp_translations_dict = copy.deepcopy(self.translations_with_IDs)
         try:
@@ -485,7 +496,12 @@ class ElanFile:
                     primary_text = transcription_ID_dict[f"ann{next_integer}"]
                 except KeyError:
                     logger.warning("translation", ID, "could not be retrieved, nor could", next_integer, "be retrieved")
-                    primary_text = "PRIMARY TEXT NOT RETRIEVED"
+                    for v in self.timeslotted_reversedic[ID]:
+                        primary_text = transcription_ID_dict.get(v)
+                        if primary_text:
+                            break
+                    else:
+                        primary_text = "PRIMARY TEXT NOT RETRIEVED"
             try:
                 translation = translation_ID_dict[ID]
             except KeyError: #FIXME gigantic hack to align glosses with translations
@@ -742,7 +758,6 @@ class ElanFile:
                     words = sentence.split()
                     translated_word_count += len(words)
                     translated_char_count += sum([len(w) for w in words])
-
         transcription_tier_names = list(self.transcriptions.keys())
         primary_transcription_tier_name = ''
         transcribed_sentence_count = 0
