@@ -446,9 +446,10 @@ class ElanFile:
         except AttributeError:  # FIXME should not throw attribute error at 5489
             return ""
         try:
-            glosses = copy.deepcopy(self.glossed_sentences.popitem()[1].popitem()[1])
+            glosses = copy.deepcopy(self.glossed_sentences).popitem()[1].popitem()[1]
         except KeyError:
             return ""
+        print(self.glossed_sentences)
         for g in glosses:
             if g == {}:
                 return ""

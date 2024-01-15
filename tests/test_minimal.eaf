@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ANNOTATION_DOCUMENT AUTHOR="unspecified"
+    DATE="2024-01-08T13:03:51+01:00" FORMAT="3.0" VERSION="3.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mpi.nl/tools/elan/EAFv3.0.xsd">
+    <HEADER MEDIA_FILE="" TIME_UNITS="milliseconds">
+        <PROPERTY NAME="URN">urn:nl-mpi-tools-elan-eaf:23a14233-680e-4805-bba8-ada401fd938a</PROPERTY>
+        <PROPERTY NAME="lastUsedAnnotationId">6230</PROPERTY>
+    </HEADER>
+    <TIME_ORDER>
+        <TIME_SLOT TIME_SLOT_ID="ts1" TIME_VALUE="27080"/>
+        <TIME_SLOT TIME_SLOT_ID="ts2" TIME_VALUE="30870"/>
+        <TIME_SLOT TIME_SLOT_ID="ts3" TIME_VALUE="31305"/>
+        <TIME_SLOT TIME_SLOT_ID="ts4" TIME_VALUE="35235"/>
+    </TIME_ORDER>
+    <TIER LINGUISTIC_TYPE_REF="ref" PARTICIPANT="A" TIER_ID="ref@A">
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann0"
+                TIME_SLOT_REF1="ts1" TIME_SLOT_REF2="ts2">
+                <ANNOTATION_VALUE>test.001	</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann25"
+                TIME_SLOT_REF1="ts3" TIME_SLOT_REF2="ts4">
+                <ANNOTATION_VALUE>test.002</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="po" PARENT_REF="ref@A" PARTICIPANT="A" TIER_ID="tx@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann1" ANNOTATION_REF="ann0">
+                <ANNOTATION_VALUE>oino irore</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann26" ANNOTATION_REF="ann25">
+                <ANNOTATION_VALUE>ire awu boe etore emaragodudö</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="mb" PARENT_REF="tx@A" PARTICIPANT="A" TIER_ID="mb@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann4" ANNOTATION_REF="ann1">
+                <ANNOTATION_VALUE>oino</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann7" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann4">
+                <ANNOTATION_VALUE>i=ro=re</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann29" ANNOTATION_REF="ann26">
+                <ANNOTATION_VALUE>i=re</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann32" ANNOTATION_REF="ann26" PREVIOUS_ANNOTATION="ann29">
+                <ANNOTATION_VALUE>awu</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann35" ANNOTATION_REF="ann26" PREVIOUS_ANNOTATION="ann32">
+                <ANNOTATION_VALUE>boe.etore</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann65" ANNOTATION_REF="ann26" PREVIOUS_ANNOTATION="ann35">
+                <ANNOTATION_VALUE>e=maragodu-do</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="ge" PARENT_REF="mb@A" PARTICIPANT="A" TIER_ID="ge@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann5" ANNOTATION_REF="ann4">
+                <ANNOTATION_VALUE>thus</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann8" ANNOTATION_REF="ann7">
+                <ANNOTATION_VALUE>1.SG=make=IND</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann30" ANNOTATION_REF="ann29">
+                <ANNOTATION_VALUE>1.SG=IND</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann33" ANNOTATION_REF="ann32">
+                <ANNOTATION_VALUE>this</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann36" ANNOTATION_REF="ann35">
+                <ANNOTATION_VALUE>son</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann66" ANNOTATION_REF="ann65">
+                <ANNOTATION_VALUE>3.PL=work-CAUS</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="ft" PARENT_REF="tx@A" PARTICIPANT="A" TIER_ID="ft@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann2" ANNOTATION_REF="ann1">
+                <ANNOTATION_VALUE>Thus I did.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann27" ANNOTATION_REF="ann26">
+                <ANNOTATION_VALUE>I made these children work</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="nt" PARENT_REF="tx@A" PARTICIPANT="A" TIER_ID="nt@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann3" ANNOTATION_REF="ann1">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann28" ANNOTATION_REF="ann26">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="id" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ptcp" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="gnr" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="nr" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ph" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ref" TIME_ALIGNABLE="true"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="po" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Subdivision"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="mb" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ge" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ps" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ft" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="nt" TIME_ALIGNABLE="false"/>
+    <CONSTRAINT
+        DESCRIPTION="Time subdivision of parent annotation's time interval, no time gaps allowed within this interval" STEREOTYPE="Time_Subdivision"/>
+    <CONSTRAINT
+        DESCRIPTION="Symbolic subdivision of a parent annotation. Annotations refering to the same parent are ordered" STEREOTYPE="Symbolic_Subdivision"/>
+    <CONSTRAINT DESCRIPTION="1-1 association with a parent annotation" STEREOTYPE="Symbolic_Association"/>
+    <CONSTRAINT
+        DESCRIPTION="Time alignable annotations within the parent annotation's time interval, gaps are allowed" STEREOTYPE="Included_In"/>
+</ANNOTATION_DOCUMENT>

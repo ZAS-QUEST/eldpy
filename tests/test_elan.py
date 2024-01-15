@@ -67,7 +67,7 @@ def test_ref_tx_ft_wd_mb(capsys):
     ef.populate_translations()
     ef.populate_glosses()
     output = ef.print_overview()
-    assert output == "ref_tx_ft_wd_mb.eaf\t00:00:59\tft\t15\t108\t434\t7.2\t4.02\t00:00:50\ttx\t15\t72\t339\t4.8\t4.71\t00:00:50\tword\t30\t199\t63\t3.16"
+    assert output == ["ref_tx_ft_wd_mb.eaf","00:00:59","ft","15","108","434","7.2","4.02","00:00:50","tx","15","72","339","4.8","4.71","00:00:50","word","30","199","63","3.16","1.0", "1.5"]
 
 
 
@@ -78,34 +78,51 @@ def test_ref_po_mb_ge_ps_ft_nt(capsys):
     ef.populate_glosses()
     with capsys.disabled():
         output = ef.print_overview()
-        assert output == "ref_po_mb_ge_ps_ft_nt.eaf\t00:01:10\tft\t10\t155\t687\t15.5\t4.43\t00:00:59\tpo\t10\t118\t629\t11.8\t5.33\t00:00:59\tge\t10\t313\t59\t5.31"
+        assert output == ["ref_po_mb_ge_ps_ft_nt.eaf","00:01:10","ft","10","155","687","15.5","4.43","00:00:59","po","10","118","629","11.8","5.33","00:00:59","ge","10","313","59","5.31","1.09","1.1"]
 
 
 
 
 #
-#
-def test_fuzz(capsys):
-    # eafs = glob.glob('quarantine/*eaf')
-    offset = 0
-    offset = 11237
-    eafs = glob.glob("testeafs/*eaf")[offset:]
-    eafs.sort()
-    with capsys.disabled():
-        print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
-    out = open("test.csv", "w")
-    for i, eaf in enumerate(eafs):
-        # print(eaf)
-        ef = ElanFile(eaf, "www")
-        ef.populate_transcriptions()
-        transcriptions = ef.get_transcriptions()
-        ef.populate_translations()
-        translations = ef.get_translations()
-        ef.populate_glosses()
-        ef.get_cldfs()
-        with capsys.disabled():
-            # print(eaf)
-            print()
-            print(str(offset + i).rjust(5, " "), end=" ")
-            ef.print_overview(writer=out)
-    out.close()
+# #
+# def test_fuzz(capsys):
+#     # eafs = glob.glob('quarantine/*eaf')
+#     offset = 0
+#     offset = 11237
+#     eafs = glob.glob("testeafs/*eaf")[offset:]
+#     eafs.sort()
+#     with capsys.disabled():
+#         print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
+#     out = open("test.csv", "w")
+#     for i, eaf in enumerate(eafs):
+#         # print(eaf)
+#         ef = ElanFile(eaf, "www")
+#         ef.populate_transcriptions()
+#         transcriptions = ef.get_transcriptions()
+#         ef.populate_translations()
+#         translations = ef.get_translations()
+#         ef.populate_glosses()
+#         ef.get_cldfs()
+#         with capsys.disabled():
+#             # print(eaf)
+#             print()
+#             print(str(offset + i).rjust(5, " "), end=" ")
+#             ef.print_overview(writer=out)
+#     out.close()
+
+
+def test_minimal(capsys):
+    eaf = "test_minimal.eaf"
+    ef = ElanFile(eaf, "www")
+    ef.populate_transcriptions()
+    transcriptions = ef.get_transcriptions()
+    assert ef.transcriptions['po']['tx@A'] == ['oino irore', 'ire awu boe etore emaragodudö']
+    ef.populate_translations()
+    ef.translations['ft']['ft@A'] == ['Thus I did.', 'I made these children work']
+    translations = ef.get_translations()
+    assert translations == [['Thus I did.', 'I made these children work']]
+    ef.populate_glosses()
+    assert ef.glossed_sentences['ge']['ge@A'][1]['ann25'][2] == ['boe.etore', 'son']
+    cldfstring = ef.get_cldfs()
+    assert cldfstring.split('\n')[1].strip() == '"ann0","oino\ti=ro=re","thus\t1.SG=make=IND","Thus I did."'
+    assert ef.glossed_sentences['ge']['ge@A'][1]['ann25'][2] == ['boe.etore', 'son']
