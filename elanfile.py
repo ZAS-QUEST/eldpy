@@ -69,7 +69,9 @@ class ElanFile:
             self.timeslotted_reversedic[v].append(k)
         # print(len(self.timeslottedancestors))
         self.annotationdic = {
-            el[0].attrib["ANNOTATION_ID"]: annotation.Annotation(el, self.timeslots, self.ref_annotations, self.alignable_annotations )
+            el[0].attrib["ANNOTATION_ID"]: annotation.Annotation(
+                el, self.timeslots, self.ref_annotations, self.alignable_annotations
+            )
             for el in self.root.findall(".//ANNOTATION")
         }
 
@@ -248,7 +250,7 @@ class ElanFile:
                         aas.get(ref_annotation.attrib["ANNOTATION_REF"]),
                         self.timeslots,
                         self.ref_annotations,
-                        self.alignable_annotations
+                        self.alignable_annotations,
                     )
                     result.append(anno)
                 except ValueError:
@@ -301,8 +303,10 @@ class ElanFile:
         """
 
         result = []
-        for ref_ann in t.findall(".//REF_ANNOTATION")+t.findall(".//ALIGNABLE_ANNOTATION"):
-            ID = ref_ann.attrib['ANNOTATION_ID']
+        for ref_ann in t.findall(".//REF_ANNOTATION") + t.findall(
+            ".//ALIGNABLE_ANNOTATION"
+        ):
+            ID = ref_ann.attrib["ANNOTATION_ID"]
             try:
                 annotation_text = ref_ann.find(".//ANNOTATION_VALUE").text.strip()
             except AttributeError:
@@ -331,7 +335,9 @@ class ElanFile:
         """
 
         timelist = [
-            annotation.Annotation(aa, self.timeslots, self.ref_annotations, self.alignable_annotations).get_duration()
+            annotation.Annotation(
+                aa, self.timeslots, self.ref_annotations, self.alignable_annotations
+            ).get_duration()
             for aa in t.findall("./ANNOTATION")
             if aa.text is not None
         ]
@@ -364,6 +370,7 @@ class ElanFile:
         root = self.root
         if root is None:
             self.transcriptions = {}
+            self.transcriptions_with_IDs = {}
             return
         # we check the XML file which of the frequent names for transcription tiers it uses
         # there might be several transcription tiers with different names, hence we store them
@@ -375,7 +382,7 @@ class ElanFile:
             vernaculartiers = root.findall(querystring)
             for tier in vernaculartiers:
                 tierID = tier.attrib["TIER_ID"]
-                wordlist = self.tier_to_wordlist(tier) #FIXME avoid duplication
+                wordlist = self.tier_to_wordlist(tier)  # FIXME avoid duplication
                 wordlist_with_IDs = self.tier_to_ID_wordlist(tier)
                 if wordlist == []:
                     continue
@@ -387,7 +394,9 @@ class ElanFile:
                 time_in_seconds.append(self.get_seconds_from_tier(tier))
                 transcriptions[candidate][tierID] = wordlist
                 transcriptions_with_IDs[candidate][tierID] = wordlist_with_IDs
-        self.secondstranscribed = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
+        self.secondstranscribed = sum(
+            time_in_seconds
+        )  # FIXME make sure that only filled annotations are counted. Add negative test
         self.transcriptions = transcriptions
         self.transcriptions_with_IDs = transcriptions_with_IDs
 
@@ -428,7 +437,9 @@ class ElanFile:
                     translations_with_IDs[candidate][tierID] = {
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
-        self.secondstranslated = sum(time_in_seconds) #FIXME make sure that only filled annotations are counted. Add negative test
+        self.secondstranslated = sum(
+            time_in_seconds
+        )  # FIXME make sure that only filled annotations are counted. Add negative test
         self.translations = translations
         self.translations_with_IDs = translations_with_IDs
 
@@ -457,8 +468,8 @@ class ElanFile:
         for candidate in tmp_transcription_dic:
             for tier in tmp_transcription_dic[candidate]:
                 for tupl in tmp_transcription_dic[candidate][tier]:
-                    d[tupl[0]]=tupl[1]
-        transcription_ID_dict =  d
+                    d[tupl[0]] = tupl[1]
+        transcription_ID_dict = d
         # 0/0
         # FIXME check for several tiers
         tmp_translations_dict = copy.deepcopy(self.translations_with_IDs)
@@ -489,41 +500,63 @@ class ElanFile:
                 gloss_subcells.append(gloss)
             try:
                 primary_text = transcription_ID_dict[ID]
-            except KeyError: #FIXME gigantic hack to align glosses with transcriptions
-                integer_part = ID.replace("ann","").replace("a","")
-                next_integer = int(integer_part)+1
+            except KeyError:  # FIXME gigantic hack to align glosses with transcriptions
+                integer_part = ID.replace("ann", "").replace("a", "")
+                next_integer = int(integer_part) + 1
                 try:
                     primary_text = transcription_ID_dict[f"ann{next_integer}"]
                 except KeyError:
-                    logger.warning("translation", ID, "could not be retrieved, nor could", next_integer, "be retrieved")
+                    # we try to retrieve a tier dependent on the ref tier which does have a primary text
                     for v in self.timeslotted_reversedic[ID]:
                         primary_text = transcription_ID_dict.get(v)
                         if primary_text:
                             break
                     else:
+                        logger.warning(
+                            "translation",
+                            ID,
+                            "could not be retrieved, nor could",
+                            next_integer,
+                            "be retrieved",
+                        )
                         primary_text = "PRIMARY TEXT NOT RETRIEVED"
             try:
                 translation = translation_ID_dict[ID]
-            except KeyError: #FIXME gigantic hack to align glosses with translations
-                integer_part = ID.replace("ann","").replace("a","")
-                next_integer = int(integer_part)+1
+            except KeyError:  # FIXME gigantic hack to align glosses with translations
+                integer_part = ID.replace("ann", "").replace("a", "")
+                next_integer = int(integer_part) + 1
                 try:
                     translation = translation_ID_dict[f"ann{next_integer}"]
                 except KeyError:
-                    logger.warning("translation", ID, "could not be retrieved, nor could", next_integer, "be retrieved")
+                    logger.warning(
+                        "translation",
+                        ID,
+                        "could not be retrieved, nor could",
+                        next_integer,
+                        "be retrieved",
+                    )
                     translation = "TRANSLATION NOT RETRIEVED"
             primary_text_cell = primary_text
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
             translation_cell = translation
-            lgr_cell = "WORD_ALIGNED" #FIXME check for morpheme alignment
-            line = [ID, primary_text_cell, vernacular_cell, gloss_cell, translation_cell, lgr_cell]
+            lgr_cell = "WORD_ALIGNED"  # FIXME check for morpheme alignment
+            line = [
+                ID,
+                primary_text_cell,
+                vernacular_cell,
+                gloss_cell,
+                translation_cell,
+                lgr_cell,
+            ]
             lines.append(line)
         cldfstringbuffer = io.StringIO()
         csv_writer = csv.writer(
             cldfstringbuffer, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
         )
-        csv_writer.writerow("ID Primary_Text Analyzed_Word Gloss Translated_Text LGRConformance".split())
+        csv_writer.writerow(
+            "ID Primary_Text Analyzed_Word Gloss Translated_Text LGRConformance".split()
+        )
         for line in lines:
             csv_writer.writerow(line)
         return cldfstringbuffer.getvalue()
@@ -587,7 +620,9 @@ class ElanFile:
                     except TypeError:
                         pass
                     except KeyError:
-                        logger.warning("tried to update non-existing word for gloss in", sentenceID)
+                        logger.warning(
+                            "tried to update non-existing word for gloss in", sentenceID
+                        )
                     continue
                 if sentenceID != current_sentence_ID:
                     if current_sentence_ID:
@@ -614,7 +649,6 @@ class ElanFile:
         mapping = get_annotation_text_mapping(root)
         retrieved_glosstiers = {}
 
-
         for candidate in glosscandidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
@@ -631,7 +665,12 @@ class ElanFile:
                     # )
                     # continue
                     annotations = [
-                        annotation.Annotation(el, self.timeslots, self.ref_annotations, self.alignable_annotations)
+                        annotation.Annotation(
+                            el,
+                            self.timeslots,
+                            self.ref_annotations,
+                            self.alignable_annotations,
+                        )
                         for el in tier.findall(".//ANNOTATION")
                     ]
                     # try:
@@ -726,13 +765,13 @@ class ElanFile:
         aas = root.findall(".//ALIGNABLE_ANNOTATION")
         return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
 
-    def print_overview(self, writer=sys.stdout):#FIXME print tier ID
+    def print_overview(self, writer=sys.stdout):  # FIXME print tier ID
         filename = self.path.split("/")[-1]
         # outputstring = f"{filename[:4]}...{filename[-8:-4]}"
         try:
-            sorted_timecodes =  sorted([int(x) for x in self.timeslots.values()])
+            sorted_timecodes = sorted([int(x) for x in self.timeslots.values()])
         except AttributeError:
-            sorted_timecodes = [0,0]
+            sorted_timecodes = [0, 0]
         first_timecode = 0
         last_timecode = 0
         try:
@@ -740,10 +779,10 @@ class ElanFile:
             last_timecode = sorted_timecodes[-1]
         except IndexError:
             pass
-        duration_in_seconds = (last_timecode - first_timecode)/1000
+        duration_in_seconds = (last_timecode - first_timecode) / 1000
         duration_timeslots = self.readable_duration(duration_in_seconds)
         translation_tier_names = list(self.translations.keys())
-        primary_translation_tier_name = ''
+        primary_translation_tier_name = ""
         translated_sentence_count = 0
         translated_word_count = 0
         translated_char_count = 0
@@ -759,7 +798,7 @@ class ElanFile:
                     translated_word_count += len(words)
                     translated_char_count += sum([len(w) for w in words])
         transcription_tier_names = list(self.transcriptions.keys())
-        primary_transcription_tier_name = ''
+        primary_transcription_tier_name = ""
         transcribed_sentence_count = 0
         transcribed_word_count = 0
         transcribed_char_count = 0
@@ -767,7 +806,9 @@ class ElanFile:
             logger.warning(f"{self.path} more than one transcription tier found")
         if len(transcription_tier_names) > 0:
             primary_transcription_tier_name = transcription_tier_names[0]
-            transcription_tier_tokens = self.transcriptions[primary_transcription_tier_name]
+            transcription_tier_tokens = self.transcriptions[
+                primary_transcription_tier_name
+            ]
             for at_name in transcription_tier_tokens.values():
                 for sentence in at_name:
                     transcribed_sentence_count += 1
@@ -778,7 +819,7 @@ class ElanFile:
             gloss_tier_names = list(self.glossed_sentences.keys())
         except AttributeError:
             gloss_tier_names = []
-        primary_gloss_tier_name = ''
+        primary_gloss_tier_name = ""
         glossed_sentences_count = 0
         gloss_count = 0
         zipf1 = 0
@@ -804,11 +845,15 @@ class ElanFile:
                         if gloss == "***":
                             continue
                         max_ascii = max([ord(c) for c in gloss])
-                        if max_ascii < 65: #we have no letters in gloss
+                        if max_ascii < 65:  # we have no letters in gloss
                             continue
                         gloss_count += 1
                         distinct_glosses[gloss] += 1
-        max_glosses = sorted([distinct_glosses[k] for k in distinct_glosses], key=lambda x:x,reverse=True)
+        max_glosses = sorted(
+            [distinct_glosses[k] for k in distinct_glosses],
+            key=lambda x: x,
+            reverse=True,
+        )
 
         try:
             max1 = float(max_glosses[0])
@@ -821,9 +866,9 @@ class ElanFile:
         except IndexError:
             max3 = False
         if max3:
-            zipf2 = max2/max3
+            zipf2 = max2 / max3
         if max2:
-            zipf1 = max1/max2
+            zipf1 = max1 / max2
         if translated_sentence_count == 0:
             translated_sentence_count = -1
         if translated_word_count == 0:
@@ -833,35 +878,39 @@ class ElanFile:
         if transcribed_word_count == 0:
             transcribed_word_count = -1
         if distinct_glosses == {}:
-            distinct_glosses = {None:True}
-        outputstring = "\t".join([filename,
-                        duration_timeslots,
-# #
-                        primary_translation_tier_name,
-                        str(translated_sentence_count),
-                        str(translated_word_count),
-                        str(translated_char_count),
-                        str(round(translated_word_count/translated_sentence_count,2)),
-                        str(round(translated_char_count/translated_word_count,2)),
-                        self.readable_duration(self.secondstranslated),
-# #
-                        primary_transcription_tier_name,
-                        str(transcribed_sentence_count),
-                        str(transcribed_word_count),
-                        str(transcribed_char_count),
-                        str(round(transcribed_word_count/transcribed_sentence_count,2)),
-                        str(round(transcribed_char_count/transcribed_word_count,2)),
-                        self.readable_duration(self.secondstranscribed),#  most probably wrong # FIXME
-# #
-                        primary_gloss_tier_name,
-                        str(glossed_sentences_count),
-                        str(gloss_count),
-                        str(len(distinct_glosses)),
-                        str(round(gloss_count/len(distinct_glosses),2)),
-                        str(round(zipf1,2)),
-                        str(round(zipf2,2)),
-]
-)
+            distinct_glosses = {None: True}
+        outputstring = "\t".join(
+            [
+                filename,
+                duration_timeslots,
+                # #
+                primary_translation_tier_name,
+                str(translated_sentence_count),
+                str(translated_word_count),
+                str(translated_char_count),
+                str(round(translated_word_count / translated_sentence_count, 2)),
+                str(round(translated_char_count / translated_word_count, 2)),
+                self.readable_duration(self.secondstranslated),
+                # #
+                primary_transcription_tier_name,
+                str(transcribed_sentence_count),
+                str(transcribed_word_count),
+                str(transcribed_char_count),
+                str(round(transcribed_word_count / transcribed_sentence_count, 2)),
+                str(round(transcribed_char_count / transcribed_word_count, 2)),
+                self.readable_duration(
+                    self.secondstranscribed
+                ),  #  most probably wrong # FIXME
+                # #
+                primary_gloss_tier_name,
+                str(glossed_sentences_count),
+                str(gloss_count),
+                str(len(distinct_glosses)),
+                str(round(gloss_count / len(distinct_glosses), 2)),
+                str(round(zipf1, 2)),
+                str(round(zipf2, 2)),
+            ]
+        )
         writer.write(f"{outputstring}\n")
         return outputstring.split("\t")
 
@@ -917,4 +966,3 @@ class Tier:
             if key not in constants.LGRLIST:
                 del result[key]
         return result
-
