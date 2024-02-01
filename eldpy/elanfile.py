@@ -16,13 +16,8 @@ import csv
 import io
 import sys
 
-try:
-    import annotation
-    import constants
-except ImportError:
-    from ..lib import annotation
-    from ..lib import constants
-
+from eldpy    import annotation
+from eldpy    import constants
 
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)
