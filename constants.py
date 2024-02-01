@@ -124,6 +124,7 @@ ACCEPTABLE_TRANSLATION_TIER_TYPES = [
     "FTE",
     "ft",
     "fte",
+    "phrase-gls",
     "te",
     "tf (free translation)",
     "Translation",
@@ -191,6 +192,7 @@ ACCEPTABLE_TRANSCRIPTION_TIER_TYPES = [
     "po (practical orthography)",
     "phrase",
     "phrase-item",
+    "phrase-txt",
     "Phrases",
     "Practical Orthography",
     "sentence",
@@ -280,11 +282,13 @@ ACCEPTABLE_WORD_TIER_TYPES = [
     "mph",
     "wordT",
     "word-txt",
+    "morph-txt",
 ]
 
 ACCEPTABLE_GLOSS_TIER_TYPES = [
     "ge",
     "morph-item",
+    "morph-gls",
     "gl",
     "Gloss",
     "gloss",

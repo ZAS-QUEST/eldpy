@@ -15,8 +15,13 @@ import time
 import csv
 import io
 import sys
-import annotation
-import constants
+
+try:
+    import annotation
+    import constants
+except ImportError:
+    from ..lib import annotation
+    from ..lib import constants
 
 
 logger = logging.getLogger("eldpy")
@@ -400,7 +405,7 @@ class ElanFile:
         self.transcriptions = transcriptions
         self.transcriptions_with_IDs = transcriptions_with_IDs
 
-    def populate_translations(self):
+    def populate_translations(self, spanish=False):
         """fill the attribute translation with translations from the ELAN file"""
 
         translationcandidates = constants.ACCEPTABLE_TRANSLATION_TIER_TYPES
@@ -427,7 +432,7 @@ class ElanFile:
                         continue
                     # Sometimes, annotators put non-English contents in translation tiers
                     # For our purposes, we want to discard such content
-                    if not self.is_major_language(wordlist):
+                    if not self.is_major_language(wordlist, spanish=spanish):
                         continue
                     if not self.has_minimal_translation_length(wordlist, tierID):
                         continue
@@ -461,7 +466,7 @@ class ElanFile:
             for tierID in self.transcriptions[tier_type]
         ]
 
-    def get_cldfs(self):
+    def get_cldfs(self, matrix=False):
         lines = []
         tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_IDs)
         d = {}
@@ -550,16 +555,19 @@ class ElanFile:
                 lgr_cell,
             ]
             lines.append(line)
-        cldfstringbuffer = io.StringIO()
-        csv_writer = csv.writer(
-            cldfstringbuffer, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
-        )
-        csv_writer.writerow(
-            "ID Primary_Text Analyzed_Word Gloss Translated_Text LGRConformance".split()
-        )
-        for line in lines:
-            csv_writer.writerow(line)
-        return cldfstringbuffer.getvalue()
+        if matrix:
+            return lines
+        else:
+            cldfstringbuffer = io.StringIO()
+            csv_writer = csv.writer(
+                cldfstringbuffer, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
+            )
+            csv_writer.writerow(
+                "ID Primary_Text Analyzed_Word Gloss Translated_Text LGRConformance".split()
+            )
+            for line in lines:
+                csv_writer.writerow(line)
+            return cldfstringbuffer.getvalue()
 
     def populate_glosses(self):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
