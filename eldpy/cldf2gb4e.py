@@ -17,7 +17,7 @@ end_document="\\end{document}"
 
 
 
-def get_tex_content_from_csv(filename,provided_title="", output_type="examples"):
+def get_matrix_content_from_csv(filename,provided_title=""):
     matrix = []
     with open(filename, mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
@@ -28,6 +28,10 @@ def get_tex_content_from_csv(filename,provided_title="", output_type="examples")
             analyzed_word = row["Analyzed_Word"]
             translation = row["Translated_Text"]
             matrix.append([ID,primary_text,analyzed_word,gloss,translation])
+    return matrix
+
+def get_tex_content_from_csv(filename,provided_title="", output_type="examples"):
+    matrix = get_matrix_content_from_csv(filename,provided_title="")
     return get_tex_content(matrix,provided_title=provided_title,output_type=output_type)
 
 
@@ -39,22 +43,25 @@ def get_tex_content(matrix,provided_title="",output_type="examples"):
     translations = []
     for row in matrix:
         ID = row[0]
-        primary_text = row[1].strip()
+        primary_text = row[1].strip().replace("#","\\#").replace("_", "\\_")
         vernacular = row[2].strip()
-        gloss = row[3].strip()
-        translation = row[4].strip()
+        gloss = row[3]
+        translation = row[4]
         processed_translation = translation.replace("&","\\&").replace("#","\\#")
         vernacular_words = vernacular.split("\t")
         recomposed_vernacular_string = "\t".join(["{%s}"%w if " " in w else w for w in vernacular_words])
-        recomposed_vernacular_string = recomposed_vernacular_string.replace("&","\\&").replace("#","\\#").replace("\t\t","\t{\\relax}\t")
-        allcapsglosses = re.findall("([A-Z.]*[A-Z]+)",gloss)
-        for match in  sorted(allcapsglosses)[::-1]:
+        recomposed_vernacular_string = recomposed_vernacular_string.replace("&","\\&").replace("$","\\$").replace("#","\\#").replace("^","\\^").replace("#","\\#").replace("\t\t","\t{\\relax}\t").replace("_", "\\_")
+        gloss=gloss.replace("\\", "{\\textbackslash}").replace("_", "\\_").replace(" ", "\\_").replace("&","\\&").replace("#","\#").replace("\t\t","\t{\\relax}\t")
+        allcapsglosses = re.findall("([A-Z.][A-Z][A-Z]+)", gloss)
+        sorted_glosses = sorted(allcapsglosses,key=len)[::-1]
+        print(sorted_glosses)
+        for match in  sorted_glosses:
             gloss=gloss.replace(match, "\\textsc{%s}"%match.lower())
-        gloss=gloss.replace("_", "\\_").replace(" ", "\\_").replace("&","\\&").replace("#","\#").replace("\t\t","\t{\\relax}\t")
         if gloss.startswith("\t"):
             gloss = "{\\relax}"+gloss
         if output_type == "examples":
             resultstring += ('\\ea\\label{ex:%s}\n' % ID)
+            resultstring += (primary_text+"\\\\\n")
             resultstring += (f'\\gll {recomposed_vernacular_string}\\\\\n')
             resultstring += (f'     {gloss}\\\\\n')
             resultstring += (f"""\\glt `{processed_translation}'\n""")
