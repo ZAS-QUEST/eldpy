@@ -125,6 +125,7 @@ ACCEPTABLE_TRANSLATION_TIER_TYPES = [
     "ft",
     "fte",
     "phrase-gls",
+    "phrase-item",
     "te",
     "tf (free translation)",
     "Translation",
