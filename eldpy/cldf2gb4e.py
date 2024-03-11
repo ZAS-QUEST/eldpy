@@ -36,7 +36,7 @@ def latex_quotation_marks(s):
 
 def get_matrix_content_from_csv(filename,provided_title=""):
     matrix = []
-    with open(filename, mode='r') as csv_file:
+    with open(filename, mode='r', encoding="utf-8") as csv_file:
         csv_reader = csv.DictReader(csv_file)
         for row in csv_reader:
             ID = row["ID"]
@@ -174,5 +174,5 @@ if __name__ == "__main__":
         print("please provide a file of type csv")
     else:
         tex_filemame = filename[0:-4]+".tex"
-        with open(tex_filemame,"w") as tex_file:
+        with open(tex_filemame, "w", encoding="utf-8") as tex_file:
             tex_file.write(get_tex_content_from_csv(filename,provided_title=provided_title,output_type=output_type))
