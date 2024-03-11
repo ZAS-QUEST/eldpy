@@ -7,6 +7,7 @@ preamble=r"""\documentclass{scrartcl}
 \usepackage{libertine}
 \usepackage{langsci-gb4e}
 \examplesitalics
+\renewcommand{\exfont}{\itshape}
 \newcommand{\verntrans}[2]{\parbox[t]{.45\textwidth}{#1}\qquad\parbox[t]{.45\textwidth}{#2}\medskip\par}
 %s
 \begin{document}

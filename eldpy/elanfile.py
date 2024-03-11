@@ -594,8 +594,8 @@ class ElanFile:
                 vernacular_cell,
                 gloss_cell,
                 translation_cell,
+                comment,
                 lgr_cell,
-                comment
             ]
             lines.append(line)
         if matrix:
@@ -606,7 +606,7 @@ class ElanFile:
                 cldfstringbuffer, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
             )
             csv_writer.writerow(
-                "ID Primary_Text Analyzed_Word Gloss Translated_Text LGRConformance Comment".split()
+                "ID Primary_Text Analyzed_Word Gloss Translated_Text Comment LGRConformance".split()
             )
             for line in lines:
                 csv_writer.writerow(line)
