@@ -299,4 +299,9 @@ ACCEPTABLE_GLOSS_TIER_TYPES = [
     "gl (interlinear gloss)",
 ]
 
-ACCEPTABLE_POS_TIER_TYPES = ["ps", "parts of speech"]
+ACCEPTABLE_COMMENT_TIER_TYPES = [
+    "cm",
+    "cmt",
+    "comment"
+]
+

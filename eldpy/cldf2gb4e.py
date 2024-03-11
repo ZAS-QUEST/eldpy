@@ -15,7 +15,23 @@ preamble=r"""\documentclass{scrartcl}
 
 end_document="\\end{document}"
 
+def escape_latex(s, no_spaces=False):
+    result =  s.replace("\\", "{\\textbackslash}")\
+        .replace("_", "\\_")\
+        .replace("&","\\&")\
+        .replace("#","\#")\
+        .replace("$","\\$")\
+        .replace("^","\\^")\
+        .replace("~","{\\textasciitilde}")\
+        .replace("\t\t","\t{\\relax}\t")
+    if no_spaces:
+        result = result.replace(" ", "\\_")
+    return result
 
+def latex_quotation_marks(s):
+    result = re.sub('"(?=\B)', "''", s)
+    result = re.sub('(?<=\B)"', '``', result)
+    return result
 
 def get_matrix_content_from_csv(filename,provided_title=""):
     matrix = []
@@ -27,7 +43,8 @@ def get_matrix_content_from_csv(filename,provided_title=""):
             primary_text = row["Primary_Text"]
             analyzed_word = row["Analyzed_Word"]
             translation = row["Translated_Text"]
-            matrix.append([ID,primary_text,analyzed_word,gloss,translation])
+            comment = row["Comment"]
+            matrix.append([ID,primary_text,analyzed_word,gloss,translation,comment])
     return matrix
 
 def get_tex_content_from_csv(filename,provided_title="", output_type="examples"):
@@ -41,20 +58,21 @@ def get_tex_content(matrix,provided_title="",output_type="examples"):
     resultstring = preamble % (title,maketitle)
     vernaculars = []
     translations = []
+    comments = []
     for row in matrix:
         ID = row[0]
-        primary_text = row[1].strip().replace("#","\\#").replace("_", "\\_")
+        primary_text = latex_quotation_marks(escape_latex(row[1]))
         vernacular = row[2].strip()
         gloss = row[3]
         translation = row[4]
-        processed_translation = translation.replace("&","\\&").replace("#","\\#")
+        comment = latex_quotation_marks(escape_latex(row[5]))
+        processed_translation = latex_quotation_marks(escape_latex(translation))
         vernacular_words = vernacular.split("\t")
         recomposed_vernacular_string = "\t".join(["{%s}"%w if " " in w else w for w in vernacular_words])
-        recomposed_vernacular_string = recomposed_vernacular_string.replace("&","\\&").replace("$","\\$").replace("#","\\#").replace("^","\\^").replace("#","\\#").replace("\t\t","\t{\\relax}\t").replace("_", "\\_")
-        gloss=gloss.replace("\\", "{\\textbackslash}").replace("_", "\\_").replace(" ", "\\_").replace("&","\\&").replace("#","\#").replace("\t\t","\t{\\relax}\t")
-        allcapsglosses = re.findall("([A-Z.][A-Z][A-Z]+)", gloss)
+        recomposed_vernacular_string = escape_latex(recomposed_vernacular_string)
+        gloss=escape_latex(gloss, no_spaces=True)
+        allcapsglosses = re.findall("([A-Z][A-Z]+)", gloss)
         sorted_glosses = sorted(allcapsglosses,key=len)[::-1]
-        print(sorted_glosses)
         for match in  sorted_glosses:
             gloss=gloss.replace(match, "\\textsc{%s}"%match.lower())
         if gloss.startswith("\t"):
@@ -64,7 +82,10 @@ def get_tex_content(matrix,provided_title="",output_type="examples"):
             resultstring += (primary_text+"\\\\\n")
             resultstring += (f'\\gll {recomposed_vernacular_string}\\\\\n')
             resultstring += (f'     {gloss}\\\\\n')
-            resultstring += (f"""\\glt `{processed_translation}'\n""")
+            footnotestring = ''
+            if comment:
+                footnotestring = "\\footnote{%s}"%comment
+            resultstring += (f"""\\glt `{processed_translation}'{footnotestring}\n""")
             resultstring += ("\\z\n\n")
         if output_type == "lines":
             resultstring += ("\\verntrans{%s}{%s}\n" % (recomposed_vernacular_string,processed_translation))

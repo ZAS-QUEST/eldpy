@@ -443,6 +443,43 @@ class ElanFile:
         self.translations = translations
         self.translations_with_IDs = translations_with_IDs
 
+
+
+
+    def populate_comments(self):
+        """fill the attribute comment with comments from the ELAN file"""
+
+        commentcandidates = constants.ACCEPTABLE_COMMENT_TIER_TYPES
+        root = self.root
+        if root is None:
+            self.comments = {}
+            self.comments_with_IDs = {}
+            return
+        # we check the XML file which of the frequent names for comment tiers it uses
+        # there might be several comment tiers with different names, hence we store them
+        # in a dictionary
+        comments = defaultdict(dict)
+        comments_with_IDs = defaultdict(dict)
+        for candidate in commentcandidates:
+            # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
+            querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
+            commenttiers = root.findall(querystring)
+            if commenttiers != []:  # we found a tier of the linguistic type
+                for tier in commenttiers:
+                    tierID = tier.attrib["TIER_ID"]
+                    wordlist = self.tier_to_wordlist(tier)
+                    if wordlist == []:
+                        continue
+                    comments[candidate][tierID] = wordlist
+                    tmp = self.tier_to_annotation_ID_list(tier)
+                    comments_with_IDs[candidate][tierID] = {
+                        x[1]: wordlist[i] for i, x in enumerate(tmp)
+                    }
+        self.comments = comments
+        self.comments_with_IDs = comments_with_IDs
+
+
+
     def get_translations(self):
         """return a list of lists of translations per tier"""
 
@@ -470,11 +507,17 @@ class ElanFile:
                 for tupl in tmp_transcription_dic[candidate][tier]:
                     d[tupl[0]] = tupl[1]
         transcription_ID_dict = d
-        # 0/0
         # FIXME check for several tiers
         tmp_translations_dict = copy.deepcopy(self.translations_with_IDs)
         try:
             translation_ID_dict = tmp_translations_dict.popitem()[1].popitem()[1]
+        except KeyError:
+            return ""
+        except AttributeError:  # FIXME should not throw attribute error at 5489
+            return ""
+        tmp_comments_dict = copy.deepcopy(self.comments_with_IDs)
+        try:
+            comments_ID_dict = tmp_comments_dict.popitem()[1].popitem()[1]
         except KeyError:
             return ""
         except AttributeError:  # FIXME should not throw attribute error at 5489
@@ -540,6 +583,10 @@ class ElanFile:
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
             translation_cell = translation
+            comment = comments_ID_dict[ID]
+            # ignore completely empty annotations
+            if (primary_text_cell+vernacular_cell+gloss_cell+translation_cell).strip() == "":
+                continue
             lgr_cell = "WORD_ALIGNED"  # FIXME check for morpheme alignment
             line = [
                 ID,
@@ -548,6 +595,7 @@ class ElanFile:
                 gloss_cell,
                 translation_cell,
                 lgr_cell,
+                comment
             ]
             lines.append(line)
         if matrix:
@@ -558,7 +606,7 @@ class ElanFile:
                 cldfstringbuffer, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
             )
             csv_writer.writerow(
-                "ID Primary_Text Analyzed_Word Gloss Translated_Text LGRConformance".split()
+                "ID Primary_Text Analyzed_Word Gloss Translated_Text LGRConformance Comment".split()
             )
             for line in lines:
                 csv_writer.writerow(line)
