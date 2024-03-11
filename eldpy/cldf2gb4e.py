@@ -23,6 +23,7 @@ def escape_latex(s, no_spaces=False):
         .replace("$","\\$")\
         .replace("^","\\^")\
         .replace("~","{\\textasciitilde}")\
+        .replace("`", "{\\textasciigrave}")\
         .replace("\t\t","\t{\\relax}\t")
     if no_spaces:
         result = result.replace(" ", "\\_")
