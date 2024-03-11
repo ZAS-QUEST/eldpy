@@ -44,7 +44,7 @@ def get_matrix_content_from_csv(filename,provided_title=""):
             primary_text = row["Primary_Text"]
             analyzed_word = row["Analyzed_Word"]
             translation = row["Translated_Text"]
-            comment = row["Comment"]
+            comment = row,get("Comment",'')
             matrix.append([ID,primary_text,analyzed_word,gloss,translation,comment])
     return matrix
 
