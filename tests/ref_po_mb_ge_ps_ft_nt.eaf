@@ -1,0 +1,2971 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ANNOTATION_DOCUMENT AUTHOR="unspecified"
+    DATE="2023-11-27T16:14:04+01:00" FORMAT="3.0" VERSION="3.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mpi.nl/tools/elan/EAFv3.0.xsd">
+    <HEADER MEDIA_FILE="" TIME_UNITS="milliseconds">
+        <MEDIA_DESCRIPTOR
+            MEDIA_URL="file:///Volumes/WM_4T_SSD/WM Saek fieldwork records/Movies/WM-20180112-02-Tor-narrative-about his house.MP4" MIME_TYPE="video/mp4"/>
+        <MEDIA_DESCRIPTOR
+            MEDIA_URL="file:///Volumes/WM_4T_SSD/WM Saek fieldwork records/Movies/WM-20180112-02-Tor-narrative-about his house.WAV"
+            MIME_TYPE="audio/x-wav" TIME_ORIGIN="7600"/>
+        <PROPERTY NAME="URN">urn:nl-mpi-tools-elan-eaf:32bf8254-f2a4-4a89-9a45-f9d6d5d22e3b</PROPERTY>
+        <PROPERTY NAME="lastUsedAnnotationId">2248</PROPERTY>
+    </HEADER>
+    <TIME_ORDER>
+        <TIME_SLOT TIME_SLOT_ID="ts1" TIME_VALUE="48370"/>
+        <TIME_SLOT TIME_SLOT_ID="ts2" TIME_VALUE="55580"/>
+        <TIME_SLOT TIME_SLOT_ID="ts3" TIME_VALUE="56065"/>
+        <TIME_SLOT TIME_SLOT_ID="ts4" TIME_VALUE="63113"/>
+        <TIME_SLOT TIME_SLOT_ID="ts5" TIME_VALUE="63807"/>
+        <TIME_SLOT TIME_SLOT_ID="ts6" TIME_VALUE="71961"/>
+        <TIME_SLOT TIME_SLOT_ID="ts7" TIME_VALUE="73114"/>
+        <TIME_SLOT TIME_SLOT_ID="ts8" TIME_VALUE="79362"/>
+        <TIME_SLOT TIME_SLOT_ID="ts9" TIME_VALUE="79971"/>
+        <TIME_SLOT TIME_SLOT_ID="ts10" TIME_VALUE="86852"/>
+        <TIME_SLOT TIME_SLOT_ID="ts11" TIME_VALUE="88137"/>
+        <TIME_SLOT TIME_SLOT_ID="ts12" TIME_VALUE="91148"/>
+        <TIME_SLOT TIME_SLOT_ID="ts13" TIME_VALUE="92806"/>
+        <TIME_SLOT TIME_SLOT_ID="ts14" TIME_VALUE="96382"/>
+        <TIME_SLOT TIME_SLOT_ID="ts15" TIME_VALUE="97176"/>
+        <TIME_SLOT TIME_SLOT_ID="ts16" TIME_VALUE="103136"/>
+        <TIME_SLOT TIME_SLOT_ID="ts17" TIME_VALUE="105747"/>
+        <TIME_SLOT TIME_SLOT_ID="ts18" TIME_VALUE="114779"/>
+        <TIME_SLOT TIME_SLOT_ID="ts19" TIME_VALUE="115547"/>
+        <TIME_SLOT TIME_SLOT_ID="ts20" TIME_VALUE="118379"/>
+    </TIME_ORDER>
+    <TIER LINGUISTIC_TYPE_REF="ref" PARTICIPANT="A" TIER_ID="ref@A">
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann0"
+                TIME_SLOT_REF1="ts1" TIME_SLOT_REF2="ts2">
+                <ANNOTATION_VALUE>20180112-02.001</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann58"
+                TIME_SLOT_REF1="ts3" TIME_SLOT_REF2="ts4">
+                <ANNOTATION_VALUE>20180112-02.002</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann101"
+                TIME_SLOT_REF1="ts5" TIME_SLOT_REF2="ts6">
+                <ANNOTATION_VALUE>20180112-02.003</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann177"
+                TIME_SLOT_REF1="ts7" TIME_SLOT_REF2="ts8">
+                <ANNOTATION_VALUE>20180112-02.004</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann256"
+                TIME_SLOT_REF1="ts9" TIME_SLOT_REF2="ts10">
+                <ANNOTATION_VALUE>20180112-02.005</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann320"
+                TIME_SLOT_REF1="ts11" TIME_SLOT_REF2="ts12">
+                <ANNOTATION_VALUE>20180112-02.006</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann354"
+                TIME_SLOT_REF1="ts13" TIME_SLOT_REF2="ts14">
+                <ANNOTATION_VALUE>20180112-02.007</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann397"
+                TIME_SLOT_REF1="ts15" TIME_SLOT_REF2="ts16">
+                <ANNOTATION_VALUE>20180112-02.008</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann431"
+                TIME_SLOT_REF1="ts17" TIME_SLOT_REF2="ts18">
+                <ANNOTATION_VALUE>20180112-02.009</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="ann513"
+                TIME_SLOT_REF1="ts19" TIME_SLOT_REF2="ts20">
+                <ANNOTATION_VALUE>20180112-02.010</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="po" PARENT_REF="ref@A" PARTICIPANT="A" TIER_ID="po@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann1" ANNOTATION_REF="ann0">
+                <ANNOTATION_VALUE>raan4 lang3 nii6, lèè hit6 qaw1, tèè6 phan4kuu3ròòj6kuu3sip6qèt4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann59" ANNOTATION_REF="ann58">
+                <ANNOTATION_VALUE>lûaj6 maj6 lèè hôô3 lûklaan2 lûaj6 hôô3 lè tang3qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann102" ANNOTATION_REF="ann101">
+                <ANNOTATION_VALUE>lè toqèèng1 nii6 thèèk5 qaw1 hit6 qaw1, raan4 lang3 nii6, phan4kuu3ròòj6kuu3sip6qèt4, lè tang3 han3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann178" ANNOTATION_REF="ann177">
+                <ANNOTATION_VALUE>qa-nii6 peen3vòòng1 nii6, qa pèèn5mung4 qa-nii6, peen3vòòng1 nii6 lè phaa6 qaw1 tèk4 qaw1 thruu4 nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann257" ANNOTATION_REF="ann256">
+                <ANNOTATION_VALUE>tèk4 lè phaa6 qaw1, phaa6 lè sò6, sò6 sò6 sò6 lè lûklaan2 qòng1 qaw1 maa2 qèèt5 qaw1 maa2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann321" ANNOTATION_REF="ann320">
+                <ANNOTATION_VALUE>ma nii3 lè vòòng1 qaw1 qeeng1, qa qarii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann355" ANNOTATION_REF="ann354">
+                <ANNOTATION_VALUE>qa ? lung4 nii6 vòòng1 qaw1 qeeng1 lôôj4, tòòk6 lek4tapuu1 lôôj4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann398" ANNOTATION_REF="ann397">
+                <ANNOTATION_VALUE>daj3 cèt4 mûû6, vòòng1 qaw1 qeeng1, cèt4 mûû6 nang2 lèèw6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann432" ANNOTATION_REF="ann431">
+                <ANNOTATION_VALUE>baatnii lè phòò5 halii6 juu6 jòòj5 daj3 sòòng2 pii1, lang3 raan4 nii6, phòò5 juu6 nam4, juu6 kuu3sip6qèt4 kuu3sip6sòòng2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann514" ANNOTATION_REF="ann513">
+                <ANNOTATION_VALUE>thang4 blian1haa3 lè phòò5 praaj1, blian1haa3 laaw4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="mb" PARENT_REF="po@A" PARTICIPANT="A" TIER_ID="mb@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann4" ANNOTATION_REF="ann1">
+                <ANNOTATION_VALUE>raan4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann7" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann4">
+                <ANNOTATION_VALUE>lang3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann10" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann7">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann13" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann10">
+                <ANNOTATION_VALUE>lèè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann16" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann13">
+                <ANNOTATION_VALUE>hit6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann19" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann16">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann22" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann19">
+                <ANNOTATION_VALUE>tèè6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann25" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann22">
+                <ANNOTATION_VALUE>phan4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann28" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann25">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann31" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann28">
+                <ANNOTATION_VALUE>kuu3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann34" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann31">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann37" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann34">
+                <ANNOTATION_VALUE>ròòj6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann40" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann37">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann43" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann40">
+                <ANNOTATION_VALUE>kuu3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann46" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann43">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann49" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann46">
+                <ANNOTATION_VALUE>sip6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann52" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann49">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann55" ANNOTATION_REF="ann1" PREVIOUS_ANNOTATION="ann52">
+                <ANNOTATION_VALUE>qèt4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann62" ANNOTATION_REF="ann59">
+                <ANNOTATION_VALUE>lûaj6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann65" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann62">
+                <ANNOTATION_VALUE>maj6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann68" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann65">
+                <ANNOTATION_VALUE>lèè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann71" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann68">
+                <ANNOTATION_VALUE>hôô3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann74" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann71">
+                <ANNOTATION_VALUE>lûk6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann77" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann74">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann80" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann77">
+                <ANNOTATION_VALUE>laan2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann83" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann80">
+                <ANNOTATION_VALUE>lûaj6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann86" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann83">
+                <ANNOTATION_VALUE>hôô3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann89" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann86">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann92" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann89">
+                <ANNOTATION_VALUE>tang3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann95" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann92">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann98" ANNOTATION_REF="ann59" PREVIOUS_ANNOTATION="ann95">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann105" ANNOTATION_REF="ann102">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann108"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann105">
+                <ANNOTATION_VALUE>toqèèng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann111"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann108">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann114"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann111">
+                <ANNOTATION_VALUE>thèèk5</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann117"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann114">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann120"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann117">
+                <ANNOTATION_VALUE>hit6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann123"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann120">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann126"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann123">
+                <ANNOTATION_VALUE>raan4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann129"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann126">
+                <ANNOTATION_VALUE>lang3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann132"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann129">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann135"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann132">
+                <ANNOTATION_VALUE>phan4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann138"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann135">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann141"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann138">
+                <ANNOTATION_VALUE>kuu3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann144"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann141">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann147"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann144">
+                <ANNOTATION_VALUE>ròòj6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann150"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann147">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann153"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann150">
+                <ANNOTATION_VALUE>kuu3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann156"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann153">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann159"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann156">
+                <ANNOTATION_VALUE>sip6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann162"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann159">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann165"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann162">
+                <ANNOTATION_VALUE>qèt4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann168"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann165">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann171"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann168">
+                <ANNOTATION_VALUE>tang3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann174"
+                ANNOTATION_REF="ann102" PREVIOUS_ANNOTATION="ann171">
+                <ANNOTATION_VALUE>han3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann181" ANNOTATION_REF="ann178">
+                <ANNOTATION_VALUE>qal1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann184"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann181">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann187"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann184">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann190"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann187">
+                <ANNOTATION_VALUE>peen3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann193"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann190">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann196"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann193">
+                <ANNOTATION_VALUE>vòòng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann199"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann196">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann202"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann199">
+                <ANNOTATION_VALUE>qa</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann205"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann202">
+                <ANNOTATION_VALUE>pèèn5</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann208"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann205">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann211"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann208">
+                <ANNOTATION_VALUE>mung4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann214"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann211">
+                <ANNOTATION_VALUE>qal1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann217"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann214">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann220"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann217">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann223"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann220">
+                <ANNOTATION_VALUE>peen3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann226"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann223">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann229"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann226">
+                <ANNOTATION_VALUE>vòòng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann232"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann229">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann235"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann232">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann238"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann235">
+                <ANNOTATION_VALUE>phaa6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann241"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann238">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann244"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann241">
+                <ANNOTATION_VALUE>tèk4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann247"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann244">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann250"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann247">
+                <ANNOTATION_VALUE>thruu4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann253"
+                ANNOTATION_REF="ann178" PREVIOUS_ANNOTATION="ann250">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann260" ANNOTATION_REF="ann257">
+                <ANNOTATION_VALUE>tèk4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann263"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann260">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann266"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann263">
+                <ANNOTATION_VALUE>phaa6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann269"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann266">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann272"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann269">
+                <ANNOTATION_VALUE>phaa6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann275"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann272">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann278"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann275">
+                <ANNOTATION_VALUE>sò6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann281"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann278">
+                <ANNOTATION_VALUE>sò6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann284"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann281">
+                <ANNOTATION_VALUE>sò6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann287"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann284">
+                <ANNOTATION_VALUE>sò6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann290"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann287">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann293"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann290">
+                <ANNOTATION_VALUE>lûk6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann296"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann293">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann299"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann296">
+                <ANNOTATION_VALUE>laan2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann302"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann299">
+                <ANNOTATION_VALUE>qòng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann305"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann302">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann308"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann305">
+                <ANNOTATION_VALUE>maa2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann311"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann308">
+                <ANNOTATION_VALUE>qèèt5</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann314"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann311">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann317"
+                ANNOTATION_REF="ann257" PREVIOUS_ANNOTATION="ann314">
+                <ANNOTATION_VALUE>maa2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann324" ANNOTATION_REF="ann321">
+                <ANNOTATION_VALUE>maa4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann327"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann324">
+                <ANNOTATION_VALUE>nii3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann330"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann327">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann333"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann330">
+                <ANNOTATION_VALUE>vòòng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann336"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann333">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann339"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann336">
+                <ANNOTATION_VALUE>qeeng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann342"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann339">
+                <ANNOTATION_VALUE>qa</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann345"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann342">
+                <ANNOTATION_VALUE>qal1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann348"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann345">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann351"
+                ANNOTATION_REF="ann321" PREVIOUS_ANNOTATION="ann348">
+                <ANNOTATION_VALUE>rii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann358" ANNOTATION_REF="ann355">
+                <ANNOTATION_VALUE>qa</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann361"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann358">
+                <ANNOTATION_VALUE>?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann364"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann361">
+                <ANNOTATION_VALUE>lung4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann367"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann364">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann370"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann367">
+                <ANNOTATION_VALUE>vòòng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann373"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann370">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann376"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann373">
+                <ANNOTATION_VALUE>qeeng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann379"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann376">
+                <ANNOTATION_VALUE>lôôj4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann382"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann379">
+                <ANNOTATION_VALUE>tòòk6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann385"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann382">
+                <ANNOTATION_VALUE>lek4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann388"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann385">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann391"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann388">
+                <ANNOTATION_VALUE>tapuu1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann394"
+                ANNOTATION_REF="ann355" PREVIOUS_ANNOTATION="ann391">
+                <ANNOTATION_VALUE>lôôj4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann401" ANNOTATION_REF="ann398">
+                <ANNOTATION_VALUE>daj3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann404"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann401">
+                <ANNOTATION_VALUE>cèt4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann407"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann404">
+                <ANNOTATION_VALUE>mûû6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann410"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann407">
+                <ANNOTATION_VALUE>vòòng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann413"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann410">
+                <ANNOTATION_VALUE>qaw1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann416"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann413">
+                <ANNOTATION_VALUE>qeeng1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann419"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann416">
+                <ANNOTATION_VALUE>cèt4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann422"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann419">
+                <ANNOTATION_VALUE>mûû6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann425"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann422">
+                <ANNOTATION_VALUE>nang2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann428"
+                ANNOTATION_REF="ann398" PREVIOUS_ANNOTATION="ann425">
+                <ANNOTATION_VALUE>lèèw6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann435" ANNOTATION_REF="ann432">
+                <ANNOTATION_VALUE>baatnii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann438"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann435">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann441"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann438">
+                <ANNOTATION_VALUE>phòò5</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann444"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann441">
+                <ANNOTATION_VALUE>halii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann447"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann444">
+                <ANNOTATION_VALUE>juu6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann450"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann447">
+                <ANNOTATION_VALUE>jòòj5</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann453"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann450">
+                <ANNOTATION_VALUE>daj3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann456"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann453">
+                <ANNOTATION_VALUE>sòòng2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann459"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann456">
+                <ANNOTATION_VALUE>pii1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann462"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann459">
+                <ANNOTATION_VALUE>lang3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann465"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann462">
+                <ANNOTATION_VALUE>raan4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann468"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann465">
+                <ANNOTATION_VALUE>nii6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann471"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann468">
+                <ANNOTATION_VALUE>phòò5</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann474"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann471">
+                <ANNOTATION_VALUE>juu6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann477"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann474">
+                <ANNOTATION_VALUE>nam4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann480"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann477">
+                <ANNOTATION_VALUE>juu6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann483"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann480">
+                <ANNOTATION_VALUE>kuu3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann486"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann483">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann489"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann486">
+                <ANNOTATION_VALUE>sip6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann492"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann489">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann495"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann492">
+                <ANNOTATION_VALUE>qèt4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann498"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann495">
+                <ANNOTATION_VALUE>kuu3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann501"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann498">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann504"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann501">
+                <ANNOTATION_VALUE>sip6</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann507"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann504">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann510"
+                ANNOTATION_REF="ann432" PREVIOUS_ANNOTATION="ann507">
+                <ANNOTATION_VALUE>sòòng2</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann517" ANNOTATION_REF="ann514">
+                <ANNOTATION_VALUE>thang4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann520"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann517">
+                <ANNOTATION_VALUE>blian1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann523"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann520">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann526"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann523">
+                <ANNOTATION_VALUE>haa3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann529"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann526">
+                <ANNOTATION_VALUE>lè</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann532"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann529">
+                <ANNOTATION_VALUE>phòò5</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann535"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann532">
+                <ANNOTATION_VALUE>praaj1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann538"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann535">
+                <ANNOTATION_VALUE>blian1</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann541"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann538">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann544"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann541">
+                <ANNOTATION_VALUE>haa3</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann547"
+                ANNOTATION_REF="ann514" PREVIOUS_ANNOTATION="ann544">
+                <ANNOTATION_VALUE>laaw4</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="ge" PARENT_REF="mb@A" PARTICIPANT="A" TIER_ID="ge@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann5" ANNOTATION_REF="ann4">
+                <ANNOTATION_VALUE>house</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann8" ANNOTATION_REF="ann7">
+                <ANNOTATION_VALUE>house</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann11" ANNOTATION_REF="ann10">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann14" ANNOTATION_REF="ann13">
+                <ANNOTATION_VALUE>hest</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann17" ANNOTATION_REF="ann16">
+                <ANNOTATION_VALUE>do/make</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann20" ANNOTATION_REF="ann19">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann23" ANNOTATION_REF="ann22">
+                <ANNOTATION_VALUE>from</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann26" ANNOTATION_REF="ann25">
+                <ANNOTATION_VALUE>thousand</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann29" ANNOTATION_REF="ann28">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann32" ANNOTATION_REF="ann31">
+                <ANNOTATION_VALUE>nine</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann35" ANNOTATION_REF="ann34">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann38" ANNOTATION_REF="ann37">
+                <ANNOTATION_VALUE>hundred</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann41" ANNOTATION_REF="ann40">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann44" ANNOTATION_REF="ann43">
+                <ANNOTATION_VALUE>nine</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann47" ANNOTATION_REF="ann46">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann50" ANNOTATION_REF="ann49">
+                <ANNOTATION_VALUE>ten</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann53" ANNOTATION_REF="ann52">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann56" ANNOTATION_REF="ann55">
+                <ANNOTATION_VALUE>one</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann63" ANNOTATION_REF="ann62">
+                <ANNOTATION_VALUE>saw</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann66" ANNOTATION_REF="ann65">
+                <ANNOTATION_VALUE>wood</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann69" ANNOTATION_REF="ann68">
+                <ANNOTATION_VALUE>hest</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann72" ANNOTATION_REF="ann71">
+                <ANNOTATION_VALUE>give</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann75" ANNOTATION_REF="ann74">
+                <ANNOTATION_VALUE>child</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann78" ANNOTATION_REF="ann77">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann81" ANNOTATION_REF="ann80">
+                <ANNOTATION_VALUE>grandchild</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann84" ANNOTATION_REF="ann83">
+                <ANNOTATION_VALUE>saw</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann87" ANNOTATION_REF="ann86">
+                <ANNOTATION_VALUE>give</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann90" ANNOTATION_REF="ann89">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann93" ANNOTATION_REF="ann92">
+                <ANNOTATION_VALUE>erect</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann96" ANNOTATION_REF="ann95">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann99" ANNOTATION_REF="ann98">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann106" ANNOTATION_REF="ann105">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann109" ANNOTATION_REF="ann108">
+                <ANNOTATION_VALUE>rflx</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann112" ANNOTATION_REF="ann111">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann115" ANNOTATION_REF="ann114">
+                <ANNOTATION_VALUE>measure</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann118" ANNOTATION_REF="ann117">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann121" ANNOTATION_REF="ann120">
+                <ANNOTATION_VALUE>do/make</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann124" ANNOTATION_REF="ann123">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann127" ANNOTATION_REF="ann126">
+                <ANNOTATION_VALUE>house</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann130" ANNOTATION_REF="ann129">
+                <ANNOTATION_VALUE>house</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann133" ANNOTATION_REF="ann132">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann136" ANNOTATION_REF="ann135">
+                <ANNOTATION_VALUE>thousand</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann139" ANNOTATION_REF="ann138">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann142" ANNOTATION_REF="ann141">
+                <ANNOTATION_VALUE>nine</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann145" ANNOTATION_REF="ann144">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann148" ANNOTATION_REF="ann147">
+                <ANNOTATION_VALUE>hundred</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann151" ANNOTATION_REF="ann150">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann154" ANNOTATION_REF="ann153">
+                <ANNOTATION_VALUE>nine</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann157" ANNOTATION_REF="ann156">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann160" ANNOTATION_REF="ann159">
+                <ANNOTATION_VALUE>ten</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann163" ANNOTATION_REF="ann162">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann166" ANNOTATION_REF="ann165">
+                <ANNOTATION_VALUE>one</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann169" ANNOTATION_REF="ann168">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann172" ANNOTATION_REF="ann171">
+                <ANNOTATION_VALUE>erect</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann175" ANNOTATION_REF="ann174">
+                <ANNOTATION_VALUE>there</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann182" ANNOTATION_REF="ann181">
+                <ANNOTATION_VALUE>inan</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann185" ANNOTATION_REF="ann184">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann188" ANNOTATION_REF="ann187">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann191" ANNOTATION_REF="ann190">
+                <ANNOTATION_VALUE>plank</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann194" ANNOTATION_REF="ann193">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann197" ANNOTATION_REF="ann196">
+                <ANNOTATION_VALUE>thatch</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann200" ANNOTATION_REF="ann199">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann203" ANNOTATION_REF="ann202">
+                <ANNOTATION_VALUE>Dear</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann206" ANNOTATION_REF="ann205">
+                <ANNOTATION_VALUE>plank</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann209" ANNOTATION_REF="ann208">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann212" ANNOTATION_REF="ann211">
+                <ANNOTATION_VALUE>thatch</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann215" ANNOTATION_REF="ann214">
+                <ANNOTATION_VALUE>inan</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann218" ANNOTATION_REF="ann217">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann221" ANNOTATION_REF="ann220">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann224" ANNOTATION_REF="ann223">
+                <ANNOTATION_VALUE>plank</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann227" ANNOTATION_REF="ann226">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann230" ANNOTATION_REF="ann229">
+                <ANNOTATION_VALUE>thatch</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann233" ANNOTATION_REF="ann232">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann236" ANNOTATION_REF="ann235">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann239" ANNOTATION_REF="ann238">
+                <ANNOTATION_VALUE>split</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann242" ANNOTATION_REF="ann241">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann245" ANNOTATION_REF="ann244">
+                <ANNOTATION_VALUE>cut</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann248" ANNOTATION_REF="ann247">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann251" ANNOTATION_REF="ann250">
+                <ANNOTATION_VALUE>be.like</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann254" ANNOTATION_REF="ann253">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann261" ANNOTATION_REF="ann260">
+                <ANNOTATION_VALUE>cut</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann264" ANNOTATION_REF="ann263">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann267" ANNOTATION_REF="ann266">
+                <ANNOTATION_VALUE>split</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann270" ANNOTATION_REF="ann269">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann273" ANNOTATION_REF="ann272">
+                <ANNOTATION_VALUE>split</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann276" ANNOTATION_REF="ann275">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann279" ANNOTATION_REF="ann278">
+                <ANNOTATION_VALUE>plane</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann282" ANNOTATION_REF="ann281">
+                <ANNOTATION_VALUE>plane</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann285" ANNOTATION_REF="ann284">
+                <ANNOTATION_VALUE>plane</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann288" ANNOTATION_REF="ann287">
+                <ANNOTATION_VALUE>plane</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann291" ANNOTATION_REF="ann290">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann294" ANNOTATION_REF="ann293">
+                <ANNOTATION_VALUE>child</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann297" ANNOTATION_REF="ann296">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann300" ANNOTATION_REF="ann299">
+                <ANNOTATION_VALUE>grandchild</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann303" ANNOTATION_REF="ann302">
+                <ANNOTATION_VALUE>carry.on.back</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann306" ANNOTATION_REF="ann305">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann309" ANNOTATION_REF="ann308">
+                <ANNOTATION_VALUE>return</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann312" ANNOTATION_REF="ann311">
+                <ANNOTATION_VALUE>carry.on.back</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann315" ANNOTATION_REF="ann314">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann318" ANNOTATION_REF="ann317">
+                <ANNOTATION_VALUE>return</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann325" ANNOTATION_REF="ann324">
+                <ANNOTATION_VALUE>loc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann328" ANNOTATION_REF="ann327">
+                <ANNOTATION_VALUE>here</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann331" ANNOTATION_REF="ann330">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann334" ANNOTATION_REF="ann333">
+                <ANNOTATION_VALUE>thatch</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann337" ANNOTATION_REF="ann336">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann340" ANNOTATION_REF="ann339">
+                <ANNOTATION_VALUE>1sg.rflx</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann343" ANNOTATION_REF="ann342">
+                <ANNOTATION_VALUE>poss</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann346" ANNOTATION_REF="ann345">
+                <ANNOTATION_VALUE>inan</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann349" ANNOTATION_REF="ann348">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann352" ANNOTATION_REF="ann351">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann359" ANNOTATION_REF="ann358">
+                <ANNOTATION_VALUE>poss</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann362" ANNOTATION_REF="ann361">
+                <ANNOTATION_VALUE>?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann365" ANNOTATION_REF="ann364">
+                <ANNOTATION_VALUE>uncle</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann368" ANNOTATION_REF="ann367">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann371" ANNOTATION_REF="ann370">
+                <ANNOTATION_VALUE>thatch</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann374" ANNOTATION_REF="ann373">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann377" ANNOTATION_REF="ann376">
+                <ANNOTATION_VALUE>1sg.rflx</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann380" ANNOTATION_REF="ann379">
+                <ANNOTATION_VALUE>no.ado</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann383" ANNOTATION_REF="ann382">
+                <ANNOTATION_VALUE>pound</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann386" ANNOTATION_REF="ann385">
+                <ANNOTATION_VALUE>metal.tool</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann389" ANNOTATION_REF="ann388">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann392" ANNOTATION_REF="ann391">
+                <ANNOTATION_VALUE>nail</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann395" ANNOTATION_REF="ann394">
+                <ANNOTATION_VALUE>no.ado</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann402" ANNOTATION_REF="ann401">
+                <ANNOTATION_VALUE>get</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann405" ANNOTATION_REF="ann404">
+                <ANNOTATION_VALUE>seven</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann408" ANNOTATION_REF="ann407">
+                <ANNOTATION_VALUE>day</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann411" ANNOTATION_REF="ann410">
+                <ANNOTATION_VALUE>thatch</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann414" ANNOTATION_REF="ann413">
+                <ANNOTATION_VALUE>take</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann417" ANNOTATION_REF="ann416">
+                <ANNOTATION_VALUE>1sg.rflx</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann420" ANNOTATION_REF="ann419">
+                <ANNOTATION_VALUE>seven</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann423" ANNOTATION_REF="ann422">
+                <ANNOTATION_VALUE>day</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann426" ANNOTATION_REF="ann425">
+                <ANNOTATION_VALUE>cond</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann429" ANNOTATION_REF="ann428">
+                <ANNOTATION_VALUE>pfv</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann436" ANNOTATION_REF="ann435">
+                <ANNOTATION_VALUE>now</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann439" ANNOTATION_REF="ann438">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann442" ANNOTATION_REF="ann441">
+                <ANNOTATION_VALUE>father</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann445" ANNOTATION_REF="ann444">
+                <ANNOTATION_VALUE>still</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann448" ANNOTATION_REF="ann447">
+                <ANNOTATION_VALUE>be.at</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann451" ANNOTATION_REF="ann450">
+                <ANNOTATION_VALUE>together.with</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann454" ANNOTATION_REF="ann453">
+                <ANNOTATION_VALUE>achv</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann457" ANNOTATION_REF="ann456">
+                <ANNOTATION_VALUE>two</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann460" ANNOTATION_REF="ann459">
+                <ANNOTATION_VALUE>year</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann463" ANNOTATION_REF="ann462">
+                <ANNOTATION_VALUE>house</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann466" ANNOTATION_REF="ann465">
+                <ANNOTATION_VALUE>house</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann469" ANNOTATION_REF="ann468">
+                <ANNOTATION_VALUE>general</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann472" ANNOTATION_REF="ann471">
+                <ANNOTATION_VALUE>father</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann475" ANNOTATION_REF="ann474">
+                <ANNOTATION_VALUE>be.at</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann478" ANNOTATION_REF="ann477">
+                <ANNOTATION_VALUE>cmtv</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann481" ANNOTATION_REF="ann480">
+                <ANNOTATION_VALUE>be.at</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann484" ANNOTATION_REF="ann483">
+                <ANNOTATION_VALUE>nine</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann487" ANNOTATION_REF="ann486">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann490" ANNOTATION_REF="ann489">
+                <ANNOTATION_VALUE>ten</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann493" ANNOTATION_REF="ann492">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann496" ANNOTATION_REF="ann495">
+                <ANNOTATION_VALUE>one</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann499" ANNOTATION_REF="ann498">
+                <ANNOTATION_VALUE>nine</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann502" ANNOTATION_REF="ann501">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann505" ANNOTATION_REF="ann504">
+                <ANNOTATION_VALUE>ten</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann508" ANNOTATION_REF="ann507">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann511" ANNOTATION_REF="ann510">
+                <ANNOTATION_VALUE>two</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann518" ANNOTATION_REF="ann517">
+                <ANNOTATION_VALUE>arrive</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann521" ANNOTATION_REF="ann520">
+                <ANNOTATION_VALUE>month</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann524" ANNOTATION_REF="ann523">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann527" ANNOTATION_REF="ann526">
+                <ANNOTATION_VALUE>five</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann530" ANNOTATION_REF="ann529">
+                <ANNOTATION_VALUE>and</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann533" ANNOTATION_REF="ann532">
+                <ANNOTATION_VALUE>father</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann536" ANNOTATION_REF="ann535">
+                <ANNOTATION_VALUE>die</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann539" ANNOTATION_REF="ann538">
+                <ANNOTATION_VALUE>month</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann542" ANNOTATION_REF="ann541">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann545" ANNOTATION_REF="ann544">
+                <ANNOTATION_VALUE>five</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann548" ANNOTATION_REF="ann547">
+                <ANNOTATION_VALUE>LA</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="ps" PARENT_REF="mb@A" PARTICIPANT="A" TIER_ID="ps@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann6" ANNOTATION_REF="ann4">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann9" ANNOTATION_REF="ann7">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann12" ANNOTATION_REF="ann10">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann15" ANNOTATION_REF="ann13">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann18" ANNOTATION_REF="ann16">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann21" ANNOTATION_REF="ann19">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann24" ANNOTATION_REF="ann22">
+                <ANNOTATION_VALUE>prep</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann27" ANNOTATION_REF="ann25">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann30" ANNOTATION_REF="ann28">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann33" ANNOTATION_REF="ann31">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann36" ANNOTATION_REF="ann34">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann39" ANNOTATION_REF="ann37">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann42" ANNOTATION_REF="ann40">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann45" ANNOTATION_REF="ann43">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann48" ANNOTATION_REF="ann46">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann51" ANNOTATION_REF="ann49">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann54" ANNOTATION_REF="ann52">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann57" ANNOTATION_REF="ann55">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann64" ANNOTATION_REF="ann62">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann67" ANNOTATION_REF="ann65">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann70" ANNOTATION_REF="ann68">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann73" ANNOTATION_REF="ann71">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann76" ANNOTATION_REF="ann74">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann79" ANNOTATION_REF="ann77">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann82" ANNOTATION_REF="ann80">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann85" ANNOTATION_REF="ann83">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann88" ANNOTATION_REF="ann86">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann91" ANNOTATION_REF="ann89">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann94" ANNOTATION_REF="ann92">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann97" ANNOTATION_REF="ann95">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann100" ANNOTATION_REF="ann98">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann107" ANNOTATION_REF="ann105">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann110" ANNOTATION_REF="ann108">
+                <ANNOTATION_VALUE>pro</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann113" ANNOTATION_REF="ann111">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann116" ANNOTATION_REF="ann114">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann119" ANNOTATION_REF="ann117">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann122" ANNOTATION_REF="ann120">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann125" ANNOTATION_REF="ann123">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann128" ANNOTATION_REF="ann126">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann131" ANNOTATION_REF="ann129">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann134" ANNOTATION_REF="ann132">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann137" ANNOTATION_REF="ann135">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann140" ANNOTATION_REF="ann138">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann143" ANNOTATION_REF="ann141">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann146" ANNOTATION_REF="ann144">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann149" ANNOTATION_REF="ann147">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann152" ANNOTATION_REF="ann150">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann155" ANNOTATION_REF="ann153">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann158" ANNOTATION_REF="ann156">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann161" ANNOTATION_REF="ann159">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann164" ANNOTATION_REF="ann162">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann167" ANNOTATION_REF="ann165">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann170" ANNOTATION_REF="ann168">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann173" ANNOTATION_REF="ann171">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann176" ANNOTATION_REF="ann174">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann183" ANNOTATION_REF="ann181">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann186" ANNOTATION_REF="ann184">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann189" ANNOTATION_REF="ann187">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann192" ANNOTATION_REF="ann190">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann195" ANNOTATION_REF="ann193">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann198" ANNOTATION_REF="ann196">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann201" ANNOTATION_REF="ann199">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann204" ANNOTATION_REF="ann202">
+                <ANNOTATION_VALUE>?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann207" ANNOTATION_REF="ann205">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann210" ANNOTATION_REF="ann208">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann213" ANNOTATION_REF="ann211">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann216" ANNOTATION_REF="ann214">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann219" ANNOTATION_REF="ann217">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann222" ANNOTATION_REF="ann220">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann225" ANNOTATION_REF="ann223">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann228" ANNOTATION_REF="ann226">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann231" ANNOTATION_REF="ann229">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann234" ANNOTATION_REF="ann232">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann237" ANNOTATION_REF="ann235">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann240" ANNOTATION_REF="ann238">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann243" ANNOTATION_REF="ann241">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann246" ANNOTATION_REF="ann244">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann249" ANNOTATION_REF="ann247">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann252" ANNOTATION_REF="ann250">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann255" ANNOTATION_REF="ann253">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann262" ANNOTATION_REF="ann260">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann265" ANNOTATION_REF="ann263">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann268" ANNOTATION_REF="ann266">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann271" ANNOTATION_REF="ann269">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann274" ANNOTATION_REF="ann272">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann277" ANNOTATION_REF="ann275">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann280" ANNOTATION_REF="ann278">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann283" ANNOTATION_REF="ann281">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann286" ANNOTATION_REF="ann284">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann289" ANNOTATION_REF="ann287">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann292" ANNOTATION_REF="ann290">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann295" ANNOTATION_REF="ann293">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann298" ANNOTATION_REF="ann296">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann301" ANNOTATION_REF="ann299">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann304" ANNOTATION_REF="ann302">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann307" ANNOTATION_REF="ann305">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann310" ANNOTATION_REF="ann308">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann313" ANNOTATION_REF="ann311">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann316" ANNOTATION_REF="ann314">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann319" ANNOTATION_REF="ann317">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann326" ANNOTATION_REF="ann324">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann329" ANNOTATION_REF="ann327">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann332" ANNOTATION_REF="ann330">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann335" ANNOTATION_REF="ann333">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann338" ANNOTATION_REF="ann336">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann341" ANNOTATION_REF="ann339">
+                <ANNOTATION_VALUE>pro</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann344" ANNOTATION_REF="ann342">
+                <ANNOTATION_VALUE>pref</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann347" ANNOTATION_REF="ann345">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann350" ANNOTATION_REF="ann348">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann353" ANNOTATION_REF="ann351">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann360" ANNOTATION_REF="ann358">
+                <ANNOTATION_VALUE>pref</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann363" ANNOTATION_REF="ann361">
+                <ANNOTATION_VALUE>?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann366" ANNOTATION_REF="ann364">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann369" ANNOTATION_REF="ann367">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann372" ANNOTATION_REF="ann370">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann375" ANNOTATION_REF="ann373">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann378" ANNOTATION_REF="ann376">
+                <ANNOTATION_VALUE>pro</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann381" ANNOTATION_REF="ann379">
+                <ANNOTATION_VALUE>asp/mod</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann384" ANNOTATION_REF="ann382">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann387" ANNOTATION_REF="ann385">
+                <ANNOTATION_VALUE>ct</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann390" ANNOTATION_REF="ann388">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann393" ANNOTATION_REF="ann391">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann396" ANNOTATION_REF="ann394">
+                <ANNOTATION_VALUE>asp/mod</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann403" ANNOTATION_REF="ann401">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann406" ANNOTATION_REF="ann404">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann409" ANNOTATION_REF="ann407">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann412" ANNOTATION_REF="ann410">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann415" ANNOTATION_REF="ann413">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann418" ANNOTATION_REF="ann416">
+                <ANNOTATION_VALUE>pro</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann421" ANNOTATION_REF="ann419">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann424" ANNOTATION_REF="ann422">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann427" ANNOTATION_REF="ann425">
+                <ANNOTATION_VALUE>conj</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann430" ANNOTATION_REF="ann428">
+                <ANNOTATION_VALUE>asp</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann437" ANNOTATION_REF="ann435">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann440" ANNOTATION_REF="ann438">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann443" ANNOTATION_REF="ann441">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann446" ANNOTATION_REF="ann444">
+                <ANNOTATION_VALUE>?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann449" ANNOTATION_REF="ann447">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann452" ANNOTATION_REF="ann450">
+                <ANNOTATION_VALUE>?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann455" ANNOTATION_REF="ann453">
+                <ANNOTATION_VALUE>asp</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann458" ANNOTATION_REF="ann456">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann461" ANNOTATION_REF="ann459">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann464" ANNOTATION_REF="ann462">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann467" ANNOTATION_REF="ann465">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann470" ANNOTATION_REF="ann468">
+                <ANNOTATION_VALUE>dem</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann473" ANNOTATION_REF="ann471">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann476" ANNOTATION_REF="ann474">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann479" ANNOTATION_REF="ann477">
+                <ANNOTATION_VALUE>prep</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann482" ANNOTATION_REF="ann480">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann485" ANNOTATION_REF="ann483">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann488" ANNOTATION_REF="ann486">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann491" ANNOTATION_REF="ann489">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann494" ANNOTATION_REF="ann492">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann497" ANNOTATION_REF="ann495">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann500" ANNOTATION_REF="ann498">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann503" ANNOTATION_REF="ann501">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann506" ANNOTATION_REF="ann504">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann509" ANNOTATION_REF="ann507">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann512" ANNOTATION_REF="ann510">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann519" ANNOTATION_REF="ann517">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann522" ANNOTATION_REF="ann520">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann525" ANNOTATION_REF="ann523">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann528" ANNOTATION_REF="ann526">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann531" ANNOTATION_REF="ann529">
+                <ANNOTATION_VALUE>ptc</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann534" ANNOTATION_REF="ann532">
+                <ANNOTATION_VALUE>n</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann537" ANNOTATION_REF="ann535">
+                <ANNOTATION_VALUE>v</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann540" ANNOTATION_REF="ann538">
+                <ANNOTATION_VALUE>clf</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann543" ANNOTATION_REF="ann541">
+                <ANNOTATION_VALUE>-</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann546" ANNOTATION_REF="ann544">
+                <ANNOTATION_VALUE>num</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann549" ANNOTATION_REF="ann547">
+                <ANNOTATION_VALUE>pn</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="ft" PARENT_REF="po@A" PARTICIPANT="A" TIER_ID="ft@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann2" ANNOTATION_REF="ann1">
+                <ANNOTATION_VALUE>This house was built from year 1991.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann60" ANNOTATION_REF="ann59">
+                <ANNOTATION_VALUE>As for sawing wood, (I) had my offsprings saw (it) for me, then (it) was completed.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann103" ANNOTATION_REF="ann102">
+                <ANNOTATION_VALUE>Then I measured and made by myself, this house, in year 1991 erected there.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann179" ANNOTATION_REF="ann178">
+                <ANNOTATION_VALUE>As for the roofing planks, this roofing plank, as for the roofing planks split and cut them like this</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann258" ANNOTATION_REF="ann257">
+                <ANNOTATION_VALUE>Cut across the grain then split along the grain, split along the grain then shave the wood, shave repeatedly then my offsprings carried them back here on their backs.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann322" ANNOTATION_REF="ann321">
+                <ANNOTATION_VALUE>When they came back, I did the roofing myself, this one</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann356" ANNOTATION_REF="ann355">
+                <ANNOTATION_VALUE>This uncle (I) thatched the roof myself without ado, hammered the nails without ado.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann399" ANNOTATION_REF="ann398">
+                <ANNOTATION_VALUE>(It took) seven days, thaching the roof by myself, for seven days and finished it.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann433" ANNOTATION_REF="ann432">
+                <ANNOTATION_VALUE>And now, my father was still living with me for two years, in this house, lived with me in years (19)91-92.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann515" ANNOTATION_REF="ann514">
+                <ANNOTATION_VALUE>In May my father died, May by Lao calendar.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER LINGUISTIC_TYPE_REF="nt" PARENT_REF="po@A" PARTICIPANT="A" TIER_ID="nt@A">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann3" ANNOTATION_REF="ann1">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann61" ANNOTATION_REF="ann59">
+                <ANNOTATION_VALUE>Note the topic construction in 005-006. 20180708 confirmed that laan11 here means grandchild. tang31-qaw34: completed (this was the free translation and the explanation when I transcribed with the help of Nick, but now 20180621 I don't think it's a multimorphemic word here, but rather an example of the X-qaw34 construction in Saek)</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann104" ANNOTATION_REF="ann102">
+                <ANNOTATION_VALUE>tò34-qeeng34. khamsang said it's tua34qeeng34, and said it was a Lao word. 20180708 thèèk52 from thèk52, too34qeeng34 from tò34qeeng34. SVC? 20180708 han31 from nan31.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann180" ANNOTATION_REF="ann178">
+                <ANNOTATION_VALUE>20180708 peen31 from peen52, voong34 from vòòng34. 20180708 pèèn52 from peen52, mung55 from vòòng34; LT speaking Lao here. 20180708 peen31 from peen52, voong34 from vòòng34</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann259" ANNOTATION_REF="ann257">
+                <ANNOTATION_VALUE>20180708 forgot to audio-record up to this line. Khamsang said qòng34 was Lao. 20180708 qòng34 sounds long?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann323" ANNOTATION_REF="ann321">
+                <ANNOTATION_VALUE>Khamsang said qeeng34 was Lao. 20180708 maa55 from maa11, voong34 from vòòng34. Also TA said qeeng34 was Lao, Saek was thlòò33; lè from lèèw33; TA commented that LT spoke a lot of Lao.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann357" ANNOTATION_REF="ann355">
+                <ANNOTATION_VALUE>20180708 seems like it was still vòòng34, which is the same as G.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann400" ANNOTATION_REF="ann398">
+                <ANNOTATION_VALUE>Khamsang said nang31's Lao word is jaang (dictionary p.596 hire). 20180708 nang11 from nang31.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann434" ANNOTATION_REF="ann432">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="ann516" ANNOTATION_REF="ann514">
+                <ANNOTATION_VALUE>April by Lao calendar or May by international calendar. 20180708 thang55 from thang33.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="id" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ptcp" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="gnr" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="nr" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ph" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ref" TIME_ALIGNABLE="true"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="po" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Subdivision"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="mb" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ge" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ps" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="ft" TIME_ALIGNABLE="false"/>
+    <LINGUISTIC_TYPE CONSTRAINTS="Symbolic_Association"
+        GRAPHIC_REFERENCES="false" LINGUISTIC_TYPE_ID="nt" TIME_ALIGNABLE="false"/>
+    <CONSTRAINT
+        DESCRIPTION="Time subdivision of parent annotation's time interval, no time gaps allowed within this interval" STEREOTYPE="Time_Subdivision"/>
+    <CONSTRAINT
+        DESCRIPTION="Symbolic subdivision of a parent annotation. Annotations refering to the same parent are ordered" STEREOTYPE="Symbolic_Subdivision"/>
+    <CONSTRAINT DESCRIPTION="1-1 association with a parent annotation" STEREOTYPE="Symbolic_Association"/>
+    <CONSTRAINT
+        DESCRIPTION="Time alignable annotations within the parent annotation's time interval, gaps are allowed" STEREOTYPE="Included_In"/>
+</ANNOTATION_DOCUMENT>

@@ -16,8 +16,8 @@ import csv
 import io
 import sys
 
-from eldpy    import annotation
-from eldpy    import constants
+from eldpy import annotation
+from eldpy import constants
 
 logger = logging.getLogger("eldpy")
 logger.setLevel(logging.ERROR)
@@ -362,13 +362,22 @@ class ElanFile:
             return False
         return True
 
-    def populate(self,transcriptioncandidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES,translationcandidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES):
+    def populate(
+        self,
+        transcriptioncandidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES,
+        translationcandidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
+        glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,
+        commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES,
+        spanish=False
+    ):
         self.populate_transcriptions(candidates=transcriptioncandidates)
-        self.populate_translations(candidates=translationcandidates)
+        self.populate_translations(candidates=translationcandidates, spanish=spanish)
         self.populate_glosses(candidates=glosscandidates)
         self.populate_comments(candidates=commentcandidates)
 
-    def populate_transcriptions(self,candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES):
+    def populate_transcriptions(
+        self, candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
+    ):
         """fill the attribute transcriptions with translations from the ELAN file"""
 
         transcriptioncandidates = constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
@@ -407,7 +416,9 @@ class ElanFile:
         self.transcriptions = transcriptions
         self.transcriptions_with_IDs = transcriptions_with_IDs
 
-    def populate_translations(self ,candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,spanish=False):
+    def populate_translations(
+        self, candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES, spanish=False
+    ):
         """fill the attribute translation with translations from the ELAN file"""
 
         translationcandidates = constants.ACCEPTABLE_TRANSLATION_TIER_TYPES
@@ -450,10 +461,7 @@ class ElanFile:
         self.translations = translations
         self.translations_with_IDs = translations_with_IDs
 
-
-
-
-    def populate_comments(self,candidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES):
+    def populate_comments(self, candidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES):
         """fill the attribute comment with comments from the ELAN file"""
 
         commentcandidates = constants.ACCEPTABLE_COMMENT_TIER_TYPES
@@ -484,8 +492,6 @@ class ElanFile:
                     }
         self.comments = comments
         self.comments_with_IDs = comments_with_IDs
-
-
 
     def get_translations(self):
         """return a list of lists of translations per tier"""
@@ -588,9 +594,13 @@ class ElanFile:
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
             translation_cell = translation
-            comment = comments_ID_dict.get(ID,'') #FIXME check whether any comments are discarded which should be saved
+            comment = comments_ID_dict.get(
+                ID, ""
+            )  # FIXME check whether any comments are discarded which should be saved
             # ignore completely empty annotations
-            if (primary_text_cell+vernacular_cell+gloss_cell+translation_cell).strip() == "":
+            if (
+                primary_text_cell + vernacular_cell + gloss_cell + translation_cell
+            ).strip() == "":
                 continue
             lgr_cell = "WORD_ALIGNED"  # FIXME check for morpheme alignment
             line = [
