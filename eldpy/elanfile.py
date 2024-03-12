@@ -361,7 +361,13 @@ class ElanFile:
             return False
         return True
 
-    def populate_transcriptions(self):
+    def populate(self,transcriptioncandidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES,translationcandidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES):
+        self.populate_transcriptions(candidates=transcriptioncandidates)
+        self.populate_translations(candidates=translationcandidates)
+        self.populate_glosses(candidates=glosscandidates)
+        self.populate_comments(candidates=commentcandidates)
+
+    def populate_transcriptions(self,candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES):
         """fill the attribute transcriptions with translations from the ELAN file"""
 
         transcriptioncandidates = constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
@@ -400,7 +406,7 @@ class ElanFile:
         self.transcriptions = transcriptions
         self.transcriptions_with_IDs = transcriptions_with_IDs
 
-    def populate_translations(self, spanish=False):
+    def populate_translations(self ,candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,spanish=False):
         """fill the attribute translation with translations from the ELAN file"""
 
         translationcandidates = constants.ACCEPTABLE_TRANSLATION_TIER_TYPES
@@ -446,7 +452,7 @@ class ElanFile:
 
 
 
-    def populate_comments(self):
+    def populate_comments(self,candidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES):
         """fill the attribute comment with comments from the ELAN file"""
 
         commentcandidates = constants.ACCEPTABLE_COMMENT_TIER_TYPES
@@ -612,7 +618,7 @@ class ElanFile:
                 csv_writer.writerow(line)
             return cldfstringbuffer.getvalue()
 
-    def populate_glosses(self):
+    def populate_glosses(self, candidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
 
         def get_word_for_gloss(annotation_value, mapping):
@@ -696,11 +702,11 @@ class ElanFile:
         root = self.root
         if root is None:
             return {}
-        glosscandidates = constants.ACCEPTABLE_GLOSS_TIER_TYPES
+        # glosscandidates = constants.ACCEPTABLE_GLOSS_TIER_TYPES
         mapping = get_annotation_text_mapping(root)
         retrieved_glosstiers = {}
 
-        for candidate in glosscandidates:
+        for candidate in candidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
             if glosstiers != []:  # we found a tier of the linguistic type

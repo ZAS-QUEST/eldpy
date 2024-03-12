@@ -294,7 +294,7 @@ ACCEPTABLE_GLOSS_TIER_TYPES = [
     "Gloss",
     "gloss",
     "glosses",
-    # "word",
+    "word",
     "word-gls",
     "gl (interlinear gloss)",
 ]
