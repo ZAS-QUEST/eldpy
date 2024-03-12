@@ -74,6 +74,7 @@ class ElanFile:
             )
             for el in self.root.findall(".//ANNOTATION")
         }
+        self.glossed_sentences = {}
 
     LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
 
@@ -517,7 +518,7 @@ class ElanFile:
         tmp_translations_dict = copy.deepcopy(self.translations_with_IDs)
         try:
             translation_ID_dict = tmp_translations_dict.popitem()[1].popitem()[1]
-        except KeyError:
+        except ValueError:
             return ""
         except AttributeError:  # FIXME should not throw attribute error at 5489
             return ""
@@ -525,13 +526,11 @@ class ElanFile:
         try:
             comments_ID_dict = tmp_comments_dict.popitem()[1].popitem()[1]
         except KeyError:
-            return ""
-        except AttributeError:  # FIXME should not throw attribute error at 5489
-            return ""
+            comments_ID_dict = {}
         try:
             glosses = copy.deepcopy(self.glossed_sentences).popitem()[1].popitem()[1]
         except KeyError:
-            return ""
+            return "535"
         for g in glosses:
             if g == {}:
                 return ""
@@ -589,7 +588,7 @@ class ElanFile:
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
             translation_cell = translation
-            comment = comments_ID_dict[ID]
+            comment = comments_ID_dict.get(ID,'') #FIXME check whether any comments are discarded which should be saved
             # ignore completely empty annotations
             if (primary_text_cell+vernacular_cell+gloss_cell+translation_cell).strip() == "":
                 continue
