@@ -49,12 +49,12 @@ def get_matrix_content_from_csv(filename,provided_title=""):
             matrix.append([ID,primary_text,analyzed_word,gloss,translation,comment])
     return matrix
 
-def get_tex_content_from_csv(filename,provided_title="", output_type="examples"):
+def get_tex_content_from_csv(filename,provided_title="", output_type="examples", orthographic_line=True):
     matrix = get_matrix_content_from_csv(filename,provided_title="")
-    return get_tex_content(matrix,provided_title=provided_title,output_type=output_type)
+    return get_tex_content(matrix,provided_title=provided_title,output_type=output_type,orthographic_line=orthographic_line)
 
 
-def get_tex_content(matrix,provided_title="",output_type="examples"):
+def get_tex_content(matrix,provided_title="",output_type="examples",orthographic_line=True):
     title = "\\title{%s}\date{}"%provided_title
     maketitle = "\maketitle"
     resultstring = preamble % (title,maketitle)
@@ -63,7 +63,10 @@ def get_tex_content(matrix,provided_title="",output_type="examples"):
     comments = []
     for row in matrix:
         ID = row[0]
-        primary_text = latex_quotation_marks(escape_latex(row[1]))
+        if orthographic_line:
+            primary_text = latex_quotation_marks(escape_latex(row[1]))
+        else:
+            primary_text = "%"
         vernacular = row[2].strip()
         gloss = row[3]
         translation = row[4]
@@ -162,6 +165,12 @@ def get_tex_content(matrix,provided_title="",output_type="examples"):
 if __name__ == "__main__":
     examples = True
     output_type = "examples"
+    orthographic_line = True
+    try:
+        orthographic_line = sys.argv[4] #FIXME do this with proper option parsing
+        orthographic_line = False
+    except IndexError:
+        pass
     try:
         output_type = sys.argv[3]
     except IndexError:
@@ -176,4 +185,4 @@ if __name__ == "__main__":
     else:
         tex_filemame = filename[0:-4]+".tex"
         with open(tex_filemame, "w", encoding="utf-8") as tex_file:
-            tex_file.write(get_tex_content_from_csv(filename,provided_title=provided_title,output_type=output_type))
+            tex_file.write(get_tex_content_from_csv(filename,provided_title=provided_title,output_type=output_type,orthographic_line=orthographic_line))
