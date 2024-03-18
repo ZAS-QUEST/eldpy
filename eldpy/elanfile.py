@@ -258,7 +258,7 @@ class ElanFile:
                     continue
         return result
 
-    def is_major_language(self, list_, spanish=False, logtype="False"):
+    def is_major_language(self, list_, spanish=False, french=False, indonesian=False, portuguese=False, russian=False, logtype="False"):
         try:  # detect candidate languages and retrieve most likely one
             toplanguage = detect_langs(" ".join(list_))[0]
         except lang_detect_exception.LangDetectException:
@@ -267,6 +267,14 @@ class ElanFile:
         accepted_languages = ["en"]
         if spanish:
             accepted_languages.append("es")
+        if french:
+            accepted_languages.append("fr")
+        if indonesian:
+            accepted_languages.append("id")
+        if portuguese:
+            accepted_languages.append("pt")
+        if russian:
+            accepted_languages.append("ru")
         if (
             toplanguage
             and toplanguage.lang in accepted_languages
@@ -292,8 +300,8 @@ class ElanFile:
             # language is English or Spanish, but likelihood is too small
             if logtype == "False":
                 logger.warning(
-                    'ignored %.2f%% probability English for "%s ..."'
-                    % (toplanguage.prob * 100, " ".join(list_)[:100])
+                    'ignored %.2f%% probability %s for "%s ..."'
+                    % (toplanguage.prob * 100, toplanguage.lang, " ".join(list_)[:100])
                 )
             return False
 
@@ -338,11 +346,11 @@ class ElanFile:
         timelist = [
             annotation.Annotation(
                 aa, self.timeslots, self.ref_annotations, self.alignable_annotations
-            ).get_duration()
+            ).get_duration(include_void_annotations=False)
             for aa in t.findall("./ANNOTATION")
             if aa.text is not None
         ]
-        timelistannno = [anno.get_duration() for anno in self.get_annotation_list(t)]
+        timelistannno = [anno.get_duration(include_void_annotations=False) for anno in self.get_annotation_list(t)]
         return sum(timelist + timelistannno) / 1000
 
     def has_minimal_translation_length(self, t, tierID):
@@ -368,10 +376,10 @@ class ElanFile:
         translationcandidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
         glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,
         commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES,
-        spanish=False
+        spanish=False, french=False, indonesian=False, portuguese=False, russian=False
     ):
         self.populate_transcriptions(candidates=transcriptioncandidates)
-        self.populate_translations(candidates=translationcandidates, spanish=spanish)
+        self.populate_translations(candidates=translationcandidates, spanish=spanish, french=french, portuguese=portuguese, indonesian=indonesian, russian=russian)
         self.populate_glosses(candidates=glosscandidates)
         self.populate_comments(candidates=commentcandidates)
 
@@ -405,7 +413,7 @@ class ElanFile:
                 if self.is_ID_tier(wordlist):
                     # print("skipping ID tier")
                     continue
-                if self.is_major_language(wordlist, spanish=True):
+                if self.is_major_language(wordlist, spanish=True, french=True, indonesian=True, portuguese=True, russian=True):
                     continue
                 time_in_seconds.append(self.get_seconds_from_tier(tier))
                 transcriptions[candidate][tierID] = wordlist
@@ -417,11 +425,11 @@ class ElanFile:
         self.transcriptions_with_IDs = transcriptions_with_IDs
 
     def populate_translations(
-        self, candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES, spanish=False
+        self, candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES, spanish=False, french=T, indonesian=False, portuguese=False, russian=False
     ):
         """fill the attribute translation with translations from the ELAN file"""
 
-        translationcandidates = constants.ACCEPTABLE_TRANSLATION_TIER_TYPES
+        translationcandidates = candidates
         root = self.root
         if root is None:
             self.translations = {}
@@ -445,7 +453,7 @@ class ElanFile:
                         continue
                     # Sometimes, annotators put non-English contents in translation tiers
                     # For our purposes, we want to discard such content
-                    if not self.is_major_language(wordlist, spanish=spanish):
+                    if not self.is_major_language(wordlist, spanish=spanish, french=french, portuguese=portuguese, indonesian=indonesian, russian=russian):
                         continue
                     if not self.has_minimal_translation_length(wordlist, tierID):
                         continue

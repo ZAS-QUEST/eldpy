@@ -4,6 +4,7 @@ import rdflib
 import glob
 from elanfile import ElanFile
 from annotation import Annotation
+import pprint
 
 
 def test_fingerprint():
@@ -77,6 +78,18 @@ def test_saek(capsys):
 def test_yaminawa(capsys):
     ef = ElanFile("yaminawa_test.eaf", "www")
     ef.populate(spanish=True)
+    x = ef.get_cldfs()
+    assert x[233:453] == '"a4707","Pẽxẽwãkũĩkĩã, pẽxẽwã, datiu pẽxẽwã","pexe\t-wã\t-kũĩ\t=kĩã\tpexe\t-wã\tda\t=tiu\tpexe\t-wã","casa\tAUG\tINTENS\t=EXIST\tcasa\tAUG\tmorir\t=tamaño\tcasa\tAUG","Era una casa grande, una casa grande, una casa grande de este tamaño."'
+
+
+
+def test_yaminawa_p(capsys):
+    ef = ElanFile("Pashpiexample01.eaf", "www")
+    ef.populate(spanish=True,
+                transcriptioncandidates=["autoasd"],
+                glosscandidates=["-4"],
+                commentcandidates=["ß"]
+                )
     x = ef.get_cldfs()
     assert x[233:453] == '"a4707","Pẽxẽwãkũĩkĩã, pẽxẽwã, datiu pẽxẽwã","pexe\t-wã\t-kũĩ\t=kĩã\tpexe\t-wã\tda\t=tiu\tpexe\t-wã","casa\tAUG\tINTENS\t=EXIST\tcasa\tAUG\tmorir\t=tamaño\tcasa\tAUG","Era una casa grande, una casa grande, una casa grande de este tamaño."'
 
@@ -244,28 +257,40 @@ def test_minimal(capsys):
     ]  # regression test: make sure that get_cldfs does not affect the data itself.
 
 
-def test_fuzz(capsys):
-    # eafs = glob.glob('quarantine/*eaf')
-    offset = 0
-    # offset = 19029
-    eafs = glob.glob("testeafs/*eaf")[offset:]
-    eafs.sort()
-    with capsys.disabled():
-        print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
-    out = open("fuzztest.csv", "w")
-    header2 = "filename transcribed tier stc wd char wd/stc ch/wd time tier stc wd ch wd/stc ch/ed time tier stc wd distinct uniformity zipf1 zipf2".replace(
-        " ", "\t"
-    )
-    out.write(header2)
-    out.write("\n")
-    # print(eaf)
-    for i, eaf in enumerate(eafs):
-        ef = ElanFile(eaf, "www")
-        ef.populate()
-        ef.get_cldfs()
-        with capsys.disabled():
-            # print(eaf)
-            print()
-            print(str(offset + i).rjust(5, " "), end=" ")
-            ef.print_overview(writer=out)
-    out.close()
+def test_duration(capsys):
+    eaf = "0685IPF0405-MJ-EN3_20240305_mod.eaf"
+    ef = ElanFile(eaf, "www")
+    ef.populate_transcriptions()
+    assert ef.secondstranscribed == 487.613
+    ef.populate_translations(candidates=["Translation"], french=True)
+    translations = ef.get_translations()
+    assert(translations[0][13] == 'Ce père')
+    assert ef.secondstranslated  == 481.963
+
+# def test_fuzz(capsys):
+#     # eafs = glob.glob('quarantine/*eaf')
+#     offset = 0
+#     # offset = 19029
+#     eafs = glob.glob("testeafs/*eaf")[offset:]
+#     eafs.sort()
+#     with capsys.disabled():
+#         print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
+#     out = open("fuzztest.csv", "w")
+#     header2 = "filename transcribed tier stc wd char wd/stc ch/wd time tier stc wd ch wd/stc ch/ed time tier stc wd distinct uniformity zipf1 zipf2".replace(
+#         " ", "\t"
+#     )
+#     out.write(header2)
+#     out.write("\n")
+#     # print(eaf)
+#     for i, eaf in enumerate(eafs):
+#         ef = ElanFile(eaf, "www")
+#         ef.populate()
+#         ef.get_cldfs()
+#         with capsys.disabled():
+#             # print(eaf)
+#             print()
+#             print(str(offset + i).rjust(5, " "), end=" ")
+#             ef.print_overview(writer=out)
+#     out.close()
+#
+#
