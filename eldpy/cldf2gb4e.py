@@ -62,6 +62,8 @@ def get_tex_content(matrix,provided_title="",output_type="examples",orthographic
     translations = []
     comments = []
     for row in matrix:
+        if len(row)<6:
+            continue #FIXME need better check for matrix integrity
         ID = row[0]
         if orthographic_line:
             primary_text = latex_quotation_marks(escape_latex(row[1]))

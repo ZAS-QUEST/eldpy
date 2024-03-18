@@ -528,6 +528,8 @@ class ElanFile:
             return ""
         except AttributeError:  # FIXME should not throw attribute error at 5489
             return ""
+        except KeyError:  # FIXME should not throw attribute error at 5489
+            return ""
         tmp_comments_dict = copy.deepcopy(self.comments_with_IDs)
         try:
             comments_ID_dict = tmp_comments_dict.popitem()[1].popitem()[1]
@@ -556,16 +558,50 @@ class ElanFile:
                 primary_text = transcription_ID_dict[ID]
             except KeyError:  # FIXME gigantic hack to align glosses with transcriptions
                 integer_part = ID.replace("ann", "").replace("a", "")
-                next_integer = int(integer_part) + 1
                 try:
-                    primary_text = transcription_ID_dict[f"ann{next_integer}"]
-                except KeyError:
-                    # we try to retrieve a tier dependent on the ref tier which does have a primary text
-                    for v in self.timeslotted_reversedic[ID]:
-                        primary_text = transcription_ID_dict.get(v)
-                        if primary_text:
-                            break
-                    else:
+                    next_integer = int(integer_part) + 1
+                except ValueError:
+                        logger.warning(
+                            "translation",
+                            ID,
+                            "could not be retrieved ")
+                        primary_text = "PRIMARY TEXT NOT RETRIEVED"
+                else:
+                    try:
+                        primary_text = transcription_ID_dict[f"ann{next_integer}"]
+                    except KeyError:
+                        # we try to retrieve a tier dependent on the ref tier which does have a primary text
+                        for v in self.timeslotted_reversedic[ID]:
+                            primary_text = transcription_ID_dict.get(v)
+                            if primary_text:
+                                break
+                        else:
+                            logger.warning(
+                                "translation",
+                                ID,
+                                "could not be retrieved, nor could",
+                                next_integer,
+                                "be retrieved",
+                            )
+                            primary_text = "PRIMARY TEXT NOT RETRIEVED"
+
+            try:
+                translation = translation_ID_dict[ID]
+            except KeyError:  # FIXME gigantic hack to align glosses with translations
+                integer_part = ID.replace("ann", "").replace("a", "")
+                try:
+                    next_integer = int(integer_part) + 1
+                except ValueError:
+                    logger.warning(
+                        "translation",
+                        ID,
+                        "could not be retrieved"
+                    )
+                    translation = "TRANSLATION NOT RETRIEVED"
+                else:
+                    try:
+                        translation = translation_ID_dict[f"ann{next_integer}"]
+                    except KeyError:
                         logger.warning(
                             "translation",
                             ID,
@@ -573,22 +609,6 @@ class ElanFile:
                             next_integer,
                             "be retrieved",
                         )
-                        primary_text = "PRIMARY TEXT NOT RETRIEVED"
-            try:
-                translation = translation_ID_dict[ID]
-            except KeyError:  # FIXME gigantic hack to align glosses with translations
-                integer_part = ID.replace("ann", "").replace("a", "")
-                next_integer = int(integer_part) + 1
-                try:
-                    translation = translation_ID_dict[f"ann{next_integer}"]
-                except KeyError:
-                    logger.warning(
-                        "translation",
-                        ID,
-                        "could not be retrieved, nor could",
-                        next_integer,
-                        "be retrieved",
-                    )
                     translation = "TRANSLATION NOT RETRIEVED"
             primary_text_cell = primary_text
             vernacular_cell = "\t".join(vernacular_subcells)
