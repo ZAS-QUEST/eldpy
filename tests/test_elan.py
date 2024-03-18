@@ -1,4 +1,4 @@
-import rdflib
+# import rdflib
 
 # import lod
 import glob
@@ -85,13 +85,9 @@ def test_yaminawa(capsys):
 
 def test_yaminawa_p(capsys):
     ef = ElanFile("Pashpiexample01.eaf", "www")
-    ef.populate(spanish=True,
-                transcriptioncandidates=["autoasd"],
-                glosscandidates=["-4"],
-                commentcandidates=["ß"]
-                )
+    ef.populate(spanish=True)
     x = ef.get_cldfs()
-    assert x[233:453] == '"a4707","Pẽxẽwãkũĩkĩã, pẽxẽwã, datiu pẽxẽwã","pexe\t-wã\t-kũĩ\t=kĩã\tpexe\t-wã\tda\t=tiu\tpexe\t-wã","casa\tAUG\tINTENS\t=EXIST\tcasa\tAUG\tmorir\t=tamaño\tcasa\tAUG","Era una casa grande, una casa grande, una casa grande de este tamaño."'
+    assert x[277:548] == '"ann133_flexid_da953754-f021-41ef-b5b5-7c34e37e9d81","pewexũ wexũ, uri waiki awa waxũwẽrãpaudikia","=xũ	=xũ	wa	-wẽrã","=SS.PE.S>A	=SS.PE.S>A	guardar	AM:hacer.y.venir","Trayéndolo cargando, por allá por el camino, se dice que venía dejando para su mamá.","","WORD_ALIGNED"'
 
 
 def test_muyu(capsys):
@@ -115,18 +111,18 @@ def test_gorwaa(capsys):
     assert x[90:317] == '"ann2_flexid_cf517905-27fc-4f45-a039-924f03d43d8f","desisí ta bay ya Tlaqasí","desi\t-r´\t-sí\tt-\t∅\tbáw\t~$B~\t-a\t~LPA~\tya\tTlaqasí\t-r´","girl:Fr\tL.Fr\tDem2\tMP\tAux\tcall\tM\t-NPst\tSubj\tthus\tTlaqasí\tL.Fr","this girl who is called Tlaqasí"'
 
 
-# def test_gorwaa_full(capsys):
-#     ef = ElanFile("gorwaa_test_all_tiers.eaf", "www")
-#     ef.populate(transcriptioncandidates=["morph"],glosscandidates=["morph-item"])
-#     x = ef.get_cldfs()
-#     with capsys.disabled():
-#         print(repr(x[90:274]))
-#     assert x[90:274] == '"ann2_flexid_cf517905-27fc-4f45-a039-924f03d43d8f","desisí ta bay ya Tlaqasí","desi\t-r´\t-sí\tt-\t∅\tbáw\t~$B~\t-a\t~LPA~\tya\tTlaqasí\t-r´","girl:Fr\tL.Fr\tDem2\tMP\tAux\tcall\tM\t-NPst\tSubj\tthus\tTlaqasí\tL.Fr","this girl who is called Tlaqasí"'
+# # def test_gorwaa_full(capsys):
+# #     ef = ElanFile("gorwaa_test_all_tiers.eaf", "www")
+# #     ef.populate(transcriptioncandidates=["morph"],glosscandidates=["morph-item"])
+# #     x = ef.get_cldfs()
+# #     with capsys.disabled():
+# #         print(repr(x[90:274]))
+# #     assert x[90:274] == '"ann2_flexid_cf517905-27fc-4f45-a039-924f03d43d8f","desisí ta bay ya Tlaqasí","desi\t-r´\t-sí\tt-\t∅\tbáw\t~$B~\t-a\t~LPA~\tya\tTlaqasí\t-r´","girl:Fr\tL.Fr\tDem2\tMP\tAux\tcall\tM\t-NPst\tSubj\tthus\tTlaqasí\tL.Fr","this girl who is called Tlaqasí"'
 
 
 
 
-
+#
 
 
 def test_overview(capsys):
@@ -236,7 +232,9 @@ def test_minimal(capsys):
     eaf = "test_minimal.eaf"
     ef = ElanFile(eaf, "www")
     ef.populate()
-    transcriptions = ef.get_transcriptions()
+    with capsys.disabled():
+        print(123)
+        print(ef.transcriptions.keys())
     assert ef.transcriptions["po"]["tx@A"] == [
         "oino irore",
         "ire awu boe etore emaragodudö",
@@ -246,7 +244,8 @@ def test_minimal(capsys):
     assert translations == [["Thus I did.", "I made these children work"]]
     assert ef.glossed_sentences["ge"]["ge@A"][1]["ann25"][2] == ["boe.etore", "son"]
     cldfstring = ef.get_cldfs()
-    print(cldfstring)
+    with capsys.disabled():
+        print(cldfstring)
     assert (
         cldfstring.split("\n")[1].strip()
         == '"ann0","oino irore","oino\ti=ro=re","thus\t1.SG=make=IND","Thus I did.","","WORD_ALIGNED"'

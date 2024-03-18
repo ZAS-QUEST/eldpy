@@ -260,10 +260,12 @@ class ElanFile:
 
     def is_major_language(self, list_, spanish=False, french=False, indonesian=False, portuguese=False, russian=False, logtype="False"):
         try:  # detect candidate languages and retrieve most likely one
-            toplanguage = detect_langs(" ".join(list_))[0]
+            toplanguages = detect_langs(" ".join(list_))
+            toplanguage = toplanguages[0]
         except lang_detect_exception.LangDetectException:
             # we are happy that this is an unknown language
             toplanguage = None
+
         accepted_languages = ["en"]
         if spanish:
             accepted_languages.append("es")
@@ -271,10 +273,11 @@ class ElanFile:
             accepted_languages.append("fr")
         if indonesian:
             accepted_languages.append("id")
-        if portuguese:
-            accepted_languages.append("pt")
+        # if portuguese:#portuguese throws falls positives
+        #     accepted_languages.append("pt")
         if russian:
             accepted_languages.append("ru")
+        # print(toplanguage.lang,toplanguage.prob,accepted_languages)
         if (
             toplanguage
             and toplanguage.lang in accepted_languages
@@ -388,7 +391,7 @@ class ElanFile:
     ):
         """fill the attribute transcriptions with translations from the ELAN file"""
 
-        transcriptioncandidates = constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
+        transcriptioncandidates = candidates
         transcriptions = defaultdict(dict)
         transcriptions_with_IDs = defaultdict(dict)
         root = self.root
@@ -425,7 +428,7 @@ class ElanFile:
         self.transcriptions_with_IDs = transcriptions_with_IDs
 
     def populate_translations(
-        self, candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES, spanish=False, french=T, indonesian=False, portuguese=False, russian=False
+        self, candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES, spanish=False, french=True, indonesian=False, portuguese=False, russian=False
     ):
         """fill the attribute translation with translations from the ELAN file"""
 
@@ -546,6 +549,7 @@ class ElanFile:
         try:
             glosses = copy.deepcopy(self.glossed_sentences).popitem()[1].popitem()[1]
         except KeyError:
+            print(self.glossed_sentences)
             return "535"
         for g in glosses:
             if g == {}:
@@ -583,15 +587,16 @@ class ElanFile:
                             primary_text = transcription_ID_dict.get(v)
                             if primary_text:
                                 break
+                            # else:
+                            #     primary_text = "PRIMARY TEXT NOT RETRIEVED"
                         else:
                             logger.warning(
-                                "translation",
+                                "primary text",
                                 ID,
                                 "could not be retrieved, nor could",
                                 next_integer,
                                 "be retrieved",
                             )
-                            primary_text = "PRIMARY TEXT NOT RETRIEVED"
 
             try:
                 translation = translation_ID_dict[ID]
@@ -599,6 +604,7 @@ class ElanFile:
                 integer_part = ID.replace("ann", "").replace("a", "")
                 try:
                     next_integer = int(integer_part) + 1
+                    print(next_integer)
                 except ValueError:
                     logger.warning(
                         "translation",
@@ -608,7 +614,8 @@ class ElanFile:
                     translation = "TRANSLATION NOT RETRIEVED"
                 else:
                     try:
-                        translation = translation_ID_dict[f"ann{next_integer}"]
+                        new_key = f"ann{next_integer}"
+                        translation = translation_ID_dict[new_key]
                     except KeyError:
                         logger.warning(
                             "translation",
@@ -617,7 +624,7 @@ class ElanFile:
                             next_integer,
                             "be retrieved",
                         )
-                    translation = "TRANSLATION NOT RETRIEVED"
+                        translation = "TRANSLATION NOT RETRIEVED"
             primary_text_cell = primary_text
             vernacular_cell = "\t".join(vernacular_subcells)
             gloss_cell = "\t".join(gloss_subcells)
@@ -742,7 +749,6 @@ class ElanFile:
         # glosscandidates = constants.ACCEPTABLE_GLOSS_TIER_TYPES
         mapping = get_annotation_text_mapping(root)
         retrieved_glosstiers = {}
-
         for candidate in candidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
