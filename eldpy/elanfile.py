@@ -531,26 +531,61 @@ class ElanFile:
                 for tupl in tmp_transcription_dic[candidate][tier]:
                     d[tupl[0]] = tupl[1]
         transcription_ID_dict = d
-        # FIXME check for several tiers
+
         tmp_translations_dict = copy.deepcopy(self.translations_with_IDs)
         try:
-            translation_ID_dict = tmp_translations_dict.popitem()[1].popitem()[1]
+            tier_to_retain = None
+            print(f"found {len(tmp_translations_dict)} possible gloss types: {list(tmp_translations_dict.keys())}")
+            max_charcount = 0
+            for type_candidate in tmp_translations_dict:
+                print(f" found {len(tmp_translations_dict[type_candidate])} possible tiers in {type_candidate}: {list(tmp_translations_dict[type_candidate])}")
+                for tier in tmp_translations_dict[type_candidate]:
+                    # print(tier)
+                    # pprint.pprint(tmp_translations_dict[type_candidate][tier].keys())
+                    charcount = 0
+                    for top_element in tmp_translations_dict[type_candidate][tier]:
+                        charcount += len(tmp_translations_dict[type_candidate][tier][top_element])
+                    print(f"  tier {tier} has {charcount} characters. Current maximum is {max_charcount}")
+                    if charcount >= max_charcount:
+                        max_charcount = charcount
+                        tiername_to_retain = tier
+                        tier_to_retain = tmp_translations_dict[type_candidate][tier]
+            print(f"  retaining {tiername_to_retain} as the tier with most characters ({max_charcount})")
+            translation_ID_dict = tier_to_retain
         except ValueError:
-            return ""
+            raise EldpyError(f"No translations found in {self.filename}")
         except AttributeError:  # FIXME should not throw attribute error at 5489
-            return ""
+            raise EldpyError(f"No translations found in {self.filename}")
         except KeyError:  # FIXME should not throw attribute error at 5489
-            return ""
+            raise EldpyError(f"No translations found in {self.filename}")
+
         tmp_comments_dict = copy.deepcopy(self.comments_with_IDs)
         try:
             comments_ID_dict = tmp_comments_dict.popitem()[1].popitem()[1]
         except KeyError:
             comments_ID_dict = {}
-        try:
-            glosses = copy.deepcopy(self.glossed_sentences).popitem()[1].popitem()[1]
-        except KeyError:
-            print(self.glossed_sentences)
-            return "535"
+
+        glosses_d = copy.deepcopy(self.glossed_sentences)
+        best_tier_ratio = 0
+        tier_to_retain = None
+        print(f"found {len(glosses_d)} possible gloss types")
+        for type_candidate in glosses_d:
+            print(f" found {len(glosses_d[type_candidate])} possible tiers in {type_candidate}")
+            for tier in glosses_d[type_candidate]:
+                tier_glosses = []
+                for annotation in glosses_d[type_candidate][tier]:
+                    for element in annotation:
+                        glosses = [x[1] for x in annotation[element]]
+                        tier_glosses += glosses
+                distinct_glosses = list(set(tier_glosses))
+                ratio = len(distinct_glosses)/len(tier_glosses)
+                print(f"  tier {tier} has {ratio:.4f} gloss diversity")
+                if ratio > best_tier_ratio:
+                    best_tier_ratio = ratio
+                    tiername_to_retain = tier
+                    tier_to_retain = glosses_d[type_candidate][tier]
+        print(f"  retaining {tiername_to_retain} as the tier with most gloss diversity")
+        glosses = tier_to_retain
         for g in glosses:
             if g == {}:
                 return ""
@@ -710,7 +745,6 @@ class ElanFile:
             d = {}
             glossed_sentences = []
             for i, annotation in enumerate(annos):
-                # print(annotation.__dict__)
                 gloss = annos[i].text
                 sentenceID = ids[i]
                 if annotation.previous_annotation_ID is None:
@@ -1066,3 +1100,6 @@ class Tier:
             if key not in constants.LGRLIST:
                 del result[key]
         return result
+
+class EldpyError(Exception):
+    pass
