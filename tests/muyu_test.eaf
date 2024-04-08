@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ANNOTATION_DOCUMENT AUTHOR="" DATE="2023-09-08T13:54:20+01:00"
+<ANNOTATION_DOCUMENT AUTHOR="" DATE="2024-04-08T15:14:41+01:00"
     FORMAT="3.0" VERSION="3.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mpi.nl/tools/elan/EAFv3.0.xsd">
     <HEADER MEDIA_FILE="" TIME_UNITS="milliseconds">
         <MEDIA_DESCRIPTOR
             MEDIA_URL="file:///home/alexander/Dokumente/Research/langdoc/Muyu/01_recordings/muyu007_Myth_bulan_PE/muyu007_Myth_moon_PE_compressed.MP4"
-            MIME_TYPE="video/mp4" RELATIVE_MEDIA_URL="./muyu007_Myth_moon_PE_compressed.MP4"/>
+            MIME_TYPE="video/mp4" RELATIVE_MEDIA_URL="../../../../alexander/Dokumente/Research/langdoc/Muyu/01_recordings/muyu007_Myth_bulan_PE/muyu007_Myth_moon_PE_compressed.MP4"/>
         <MEDIA_DESCRIPTOR
             MEDIA_URL="file:///home/alexander/Dokumente/Research/langdoc/Muyu/01_recordings/muyu007_Myth_bulan_PE/muyu007_Myth_moon_PE.wav"
-            MIME_TYPE="audio/x-wav" RELATIVE_MEDIA_URL="./muyu007_Myth_moon_PE.wav"/>
+            MIME_TYPE="audio/x-wav" RELATIVE_MEDIA_URL="../../../../alexander/Dokumente/Research/langdoc/Muyu/01_recordings/muyu007_Myth_bulan_PE/muyu007_Myth_moon_PE.wav"/>
         <PROPERTY NAME="URN">urn:nl-mpi-tools-elan-eaf:cccb810a-3c30-4ad2-958e-8a2de846cdcc</PROPERTY>
         <PROPERTY NAME="lastUsedAnnotationId">7128</PROPERTY>
     </HEADER>
@@ -4502,1184 +4502,6 @@
         <ANNOTATION>
             <REF_ANNOTATION ANNOTATION_ID="a453" ANNOTATION_REF="a302">
                 <ANNOTATION_VALUE>so that is all</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-    </TIER>
-    <TIER DEFAULT_LOCALE="de" LINGUISTIC_TYPE_REF="note"
-        PARENT_REF="tx@S1" TIER_ID="note@S1">
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4277" ANNOTATION_REF="a4211">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a454" ANNOTATION_REF="a152">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a455" ANNOTATION_REF="a153">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a456" ANNOTATION_REF="a154">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a457" ANNOTATION_REF="a155">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a458" ANNOTATION_REF="a156">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a459" ANNOTATION_REF="a157">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a460" ANNOTATION_REF="a158">
-                <ANNOTATION_VALUE>GRAID noch unklar.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a461" ANNOTATION_REF="a159">
-                <ANNOTATION_VALUE>Lexeme wirklich so aufgeteilt? Nicht ein lexikalisiertes Verb?</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a462" ANNOTATION_REF="a160">
-                <ANNOTATION_VALUE>"wine komba" should be &lt;wine kombe&gt;</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a463" ANNOTATION_REF="a161">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a464" ANNOTATION_REF="a162">
-                <ANNOTATION_VALUE>GRAID noch unklar.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4278" ANNOTATION_REF="a4212">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a465" ANNOTATION_REF="a163">
-                <ANNOTATION_VALUE>"anggene" is a variation of "angge" / anggenip would be correct here as well</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a466" ANNOTATION_REF="a164">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a467" ANNOTATION_REF="a165">
-                <ANNOTATION_VALUE>BIS HIERHIN</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4279" ANNOTATION_REF="a4213">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5164" ANNOTATION_REF="a5160">
-                <ANNOTATION_VALUE>Reduplication ton~ton.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a469" ANNOTATION_REF="a167">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4280" ANNOTATION_REF="a4214">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a470" ANNOTATION_REF="a168">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a471" ANNOTATION_REF="a169">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4281" ANNOTATION_REF="a4215">
-                <ANNOTATION_VALUE>"wenonip" should be &lt;wenone&gt; </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4282" ANNOTATION_REF="a4216">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5165" ANNOTATION_REF="a5161">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5283" ANNOTATION_REF="a5277">
-                <ANNOTATION_VALUE>???</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a474" ANNOTATION_REF="a172">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4283" ANNOTATION_REF="a4217">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a475" ANNOTATION_REF="a173">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4284" ANNOTATION_REF="a4218">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5284" ANNOTATION_REF="a5278">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4285" ANNOTATION_REF="a4219">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a477" ANNOTATION_REF="a175">
-                <ANNOTATION_VALUE>Bracketed words are slips of the tongue.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a478" ANNOTATION_REF="a176">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4286" ANNOTATION_REF="a4220">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4287" ANNOTATION_REF="a4221">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a479" ANNOTATION_REF="a177">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4288" ANNOTATION_REF="a4222">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4289" ANNOTATION_REF="a4223">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a480" ANNOTATION_REF="a178">
-                <ANNOTATION_VALUE>Awin=eastern part of Muyu region </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a481" ANNOTATION_REF="a179">
-                <ANNOTATION_VALUE>amot ok bon = market </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a482" ANNOTATION_REF="a180">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4290" ANNOTATION_REF="a4224">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5221" ANNOTATION_REF="a5217">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4292" ANNOTATION_REF="a4226">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5222" ANNOTATION_REF="a5218">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a484" ANNOTATION_REF="a182">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4293" ANNOTATION_REF="a4227">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a485" ANNOTATION_REF="a183">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a486" ANNOTATION_REF="a184">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a487" ANNOTATION_REF="a185">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4294" ANNOTATION_REF="a4228">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4295" ANNOTATION_REF="a4229">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a488" ANNOTATION_REF="a186">
-                <ANNOTATION_VALUE>Benefactie object suffix on &lt;kolongge&gt;.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4296" ANNOTATION_REF="a4230">
-                <ANNOTATION_VALUE>BIS HIERHIN</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a489" ANNOTATION_REF="a187">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4297" ANNOTATION_REF="a4231">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a490" ANNOTATION_REF="a188">
-                <ANNOTATION_VALUE> "mengga" ananep balin, should be &lt;mengge&gt; ananep balin </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4298" ANNOTATION_REF="a4232">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a491" ANNOTATION_REF="a189">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4299" ANNOTATION_REF="a4233">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5285" ANNOTATION_REF="a5279">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a493" ANNOTATION_REF="a191">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a494" ANNOTATION_REF="a192">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a495" ANNOTATION_REF="a193">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3904" ANNOTATION_REF="a3880">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a496" ANNOTATION_REF="a194">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a497" ANNOTATION_REF="a195">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a498" ANNOTATION_REF="a196">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4300" ANNOTATION_REF="a4234">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a499" ANNOTATION_REF="a197">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4301" ANNOTATION_REF="a4235">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a500" ANNOTATION_REF="a198">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a501" ANNOTATION_REF="a199">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a502" ANNOTATION_REF="a200">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a503" ANNOTATION_REF="a201">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4302" ANNOTATION_REF="a4236">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a504" ANNOTATION_REF="a202">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4303" ANNOTATION_REF="a4237">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3905" ANNOTATION_REF="a3881">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a505" ANNOTATION_REF="a203">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3824" ANNOTATION_REF="a3822">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4304" ANNOTATION_REF="a4238">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a506" ANNOTATION_REF="a204">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a507" ANNOTATION_REF="a205">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3906" ANNOTATION_REF="a3882">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a508" ANNOTATION_REF="a206">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a509" ANNOTATION_REF="a207">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a510" ANNOTATION_REF="a208">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a511" ANNOTATION_REF="a209">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3907" ANNOTATION_REF="a3883">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4305" ANNOTATION_REF="a4239">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4306" ANNOTATION_REF="a4240">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a512" ANNOTATION_REF="a210">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4307" ANNOTATION_REF="a4241">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a513" ANNOTATION_REF="a211">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4308" ANNOTATION_REF="a4242">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a514" ANNOTATION_REF="a212">
-                <ANNOTATION_VALUE>mede = misspronounced, it should be "wene"</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4309" ANNOTATION_REF="a4243">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a515" ANNOTATION_REF="a213">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a516" ANNOTATION_REF="a214">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a517" ANNOTATION_REF="a215">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4750" ANNOTATION_REF="a4702">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4751" ANNOTATION_REF="a4703">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a518" ANNOTATION_REF="a216">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4752" ANNOTATION_REF="a4704">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4753" ANNOTATION_REF="a4705">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a519" ANNOTATION_REF="a217">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a520" ANNOTATION_REF="a218">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4754" ANNOTATION_REF="a4706">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3469" ANNOTATION_REF="a3463">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4755" ANNOTATION_REF="a4707">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4756" ANNOTATION_REF="a4708">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a522" ANNOTATION_REF="a220">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a523" ANNOTATION_REF="a221">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a524" ANNOTATION_REF="a222">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5336" ANNOTATION_REF="a5334">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a526" ANNOTATION_REF="a224">
-                <ANNOTATION_VALUE>okay = English </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4757" ANNOTATION_REF="a4709">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4758" ANNOTATION_REF="a4710">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4759" ANNOTATION_REF="a4711">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a527" ANNOTATION_REF="a225">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4760" ANNOTATION_REF="a4712">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a528" ANNOTATION_REF="a226">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4761" ANNOTATION_REF="a4713">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4762" ANNOTATION_REF="a4714">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a529" ANNOTATION_REF="a227">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3839" ANNOTATION_REF="a3837">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4763" ANNOTATION_REF="a4715">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a530" ANNOTATION_REF="a228">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3908" ANNOTATION_REF="a3884">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4764" ANNOTATION_REF="a4716">
-                <ANNOTATION_VALUE>INtj?</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a531" ANNOTATION_REF="a229">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3909" ANNOTATION_REF="a3885">
-                <ANNOTATION_VALUE>kede = kedo</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4765" ANNOTATION_REF="a4717">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a532" ANNOTATION_REF="a230">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a533" ANNOTATION_REF="a231">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a534" ANNOTATION_REF="a232">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3910" ANNOTATION_REF="a3886">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a535" ANNOTATION_REF="a233">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3911" ANNOTATION_REF="a3887">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3912" ANNOTATION_REF="a3888">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a536" ANNOTATION_REF="a234">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a537" ANNOTATION_REF="a235">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3913" ANNOTATION_REF="a3889">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4766" ANNOTATION_REF="a4718">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a538" ANNOTATION_REF="a236">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4767" ANNOTATION_REF="a4719">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4768" ANNOTATION_REF="a4720">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4769" ANNOTATION_REF="a4721">
-                <ANNOTATION_VALUE>kane 'take' has another meaning here; kane eya - turn around here, move a little here</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a539" ANNOTATION_REF="a237">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a540" ANNOTATION_REF="a238">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4770" ANNOTATION_REF="a4722">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a541" ANNOTATION_REF="a239">
-                <ANNOTATION_VALUE>kaman = the same as keman </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a542" ANNOTATION_REF="a240">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3914" ANNOTATION_REF="a3890">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a543" ANNOTATION_REF="a241">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4149" ANNOTATION_REF="a4147">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a544" ANNOTATION_REF="a242">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5364" ANNOTATION_REF="a5362">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a546" ANNOTATION_REF="a244">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a547" ANNOTATION_REF="a245">
-                <ANNOTATION_VALUE>Translation missing.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4771" ANNOTATION_REF="a4723">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5389" ANNOTATION_REF="a5387">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4772" ANNOTATION_REF="a4724">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5413" ANNOTATION_REF="a5409">
-                <ANNOTATION_VALUE>kedo koke - get into</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5414" ANNOTATION_REF="a5410">
-                <ANNOTATION_VALUE>koloden = variation of keloden.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a551" ANNOTATION_REF="a249">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a552" ANNOTATION_REF="a250">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a553" ANNOTATION_REF="a251">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3861" ANNOTATION_REF="a3859">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a554" ANNOTATION_REF="a252">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a555" ANNOTATION_REF="a253">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a556" ANNOTATION_REF="a254">
-                <ANNOTATION_VALUE>daman = taman </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3470" ANNOTATION_REF="a3464">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a558" ANNOTATION_REF="a256">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4773" ANNOTATION_REF="a4725">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a559" ANNOTATION_REF="a257">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a560" ANNOTATION_REF="a258">
-                <ANNOTATION_VALUE>'ombet' - related to nakon</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a561" ANNOTATION_REF="a259">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a562" ANNOTATION_REF="a260">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a563" ANNOTATION_REF="a261">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a564" ANNOTATION_REF="a262">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3915" ANNOTATION_REF="a3891">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a565" ANNOTATION_REF="a263">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a566" ANNOTATION_REF="a264">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a3471" ANNOTATION_REF="a3465">
-                <ANNOTATION_VALUE>ananup an = variation from "ananup"</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a568" ANNOTATION_REF="a266">
-                <ANNOTATION_VALUE>a - unspecific number</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a569" ANNOTATION_REF="a267">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a570" ANNOTATION_REF="a268">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a571" ANNOTATION_REF="a269">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5479" ANNOTATION_REF="a5477">
-                <ANNOTATION_VALUE>"mong kelanon" has a fixed meaning for 'bees and other dangerous insects'</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a573" ANNOTATION_REF="a271">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a574" ANNOTATION_REF="a272">
-                <ANNOTATION_VALUE>yinggi = variation of yiminggi = to hang </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a575" ANNOTATION_REF="a273">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5050" ANNOTATION_REF="a5032">
-                <ANNOTATION_VALUE>'wane' belong to keli (next segment)</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5051" ANNOTATION_REF="a5033">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a576" ANNOTATION_REF="a274">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5052" ANNOTATION_REF="a5034">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a577" ANNOTATION_REF="a275">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a578" ANNOTATION_REF="a276">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a579" ANNOTATION_REF="a277">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a580" ANNOTATION_REF="a278">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5053" ANNOTATION_REF="a5035">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a581" ANNOTATION_REF="a279">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a582" ANNOTATION_REF="a280">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5054" ANNOTATION_REF="a5036">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a583" ANNOTATION_REF="a281">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a584" ANNOTATION_REF="a282">
-                <ANNOTATION_VALUE>koloden = keluden; she was cut into halves; one half = soil beetle; one half = spider</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a585" ANNOTATION_REF="a283">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a586" ANNOTATION_REF="a284">
-                <ANNOTATION_VALUE>'wane' belongs to keli</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a587" ANNOTATION_REF="a285">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a588" ANNOTATION_REF="a286">
-                <ANNOTATION_VALUE>'a' here not plural but continuation</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a589" ANNOTATION_REF="a287">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a590" ANNOTATION_REF="a288">
-                <ANNOTATION_VALUE>He meant the earthworm, not the spider. 'wane' belongs to keli.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a591" ANNOTATION_REF="a289">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a592" ANNOTATION_REF="a290">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a593" ANNOTATION_REF="a291">
-                <ANNOTATION_VALUE>ooloolok = the singing of the beetle of the soil</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5055" ANNOTATION_REF="a5037">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5056" ANNOTATION_REF="a5038">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a594" ANNOTATION_REF="a292">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4168" ANNOTATION_REF="a4164">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a595" ANNOTATION_REF="a293">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a4169" ANNOTATION_REF="a4165">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a596" ANNOTATION_REF="a294">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a597" ANNOTATION_REF="a295">
-                <ANNOTATION_VALUE>batotenek = kookaburra bird </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a598" ANNOTATION_REF="a296">
-                <ANNOTATION_VALUE>the last word = yongge kemen </ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a599" ANNOTATION_REF="a297">
-                <ANNOTATION_VALUE>Wordplay: &lt;baat&gt; 'brother-in-law' is first syllable of the bird's name: batotenek.</ANNOTATION_VALUE>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a600" ANNOTATION_REF="a298">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5057" ANNOTATION_REF="a5039">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a601" ANNOTATION_REF="a299">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a5058" ANNOTATION_REF="a5040">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a602" ANNOTATION_REF="a300">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a603" ANNOTATION_REF="a301">
-                <ANNOTATION_VALUE/>
-            </REF_ANNOTATION>
-        </ANNOTATION>
-        <ANNOTATION>
-            <REF_ANNOTATION ANNOTATION_ID="a604" ANNOTATION_REF="a302">
-                <ANNOTATION_VALUE/>
             </REF_ANNOTATION>
         </ANNOTATION>
     </TIER>
@@ -30410,6 +29232,1184 @@
         </ANNOTATION>
         <ANNOTATION>
             <REF_ANNOTATION ANNOTATION_ID="a7008" ANNOTATION_REF="a1934">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+    </TIER>
+    <TIER DEFAULT_LOCALE="de" LINGUISTIC_TYPE_REF="note"
+        PARENT_REF="tx@S1" TIER_ID="note@S1">
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4277" ANNOTATION_REF="a4211">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a454" ANNOTATION_REF="a152">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a455" ANNOTATION_REF="a153">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a456" ANNOTATION_REF="a154">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a457" ANNOTATION_REF="a155">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a458" ANNOTATION_REF="a156">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a459" ANNOTATION_REF="a157">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a460" ANNOTATION_REF="a158">
+                <ANNOTATION_VALUE>GRAID noch unklar.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a461" ANNOTATION_REF="a159">
+                <ANNOTATION_VALUE>Lexeme wirklich so aufgeteilt? Nicht ein lexikalisiertes Verb?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a462" ANNOTATION_REF="a160">
+                <ANNOTATION_VALUE>"wine komba" should be &lt;wine kombe&gt;</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a463" ANNOTATION_REF="a161">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a464" ANNOTATION_REF="a162">
+                <ANNOTATION_VALUE>GRAID noch unklar.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4278" ANNOTATION_REF="a4212">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a465" ANNOTATION_REF="a163">
+                <ANNOTATION_VALUE>"anggene" is a variation of "angge" / anggenip would be correct here as well</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a466" ANNOTATION_REF="a164">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a467" ANNOTATION_REF="a165">
+                <ANNOTATION_VALUE>BIS HIERHIN</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4279" ANNOTATION_REF="a4213">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5164" ANNOTATION_REF="a5160">
+                <ANNOTATION_VALUE>Reduplication ton~ton.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a469" ANNOTATION_REF="a167">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4280" ANNOTATION_REF="a4214">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a470" ANNOTATION_REF="a168">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a471" ANNOTATION_REF="a169">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4281" ANNOTATION_REF="a4215">
+                <ANNOTATION_VALUE>"wenonip" should be &lt;wenone&gt; </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4282" ANNOTATION_REF="a4216">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5165" ANNOTATION_REF="a5161">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5283" ANNOTATION_REF="a5277">
+                <ANNOTATION_VALUE>???</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a474" ANNOTATION_REF="a172">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4283" ANNOTATION_REF="a4217">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a475" ANNOTATION_REF="a173">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4284" ANNOTATION_REF="a4218">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5284" ANNOTATION_REF="a5278">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4285" ANNOTATION_REF="a4219">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a477" ANNOTATION_REF="a175">
+                <ANNOTATION_VALUE>Bracketed words are slips of the tongue.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a478" ANNOTATION_REF="a176">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4286" ANNOTATION_REF="a4220">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4287" ANNOTATION_REF="a4221">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a479" ANNOTATION_REF="a177">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4288" ANNOTATION_REF="a4222">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4289" ANNOTATION_REF="a4223">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a480" ANNOTATION_REF="a178">
+                <ANNOTATION_VALUE>Awin=eastern part of Muyu region </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a481" ANNOTATION_REF="a179">
+                <ANNOTATION_VALUE>amot ok bon = market </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a482" ANNOTATION_REF="a180">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4290" ANNOTATION_REF="a4224">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5221" ANNOTATION_REF="a5217">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4292" ANNOTATION_REF="a4226">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5222" ANNOTATION_REF="a5218">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a484" ANNOTATION_REF="a182">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4293" ANNOTATION_REF="a4227">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a485" ANNOTATION_REF="a183">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a486" ANNOTATION_REF="a184">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a487" ANNOTATION_REF="a185">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4294" ANNOTATION_REF="a4228">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4295" ANNOTATION_REF="a4229">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a488" ANNOTATION_REF="a186">
+                <ANNOTATION_VALUE>Benefactie object suffix on &lt;kolongge&gt;.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4296" ANNOTATION_REF="a4230">
+                <ANNOTATION_VALUE>BIS HIERHIN</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a489" ANNOTATION_REF="a187">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4297" ANNOTATION_REF="a4231">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a490" ANNOTATION_REF="a188">
+                <ANNOTATION_VALUE> "mengga" ananep balin, should be &lt;mengge&gt; ananep balin </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4298" ANNOTATION_REF="a4232">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a491" ANNOTATION_REF="a189">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4299" ANNOTATION_REF="a4233">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5285" ANNOTATION_REF="a5279">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a493" ANNOTATION_REF="a191">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a494" ANNOTATION_REF="a192">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a495" ANNOTATION_REF="a193">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3904" ANNOTATION_REF="a3880">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a496" ANNOTATION_REF="a194">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a497" ANNOTATION_REF="a195">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a498" ANNOTATION_REF="a196">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4300" ANNOTATION_REF="a4234">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a499" ANNOTATION_REF="a197">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4301" ANNOTATION_REF="a4235">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a500" ANNOTATION_REF="a198">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a501" ANNOTATION_REF="a199">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a502" ANNOTATION_REF="a200">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a503" ANNOTATION_REF="a201">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4302" ANNOTATION_REF="a4236">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a504" ANNOTATION_REF="a202">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4303" ANNOTATION_REF="a4237">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3905" ANNOTATION_REF="a3881">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a505" ANNOTATION_REF="a203">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3824" ANNOTATION_REF="a3822">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4304" ANNOTATION_REF="a4238">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a506" ANNOTATION_REF="a204">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a507" ANNOTATION_REF="a205">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3906" ANNOTATION_REF="a3882">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a508" ANNOTATION_REF="a206">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a509" ANNOTATION_REF="a207">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a510" ANNOTATION_REF="a208">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a511" ANNOTATION_REF="a209">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3907" ANNOTATION_REF="a3883">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4305" ANNOTATION_REF="a4239">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4306" ANNOTATION_REF="a4240">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a512" ANNOTATION_REF="a210">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4307" ANNOTATION_REF="a4241">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a513" ANNOTATION_REF="a211">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4308" ANNOTATION_REF="a4242">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a514" ANNOTATION_REF="a212">
+                <ANNOTATION_VALUE>mede = misspronounced, it should be "wene"</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4309" ANNOTATION_REF="a4243">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a515" ANNOTATION_REF="a213">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a516" ANNOTATION_REF="a214">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a517" ANNOTATION_REF="a215">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4750" ANNOTATION_REF="a4702">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4751" ANNOTATION_REF="a4703">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a518" ANNOTATION_REF="a216">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4752" ANNOTATION_REF="a4704">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4753" ANNOTATION_REF="a4705">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a519" ANNOTATION_REF="a217">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a520" ANNOTATION_REF="a218">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4754" ANNOTATION_REF="a4706">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3469" ANNOTATION_REF="a3463">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4755" ANNOTATION_REF="a4707">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4756" ANNOTATION_REF="a4708">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a522" ANNOTATION_REF="a220">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a523" ANNOTATION_REF="a221">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a524" ANNOTATION_REF="a222">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5336" ANNOTATION_REF="a5334">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a526" ANNOTATION_REF="a224">
+                <ANNOTATION_VALUE>okay = English </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4757" ANNOTATION_REF="a4709">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4758" ANNOTATION_REF="a4710">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4759" ANNOTATION_REF="a4711">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a527" ANNOTATION_REF="a225">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4760" ANNOTATION_REF="a4712">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a528" ANNOTATION_REF="a226">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4761" ANNOTATION_REF="a4713">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4762" ANNOTATION_REF="a4714">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a529" ANNOTATION_REF="a227">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3839" ANNOTATION_REF="a3837">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4763" ANNOTATION_REF="a4715">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a530" ANNOTATION_REF="a228">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3908" ANNOTATION_REF="a3884">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4764" ANNOTATION_REF="a4716">
+                <ANNOTATION_VALUE>INtj?</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a531" ANNOTATION_REF="a229">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3909" ANNOTATION_REF="a3885">
+                <ANNOTATION_VALUE>kede = kedo</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4765" ANNOTATION_REF="a4717">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a532" ANNOTATION_REF="a230">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a533" ANNOTATION_REF="a231">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a534" ANNOTATION_REF="a232">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3910" ANNOTATION_REF="a3886">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a535" ANNOTATION_REF="a233">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3911" ANNOTATION_REF="a3887">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3912" ANNOTATION_REF="a3888">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a536" ANNOTATION_REF="a234">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a537" ANNOTATION_REF="a235">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3913" ANNOTATION_REF="a3889">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4766" ANNOTATION_REF="a4718">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a538" ANNOTATION_REF="a236">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4767" ANNOTATION_REF="a4719">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4768" ANNOTATION_REF="a4720">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4769" ANNOTATION_REF="a4721">
+                <ANNOTATION_VALUE>kane 'take' has another meaning here; kane eya - turn around here, move a little here</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a539" ANNOTATION_REF="a237">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a540" ANNOTATION_REF="a238">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4770" ANNOTATION_REF="a4722">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a541" ANNOTATION_REF="a239">
+                <ANNOTATION_VALUE>kaman = the same as keman </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a542" ANNOTATION_REF="a240">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3914" ANNOTATION_REF="a3890">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a543" ANNOTATION_REF="a241">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4149" ANNOTATION_REF="a4147">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a544" ANNOTATION_REF="a242">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5364" ANNOTATION_REF="a5362">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a546" ANNOTATION_REF="a244">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a547" ANNOTATION_REF="a245">
+                <ANNOTATION_VALUE>Translation missing.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4771" ANNOTATION_REF="a4723">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5389" ANNOTATION_REF="a5387">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4772" ANNOTATION_REF="a4724">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5413" ANNOTATION_REF="a5409">
+                <ANNOTATION_VALUE>kedo koke - get into</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5414" ANNOTATION_REF="a5410">
+                <ANNOTATION_VALUE>koloden = variation of keloden.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a551" ANNOTATION_REF="a249">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a552" ANNOTATION_REF="a250">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a553" ANNOTATION_REF="a251">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3861" ANNOTATION_REF="a3859">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a554" ANNOTATION_REF="a252">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a555" ANNOTATION_REF="a253">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a556" ANNOTATION_REF="a254">
+                <ANNOTATION_VALUE>daman = taman </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3470" ANNOTATION_REF="a3464">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a558" ANNOTATION_REF="a256">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4773" ANNOTATION_REF="a4725">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a559" ANNOTATION_REF="a257">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a560" ANNOTATION_REF="a258">
+                <ANNOTATION_VALUE>'ombet' - related to nakon</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a561" ANNOTATION_REF="a259">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a562" ANNOTATION_REF="a260">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a563" ANNOTATION_REF="a261">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a564" ANNOTATION_REF="a262">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3915" ANNOTATION_REF="a3891">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a565" ANNOTATION_REF="a263">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a566" ANNOTATION_REF="a264">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a3471" ANNOTATION_REF="a3465">
+                <ANNOTATION_VALUE>ananup an = variation from "ananup"</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a568" ANNOTATION_REF="a266">
+                <ANNOTATION_VALUE>a - unspecific number</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a569" ANNOTATION_REF="a267">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a570" ANNOTATION_REF="a268">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a571" ANNOTATION_REF="a269">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5479" ANNOTATION_REF="a5477">
+                <ANNOTATION_VALUE>"mong kelanon" has a fixed meaning for 'bees and other dangerous insects'</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a573" ANNOTATION_REF="a271">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a574" ANNOTATION_REF="a272">
+                <ANNOTATION_VALUE>yinggi = variation of yiminggi = to hang </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a575" ANNOTATION_REF="a273">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5050" ANNOTATION_REF="a5032">
+                <ANNOTATION_VALUE>'wane' belong to keli (next segment)</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5051" ANNOTATION_REF="a5033">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a576" ANNOTATION_REF="a274">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5052" ANNOTATION_REF="a5034">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a577" ANNOTATION_REF="a275">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a578" ANNOTATION_REF="a276">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a579" ANNOTATION_REF="a277">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a580" ANNOTATION_REF="a278">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5053" ANNOTATION_REF="a5035">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a581" ANNOTATION_REF="a279">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a582" ANNOTATION_REF="a280">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5054" ANNOTATION_REF="a5036">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a583" ANNOTATION_REF="a281">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a584" ANNOTATION_REF="a282">
+                <ANNOTATION_VALUE>koloden = keluden; she was cut into halves; one half = soil beetle; one half = spider</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a585" ANNOTATION_REF="a283">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a586" ANNOTATION_REF="a284">
+                <ANNOTATION_VALUE>'wane' belongs to keli</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a587" ANNOTATION_REF="a285">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a588" ANNOTATION_REF="a286">
+                <ANNOTATION_VALUE>'a' here not plural but continuation</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a589" ANNOTATION_REF="a287">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a590" ANNOTATION_REF="a288">
+                <ANNOTATION_VALUE>He meant the earthworm, not the spider. 'wane' belongs to keli.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a591" ANNOTATION_REF="a289">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a592" ANNOTATION_REF="a290">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a593" ANNOTATION_REF="a291">
+                <ANNOTATION_VALUE>ooloolok = the singing of the beetle of the soil</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5055" ANNOTATION_REF="a5037">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5056" ANNOTATION_REF="a5038">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a594" ANNOTATION_REF="a292">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4168" ANNOTATION_REF="a4164">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a595" ANNOTATION_REF="a293">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a4169" ANNOTATION_REF="a4165">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a596" ANNOTATION_REF="a294">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a597" ANNOTATION_REF="a295">
+                <ANNOTATION_VALUE>batotenek = kookaburra bird </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a598" ANNOTATION_REF="a296">
+                <ANNOTATION_VALUE>the last word = yongge kemen </ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a599" ANNOTATION_REF="a297">
+                <ANNOTATION_VALUE>Wordplay: &lt;baat&gt; 'brother-in-law' is first syllable of the bird's name: batotenek.</ANNOTATION_VALUE>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a600" ANNOTATION_REF="a298">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5057" ANNOTATION_REF="a5039">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a601" ANNOTATION_REF="a299">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a5058" ANNOTATION_REF="a5040">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a602" ANNOTATION_REF="a300">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a603" ANNOTATION_REF="a301">
+                <ANNOTATION_VALUE/>
+            </REF_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <REF_ANNOTATION ANNOTATION_ID="a604" ANNOTATION_REF="a302">
                 <ANNOTATION_VALUE/>
             </REF_ANNOTATION>
         </ANNOTATION>

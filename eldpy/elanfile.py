@@ -271,8 +271,8 @@ class ElanFile:
             accepted_languages.append("es")
         if french:
             accepted_languages.append("fr")
-        if indonesian:
-            accepted_languages.append("id")
+        # if indonesian: #indonesian causes some random errors for muyu
+        #     accepted_languages.append("id")
         # if portuguese:#portuguese throws falls positives
         #     accepted_languages.append("pt")
         if russian:
@@ -410,17 +410,22 @@ class ElanFile:
             for tier in vernaculartiers:
                 tierID = tier.attrib["TIER_ID"]
                 wordlist = self.tier_to_wordlist(tier)  # FIXME avoid duplication
+                print(1)
                 wordlist_with_IDs = self.tier_to_ID_wordlist(tier)
                 if wordlist == []:
                     continue
+                print(2)
                 if self.is_ID_tier(wordlist):
                     # print("skipping ID tier")
                     continue
+                print(3)
                 if self.is_major_language(wordlist, spanish=True, french=True, indonesian=True, portuguese=True, russian=True):
                     continue
+                print(4)
                 time_in_seconds.append(self.get_seconds_from_tier(tier))
                 transcriptions[candidate][tierID] = wordlist
                 transcriptions_with_IDs[candidate][tierID] = wordlist_with_IDs
+            # pprint.pprint(transcriptions)
         self.secondstranscribed = sum(
             time_in_seconds
         )  # FIXME make sure that only filled annotations are counted. Add negative test
@@ -522,7 +527,7 @@ class ElanFile:
             for tierID in self.transcriptions[tier_type]
         ]
 
-    def get_cldfs(self, matrix=False):
+    def get_cldfs(self, provided_gloss_tier_name=False, matrix=False):
         lines = []
         tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_IDs)
         d = {}
@@ -580,11 +585,17 @@ class ElanFile:
                 distinct_glosses = list(set(tier_glosses))
                 ratio = len(distinct_glosses)/len(tier_glosses)
                 print(f"  tier {tier} has {ratio:.4f} gloss diversity")
+                if provided_gloss_tier_name and tier == provided_gloss_tier_name:
+                    best_tier_ratio = 100
+                    tiername_to_retain = tier
+                    tier_to_retain = glosses_d[type_candidate][tier]
+                    break
                 if ratio > best_tier_ratio:
+                # if True:
                     best_tier_ratio = ratio
                     tiername_to_retain = tier
                     tier_to_retain = glosses_d[type_candidate][tier]
-        print(f"  retaining {tiername_to_retain} as the tier with most gloss diversity")
+        print(f"  retaining {tiername_to_retain} as the tier with most gloss diversity ({best_tier_ratio})")
         glosses = tier_to_retain
         for g in glosses:
             if g == {}:
@@ -668,6 +679,7 @@ class ElanFile:
                 ID, ""
             )  # FIXME check whether any comments are discarded which should be saved
             # ignore completely empty annotations
+            # print(primary_text_cell,repr(vernacular_cell),repr(gloss_cell),translation_cell)
             if (
                 primary_text_cell + vernacular_cell + gloss_cell + translation_cell
             ).strip() == "":
