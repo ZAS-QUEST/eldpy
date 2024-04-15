@@ -410,18 +410,14 @@ class ElanFile:
             for tier in vernaculartiers:
                 tierID = tier.attrib["TIER_ID"]
                 wordlist = self.tier_to_wordlist(tier)  # FIXME avoid duplication
-                print(1)
                 wordlist_with_IDs = self.tier_to_ID_wordlist(tier)
                 if wordlist == []:
                     continue
-                print(2)
                 if self.is_ID_tier(wordlist):
                     # print("skipping ID tier")
                     continue
-                print(3)
                 if self.is_major_language(wordlist, spanish=True, french=True, indonesian=True, portuguese=True, russian=True):
                     continue
-                print(4)
                 time_in_seconds.append(self.get_seconds_from_tier(tier))
                 transcriptions[candidate][tierID] = wordlist
                 transcriptions_with_IDs[candidate][tierID] = wordlist_with_IDs
@@ -539,23 +535,24 @@ class ElanFile:
 
         tmp_translations_dict = copy.deepcopy(self.translations_with_IDs)
         try:
-            tier_to_retain = None
-            print(f"found {len(tmp_translations_dict)} possible gloss types: {list(tmp_translations_dict.keys())}")
+            tier_to_retain = {}
+            tiername_to_retain = ''
+            # print(f"found {len(tmp_translations_dict)} possible gloss types: {list(tmp_translations_dict.keys())}")
             max_charcount = 0
             for type_candidate in tmp_translations_dict:
-                print(f" found {len(tmp_translations_dict[type_candidate])} possible tiers in {type_candidate}: {list(tmp_translations_dict[type_candidate])}")
+                # print(f" found {len(tmp_translations_dict[type_candidate])} possible tiers in {type_candidate}: {list(tmp_translations_dict[type_candidate])}")
                 for tier in tmp_translations_dict[type_candidate]:
                     # print(tier)
                     # pprint.pprint(tmp_translations_dict[type_candidate][tier].keys())
                     charcount = 0
                     for top_element in tmp_translations_dict[type_candidate][tier]:
                         charcount += len(tmp_translations_dict[type_candidate][tier][top_element])
-                    print(f"  tier {tier} has {charcount} characters. Current maximum is {max_charcount}")
+                    # print(f"  tier {tier} has {charcount} characters. Current maximum is {max_charcount}")
                     if charcount >= max_charcount:
                         max_charcount = charcount
                         tiername_to_retain = tier
                         tier_to_retain = tmp_translations_dict[type_candidate][tier]
-            print(f"  retaining {tiername_to_retain} as the tier with most characters ({max_charcount})")
+            # print(f"  retaining {tiername_to_retain} as the tier with most characters ({max_charcount})")
             translation_ID_dict = tier_to_retain
         except ValueError:
             raise EldpyError(f"No translations found in {self.filename}")
@@ -569,13 +566,15 @@ class ElanFile:
             comments_ID_dict = tmp_comments_dict.popitem()[1].popitem()[1]
         except KeyError:
             comments_ID_dict = {}
-
-        glosses_d = copy.deepcopy(self.glossed_sentences)
+        try:
+            glosses_d = copy.deepcopy(self.glossed_sentences)
+        except AttributeError:
+            raise EldpyError(f"No glosses found in {self.filename}. Try providing the tier type of the gloss tier explicitly")
         best_tier_ratio = 0
-        tier_to_retain = None
-        print(f"found {len(glosses_d)} possible gloss types")
+        tier_to_retain = {}
+        # print(f"found {len(glosses_d)} possible gloss types")
         for type_candidate in glosses_d:
-            print(f" found {len(glosses_d[type_candidate])} possible tiers in {type_candidate}")
+            # print(f" found {len(glosses_d[type_candidate])} possible tiers in {type_candidate}")
             for tier in glosses_d[type_candidate]:
                 tier_glosses = []
                 for annotation in glosses_d[type_candidate][tier]:
@@ -583,20 +582,24 @@ class ElanFile:
                         glosses = [x[1] for x in annotation[element]]
                         tier_glosses += glosses
                 distinct_glosses = list(set(tier_glosses))
-                ratio = len(distinct_glosses)/len(tier_glosses)
-                print(f"  tier {tier} has {ratio:.4f} gloss diversity")
+                try:
+                    ratio = len(distinct_glosses)/len(tier_glosses)
+                except ZeroDivisionError:
+                    ratio = 0
+                # print(f"  tier {tier} has {ratio:.4f} gloss diversity")
                 if provided_gloss_tier_name and tier == provided_gloss_tier_name:
                     best_tier_ratio = 100
                     tiername_to_retain = tier
                     tier_to_retain = glosses_d[type_candidate][tier]
                     break
                 if ratio > best_tier_ratio:
-                # if True:
                     best_tier_ratio = ratio
                     tiername_to_retain = tier
                     tier_to_retain = glosses_d[type_candidate][tier]
-        print(f"  retaining {tiername_to_retain} as the tier with most gloss diversity ({best_tier_ratio})")
+        # print(f"  retaining {tiername_to_retain} as the tier with most gloss diversity ({best_tier_ratio})")
         glosses = tier_to_retain
+        if glosses is None:
+            raise EldpyError(f"Glosses could not be retrieved from {self.filename}")
         for g in glosses:
             if g == {}:
                 return ""
@@ -650,7 +653,7 @@ class ElanFile:
                 integer_part = ID.replace("ann", "").replace("a", "")
                 try:
                     next_integer = int(integer_part) + 1
-                    print(next_integer)
+                    # print(next_integer)
                 except ValueError:
                     logger.warning(
                         "translation",
@@ -671,10 +674,10 @@ class ElanFile:
                             "be retrieved",
                         )
                         translation = "TRANSLATION NOT RETRIEVED"
-            primary_text_cell = primary_text
-            vernacular_cell = "\t".join(vernacular_subcells)
-            gloss_cell = "\t".join(gloss_subcells)
-            translation_cell = translation
+            primary_text_cell = primary_text or ""
+            vernacular_cell = "\t".join(vernacular_subcells) or ""
+            gloss_cell = "\t".join(gloss_subcells) or ""
+            translation_cell = translation or ""
             comment = comments_ID_dict.get(
                 ID, ""
             )  # FIXME check whether any comments are discarded which should be saved
@@ -791,7 +794,8 @@ class ElanFile:
 
         root = self.root
         if root is None:
-            return {}
+            self.glossed_sentences = {}
+            return
         # glosscandidates = constants.ACCEPTABLE_GLOSS_TIER_TYPES
         mapping = get_annotation_text_mapping(root)
         retrieved_glosstiers = {}

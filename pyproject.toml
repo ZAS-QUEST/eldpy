@@ -1,7 +1,7 @@
 [project]
 name = "eldpy"
 description = "A Python package to download and analyze data from endangered language archives"
-version = "0.0.10"
+version = "0.0.12"
 authors = [
     { name = "Sebastian Nordhoff", email = "sebastian.nordhoff@glottotopia.de" }
 ]
