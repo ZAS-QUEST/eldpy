@@ -5,10 +5,10 @@ import sys
 # from collections import OrderedDict
 
 if __name__ == "__main__":
-    # try:
-    workingdir = sys.argv[1]
-    # except IndexError:
-    #     workingdir = "."
+    try:
+        workingdir = sys.argv[1]
+    except IndexError:
+        workingdir = "."
     eafs = glob.glob(f"{workingdir}/*eaf")
     eafs.sort()
     # out = open("eaf_overview.csv", "w")
@@ -29,6 +29,8 @@ transcription
 
 
 gloss
+
+
 
 
 
@@ -55,11 +57,14 @@ tiername
 distinct
 repetition
 zipf1
-zipf2""".split("\n")
+zipf2
+empty_segments
+total_segments
+ratio_empty""".split("\n")
     # out.write("\t".join(line1)+"\n"+"\t".join(line2)+"\n")
     lines = [line2]
     for i, eaf in enumerate(eafs):
-        print(i)
+        # print(i)
         ef = ElanFile(eaf, "www")
         ef.populate_transcriptions()
         transcriptions = ef.get_transcriptions()
@@ -72,8 +77,8 @@ zipf2""".split("\n")
     data = lines
     df = pd.DataFrame(data, columns=line2)
 
-
-    writer = pd.ExcelWriter('test.xls', engine='xlsxwriter')
+    outfilename = "eaf_overview.xls"
+    writer = pd.ExcelWriter('eaf_overview.xls', engine='xlsxwriter')
     df.to_excel(writer, sheet_name='Sheet1', index=False,header=False,startrow=0)
 
     workbook = writer.book
@@ -88,5 +93,6 @@ zipf2""".split("\n")
     worksheet.set_column(9,15, cell_format=green_bg)
     worksheet.set_column(16,22, cell_format=blue_bg)
     writer._save()
+    print(f"output written to {outfilename}")
 
 

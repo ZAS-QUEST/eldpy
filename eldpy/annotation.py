@@ -63,7 +63,7 @@ class Annotation:
             except KeyError:
                 pass
 
-    def get_duration(self,include_void_annotations=True):
+    def get_duration(self, include_void_annotations=True):
         """
         compute the duration by subtracting start times from end time
         """

@@ -353,8 +353,13 @@ class ElanFile:
             for aa in t.findall("./ANNOTATION")
             if aa.text is not None
         ]
-        timelistannno = [anno.get_duration(include_void_annotations=False) for anno in self.get_annotation_list(t)]
-        return sum(timelist + timelistannno) / 1000
+        timelistanno = []
+        for anno in self.get_annotation_list(t):
+            timelistanno.append(anno.get_duration(include_void_annotations=False))
+        # cleaned_duration_list = timelistanno
+        #FIXME crude way to remove duplicates stemming from symbolically associated annotations inflating the time count
+        cleaned_duration_list = list(set(timelistanno))
+        return sum(cleaned_duration_list) / 1000
 
     def has_minimal_translation_length(self, t, tierID):
         """
@@ -385,6 +390,22 @@ class ElanFile:
         self.populate_translations(candidates=translationcandidates, spanish=spanish, french=french, portuguese=portuguese, indonesian=indonesian, russian=russian)
         self.populate_glosses(candidates=glosscandidates)
         self.populate_comments(candidates=commentcandidates)
+
+
+    def get_segment_counts(self):
+        root = self.root
+        querystring = ".//TIER"
+        alltiers = root.findall(querystring)
+        segment_count = 0
+        empty_segment_count = 0
+        for tier in alltiers:
+            wordlist = self.tier_to_ID_wordlist(tier)
+            empty_segments = [x for x in wordlist if x[1] == ""]
+            segment_count += len(wordlist)
+            empty_segment_count += len(empty_segments)
+        return empty_segment_count, segment_count
+
+
 
     def populate_transcriptions(
         self, candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
@@ -418,15 +439,18 @@ class ElanFile:
                     continue
                 if self.is_major_language(wordlist, spanish=True, french=True, indonesian=True, portuguese=True, russian=True):
                     continue
-                time_in_seconds.append(self.get_seconds_from_tier(tier))
+                newseconds = self.get_seconds_from_tier(tier)
+                time_in_seconds.append(newseconds)
+                print(candidate, tier, newseconds)
                 transcriptions[candidate][tierID] = wordlist
                 transcriptions_with_IDs[candidate][tierID] = wordlist_with_IDs
             # pprint.pprint(transcriptions)
-        self.secondstranscribed = sum(
+        self.secondstranscribed += sum(
             time_in_seconds
         )  # FIXME make sure that only filled annotations are counted. Add negative test
         self.transcriptions = transcriptions
         self.transcriptions_with_IDs = transcriptions_with_IDs
+
 
     def populate_translations(
         self, candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES, spanish=False, french=True, indonesian=False, portuguese=False, russian=False
@@ -467,7 +491,7 @@ class ElanFile:
                     translations_with_IDs[candidate][tierID] = {
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
-        self.secondstranslated = sum(
+        self.secondstranslated += sum(
             time_in_seconds
         )  # FIXME make sure that only filled annotations are counted. Add negative test
         self.translations = translations
@@ -915,6 +939,10 @@ class ElanFile:
         aas = root.findall(".//ALIGNABLE_ANNOTATION")
         return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
 
+
+
+
+
     def print_overview(self, writer=sys.stdout):  # FIXME print tier ID
         filename = self.path.split("/")[-1]
         # outputstring = f"{filename[:4]}...{filename[-8:-4]}"
@@ -1029,6 +1057,11 @@ class ElanFile:
             transcribed_word_count = -1
         if distinct_glosses == {}:
             distinct_glosses = {None: True}
+        empty_segment_count, segment_count = self.get_segment_counts()
+        try:
+            empty_segment_ratio = empty_segment_count/segment_count
+        except ZeroDivisionError:
+            empty_segment_ratio = -1
         outputstring = "\t".join(
             [
                 filename,
@@ -1059,6 +1092,9 @@ class ElanFile:
                 str(round(gloss_count / len(distinct_glosses), 2)),
                 str(round(zipf1, 2)),
                 str(round(zipf2, 2)),
+                str(empty_segment_count),
+                str(segment_count),
+                str(round(empty_segment_ratio, 3))
             ]
         )
         writer.write(f"{outputstring}\n")
@@ -1116,6 +1152,8 @@ class Tier:
             if key not in constants.LGRLIST:
                 del result[key]
         return result
+
+
 
 class EldpyError(Exception):
     pass
