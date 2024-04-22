@@ -19,12 +19,14 @@ import sys
 from eldpy import annotation
 from eldpy import constants
 
+
+logging.basicConfig(filename='eldpy.log', level=logging.WARNING)
 logger = logging.getLogger("eldpy")
-logger.setLevel(logging.ERROR)
 
 
 class ElanFile:
     def __init__(self, path, url, namespace=None):
+        logger.info("starting init")
         self.path = path
         self.ID = self.path.split("/")[-1]
         self.url = url
@@ -40,6 +42,7 @@ class ElanFile:
         self.translations = {}
         self.translations_with_IDs = {}
         self.comments = {}
+        self.comments_with_IDs = {}
         self.fingerprint = None
         self.secondstranscribed = 0
         self.secondstranslated = 0
@@ -255,6 +258,7 @@ class ElanFile:
                     )
                     result.append(anno)
                 except ValueError:
+                    #there is no text
                     continue
         return result
 
@@ -293,7 +297,7 @@ class ElanFile:
             and toplanguage.prob > self.LANGDETECTTHRESHOLD
         ):
             if logtype == "True":
-                logger.warning(
+                logger.info(
                     'ignored vernacular tier with "%s" language content at %.2f%% probability ("%s ...")'
                     % (
                         toplanguage.lang,
@@ -311,7 +315,7 @@ class ElanFile:
         if toplanguage.prob < self.LANGDETECTTHRESHOLD:
             # language is English or Spanish, but likelihood is too small
             if logtype == "False":
-                logger.warning(
+                logger.info(
                     'ignored %.2f%% probability %s for "%s ..."'
                     % (toplanguage.prob * 100, toplanguage.lang, " ".join(list_)[:100])
                 )
@@ -331,6 +335,7 @@ class ElanFile:
             try:
                 annotation_text = ref_ann.find(".//ANNOTATION_VALUE").text.strip()
             except AttributeError:
+                # there is no text
                 annotation_text = ""
             result.append((ID, annotation_text))
         return result
@@ -362,20 +367,17 @@ class ElanFile:
             for aa in t.findall("./ANNOTATION")
             if aa.text is not None
         ]
-        timelistanno = []
-        annotation_list = self.get_annotation_list(t)
-        for anno in annotation_list:
-            timelistanno.append(anno.get_duration(include_void_annotations=False))
-        # timelistanno will contain duplicate entries if there are symbolically associated associations pointing to the same time-aligned annotation.
-        # We deduplicate this list by only retaining time information once for any
-        # given start time
-        found_start_times = []
-        cleaned_duration_list = []
-        for anno in annotation_list:
-            if anno.starttime not in found_start_times:
-                cleaned_duration_list.append(anno.get_duration())
-                found_start_times.append(anno.starttime)
-        return sum(cleaned_duration_list) / 1000
+        if len(timelist)>1 and sum(timelist) != 0:
+            return sum(timelist) / 1000
+        else:
+            annotation_list = self.get_annotation_list(t)
+            found_start_times = []
+            cleaned_duration_list = []
+            for anno in annotation_list:
+                if anno.starttime not in found_start_times:
+                    cleaned_duration_list.append(anno.get_duration())
+                    found_start_times.append(anno.starttime)
+            return sum(cleaned_duration_list) / 1000
 
     def has_minimal_translation_length(self, t, tierID):
         """
@@ -424,6 +426,7 @@ class ElanFile:
         try:
             alltiers = root.findall(querystring)
         except AttributeError:
+            logger.info(f"no tiers in {self.path}")
             return 0, 0
         segment_count = 0
         empty_segment_count = 0
@@ -528,15 +531,15 @@ class ElanFile:
                         continue
                     if not self.has_minimal_translation_length(wordlist, tierID):
                         continue
-                    time_in_seconds.append(self.get_seconds_from_tier(tier))
+                    newseconds = self.get_seconds_from_tier(tier)
+                    time_in_seconds.append(newseconds)
                     translations[candidate][tierID] = wordlist
                     tmp = self.tier_to_annotation_ID_list(tier)
                     translations_with_IDs[candidate][tierID] = {
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
-        self.secondstranslated += sum(
-            time_in_seconds
-        )  # FIXME make sure that only filled annotations are counted. Add negative test
+        self.secondstranslated += sum(time_in_seconds)
+        # FIXME make sure that only filled annotations are counted. Add negative test
         if len(translations) > 0:
             self.translations = translations
             self.translations_with_IDs = translations_with_IDs
@@ -625,17 +628,13 @@ class ElanFile:
                         translation_tier_to_retain = tmp_translations_dict[type_candidate][tier]
             # print(f"  retaining {translation_tiername_to_retain} as the tier with most characters ({max_charcount})")
             translation_ID_dict = translation_tier_to_retain
-        except ValueError:
+        except (ValueError, AttributeError, KeyError):
             raise EldpyError(f"No translations found in {self.filename}")
-        except AttributeError:
-            raise EldpyError(f"No translations found in {self.filename}")
-        except KeyError:
-            raise EldpyError(f"No translations found in {self.filename}")
-
         tmp_comments_dict = copy.deepcopy(self.comments_with_IDs)
         try:
             comments_ID_dict = tmp_comments_dict.popitem()[1].popitem()[1]
         except KeyError:
+            logger.info(f"no comments in {self.path}")
             comments_ID_dict = {}
         try:
             glosses_d = copy.deepcopy(self.glossed_sentences)
@@ -682,21 +681,28 @@ class ElanFile:
             ID, word_gloss_list = g.popitem()
             for tupl in word_gloss_list:
                 vernacular = tupl[0]
-                if vernacular is None:
-                    raise EldpyError(f"empty transcription with gloss {tupl[0]}:{tupl[1]} in ")
                 gloss = tupl[1]
-                if gloss is None:  # FIXME this should raise an error
+                if vernacular is None and gloss is None:
+                    #no need to act
+                    continue
+                if vernacular is None:
+                    # raise EldpyError(f"empty transcription with gloss {tupl[0]}:{tupl[1]} in ")
+                    logger.warning(f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting vernacular to ''")
+                    vernacular = ""
+                if gloss is None:
+                    logger.warning(f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting gloss to ''")
                     gloss = ""
                 vernacular_subcells.append(vernacular)
                 gloss_subcells.append(gloss)
             try:
                 primary_text = transcription_ID_dict[ID]
-            except KeyError:  # FIXME gigantic hack to align glosses with transcriptions
+            except KeyError:
+                # FIXME gigantic hack to align glosses with transcriptions
                 integer_part = ID.replace("ann", "").replace("a", "")
                 try:
                     next_integer = int(integer_part) + 1
                 except ValueError:
-                    logger.warning("translation", ID, "could not be retrieved ")
+                    logger.warning(f"translation {ID} could not be retrieved in {self.path}, word-gloss pair {vernacular}:{gloss}")
                     primary_text = "PRIMARY TEXT NOT RETRIEVED"
                 else:
                     try:
@@ -707,24 +713,17 @@ class ElanFile:
                             primary_text = transcription_ID_dict.get(v)
                             if primary_text:
                                 break
-                            # else:
-                            #     primary_text = "PRIMARY TEXT NOT RETRIEVED"
                         else:
-                            logger.warning(
-                                "primary text",
-                                ID,
-                                "could not be retrieved, nor could",
-                                next_integer,
-                                "be retrieved",
-                            )
+                            logger.warning(f"primary text {ID} could not be retrieved, nor could {next_integer} be retrieved")
+                            primary_text = "PRIMARY TEXT NOT RETRIEVED"
 
             try:
                 translation = translation_ID_dict[ID]
-            except KeyError:  # FIXME gigantic hack to align glosses with translations
+            except KeyError:
+                # FIXME gigantic hack to align glosses with translations
                 integer_part = ID.replace("ann", "").replace("a", "")
                 try:
                     next_integer = int(integer_part) + 1
-                    # print(next_integer)
                 except ValueError:
                     logger.warning("translation", ID, "could not be retrieved")
                     translation = "TRANSLATION NOT RETRIEVED"
@@ -733,13 +732,7 @@ class ElanFile:
                         new_key = f"ann{next_integer}"
                         translation = translation_ID_dict[new_key]
                     except KeyError:
-                        logger.warning(
-                            "translation",
-                            ID,
-                            "could not be retrieved, nor could",
-                            next_integer,
-                            "be retrieved",
-                        )
+                        logger.warning(f"translation{ID} could not be retrieved, nor could {next_integer} be retrieved")
                         translation = "TRANSLATION NOT RETRIEVED"
             primary_text_cell = primary_text or ""
             vernacular_cell = "\t".join(vernacular_subcells) or ""
@@ -749,12 +742,12 @@ class ElanFile:
                 ID, ""
             )  # FIXME check whether any comments are discarded which should be saved
             # ignore completely empty annotations
-            # print(primary_text_cell,repr(vernacular_cell),repr(gloss_cell),translation_cell)
             if (
                 primary_text_cell + vernacular_cell + gloss_cell + translation_cell
             ).strip() == "":
                 continue
-            lgr_cell = "WORD_ALIGNED"  # FIXME check for morpheme alignment
+            lgr_cell = "WORD_ALIGNED"
+            # FIXME check for morpheme alignment
             line = [
                 ID,
                 primary_text_cell,
@@ -837,9 +830,7 @@ class ElanFile:
                     except TypeError:
                         pass
                     except KeyError:
-                        logger.warning(
-                            "tried to update non-existing word for gloss in", sentenceID
-                        )
+                        logger.warning(f"tried to update non-existing word for gloss in {self.path} > {sentenceID}")
                     continue
                 if sentenceID != current_sentence_ID:
                     if current_sentence_ID:
@@ -850,26 +841,22 @@ class ElanFile:
                     try:
                         d[sentenceID].append([word, gloss])
                     except KeyError:
-                        logger.warning(
-                            "gloss with no parent",
-                            self.path,
-                            tierID,
-                            annos[i].ID,
-                        )
+                        logger.warning(f"gloss with no parent {self.path} > {tierID} > {annos[i].ID}")
             new_glossed_sentences.append(d)
             return new_glossed_sentences
 
         root = self.root
         if root is None:
             self.glossed_sentences = {}
+            logger.warning(f"No glossed sentences in {self.path}")
             return
-        # glosscandidates = constants.ACCEPTABLE_GLOSS_TIER_TYPES
         mapping = get_annotation_text_mapping(root)
         retrieved_glosstiers = {}
         for candidate in candidates:
             querystring = "TIER[@LINGUISTIC_TYPE_REF='%s']" % candidate
             glosstiers = root.findall(querystring)
-            if glosstiers != []:  # we found a tier of the linguistic type
+            if glosstiers != []:
+                # we found a tier of the linguistic type
                 retrieved_glosstiers[candidate] = {}
                 for tier in glosstiers:
                     tierID = tier.attrib["TIER_ID"]
@@ -936,10 +923,7 @@ class ElanFile:
             try:
                 constraint = tierconstraints[linguistic_type]
             except KeyError:
-                print(
-                    "reference to unknown LINGUISTIC_TYPE_ID  %s when establishing constraints in %s"
-                    % (linguistic_type, self.path)
-                )
+                raise EldpyError("reference to unknown LINGUISTIC_TYPE_ID  {linguistic_type} when establishing constraints in {self.path}")
                 continue
             dico[PARENT_REF].append(
                 {"id": ID, "constraint": constraint, "ltype": linguistic_type}
@@ -973,6 +957,7 @@ class ElanFile:
                 for slot in time_order.findall("TIME_SLOT")
             }
         except AttributeError:
+            logger.info("No timeslots for {self.path}")
             timeslots = {}
         return timeslots
 
@@ -999,6 +984,8 @@ class ElanFile:
         except IndexError:
             pass
         duration_in_seconds = (last_timecode - first_timecode) / 1000
+        if duration_in_seconds == 0:
+            logger.WARNING(f"{self.path} has a duration of 0 seconds")
         duration_timeslots = self.readable_duration(duration_in_seconds)
         translation_tier_names = list(self.translations.keys())
         translation_tier_names_string = ",".join(translation_tier_names)
@@ -1205,4 +1192,8 @@ class Tier:
 
 
 class EldpyError(Exception):
+    def __init__(self, message):
+        self.message = message
+        logger.error(self.message)
+
     pass
