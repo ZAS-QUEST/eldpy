@@ -7,31 +7,31 @@ from annotation import Annotation
 import pprint
 import pytest
 
-# def test_fuzz(capsys):
-#     # eafs = glob.glob('quarantine/*eaf')
-#     offset = 0
-#     # offset = 3649
-#     eafs = glob.glob("testeafs/*eaf")[offset:]
-#     eafs.sort()
-#     with capsys.disabled():
-#         print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
-#     out = open("fuzztest.csv", "w")
-#     header2 = "filename transcribed tier stc wd char wd/stc ch/wd time tier stc wd ch wd/stc ch/ed time tier stc wd distinct uniformity zipf1 zipf2".replace(
-#         " ", "\t"
-#     )
-#     out.write(header2)
-#     out.write("\n")
-#     # print(eaf)
-#     for i, eaf in enumerate(eafs):
-#         ef = ElanFile(eaf, "www")
-#         ef.populate()
-#         ef.get_cldfs()
-#         with capsys.disabled():
-#             # print(eaf)
-#             print()
-#             print(str(offset + i).rjust(5, " "), end=" ")
-#             ef.print_overview(writer=out)
-#     out.close()
+def test_fuzz(capsys):
+    # eafs = glob.glob('quarantine/*eaf')
+    offset = 0
+    # offset = 13000
+    eafs = glob.glob("testeafs/*eaf")[offset:]
+    eafs.sort()
+    with capsys.disabled():
+        print(f"fuzzing {len(eafs)} elan files. This can take several minutes")
+    out = open("fuzztest.csv", "w")
+    header2 = "filename transcribed tier stc wd char wd/stc ch/wd time tier stc wd ch wd/stc ch/ed time tier stc wd distinct uniformity zipf1 zipf2".replace(
+        " ", "\t"
+    )
+    out.write(header2)
+    out.write("\n")
+    # print(eaf)
+    for i, eaf in enumerate(eafs):
+        ef = ElanFile(eaf, "www")
+        ef.populate()
+        ef.get_cldfs()
+        with capsys.disabled():
+            # print(eaf)
+            print()
+            print(str(offset + i).rjust(5, " "), end=" ")
+            ef.print_overview(writer=out)
+    out.close()
 
 
 

@@ -307,10 +307,8 @@ class ElanFile:
                 )
             return True
         if toplanguage is None:
-            if logtype == "False":
-                logger.warning(
-                    "could not detect language for %s in %s" % (list_, self.path)
-                )
+            # if logtype == "False":
+            #     logger.warning("could not detect language for %s in %s" % (list_, self.path))
             return False
         if toplanguage.prob < self.LANGDETECTTHRESHOLD:
             # language is English or Spanish, but likelihood is too small
@@ -389,10 +387,7 @@ class ElanFile:
         translation_minimum = 1.5
         avg_annotation_length = sum([len(x.strip().split()) for x in t]) / len(t)
         if avg_annotation_length < translation_minimum:
-            logger.warning(
-                "%s has too short annotations (%s) for the tier to be a translation (%s ,...)"
-                % (tierID, avg_annotation_length, ", ".join(t[:3]))
-            )
+            # logger.warning(f"{tierID} has too short annotations {avg_annotation_length} for the tier to be a translation ({', '.join(t[:3])} ,...)"            )
             return False
         return True
 
@@ -690,7 +685,7 @@ class ElanFile:
                     logger.warning(f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting vernacular to ''")
                     vernacular = ""
                 if gloss is None:
-                    logger.warning(f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting gloss to ''")
+                    # logger.warning(f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting gloss to ''")
                     gloss = ""
                 vernacular_subcells.append(vernacular)
                 gloss_subcells.append(gloss)
@@ -702,7 +697,7 @@ class ElanFile:
                 try:
                     next_integer = int(integer_part) + 1
                 except ValueError:
-                    logger.warning(f"translation {ID} could not be retrieved in {self.path}, word-gloss pair {vernacular}:{gloss}")
+                    # logger.warning(f"translation {ID} could not be retrieved in {self.path}, word-gloss pair {vernacular}:{gloss}")
                     primary_text = "PRIMARY TEXT NOT RETRIEVED"
                 else:
                     try:
@@ -714,7 +709,7 @@ class ElanFile:
                             if primary_text:
                                 break
                         else:
-                            logger.warning(f"primary text {ID} could not be retrieved, nor could {next_integer} be retrieved")
+                            # logger.warning(f"primary text {ID} could not be retrieved, nor could {next_integer} be retrieved")
                             primary_text = "PRIMARY TEXT NOT RETRIEVED"
 
             try:
@@ -725,14 +720,15 @@ class ElanFile:
                 try:
                     next_integer = int(integer_part) + 1
                 except ValueError:
-                    logger.warning("translation", ID, "could not be retrieved")
+                    # logger.warning(f"translation {ID} could not be retrieved")
                     translation = "TRANSLATION NOT RETRIEVED"
                 else:
                     try:
                         new_key = f"ann{next_integer}"
+                        #FIXME check for "aINT" has well
                         translation = translation_ID_dict[new_key]
                     except KeyError:
-                        logger.warning(f"translation{ID} could not be retrieved, nor could {next_integer} be retrieved")
+                        # logger.warning(f"translation {ID} could not be retrieved, nor could {next_integer} be retrieved")
                         translation = "TRANSLATION NOT RETRIEVED"
             primary_text_cell = primary_text or ""
             vernacular_cell = "\t".join(vernacular_subcells) or ""
@@ -985,7 +981,7 @@ class ElanFile:
             pass
         duration_in_seconds = (last_timecode - first_timecode) / 1000
         if duration_in_seconds == 0:
-            logger.WARNING(f"{self.path} has a duration of 0 seconds")
+            logger.warning(f"{self.path} has a duration of 0 seconds")
         duration_timeslots = self.readable_duration(duration_in_seconds)
         translation_tier_names = list(self.translations.keys())
         translation_tier_names_string = ",".join(translation_tier_names)
