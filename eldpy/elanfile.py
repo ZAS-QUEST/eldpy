@@ -258,7 +258,16 @@ class ElanFile:
                     continue
         return result
 
-    def is_major_language(self, list_, spanish=False, french=False, indonesian=False, portuguese=False, russian=False, logtype="False"):
+    def is_major_language(
+        self,
+        list_,
+        spanish=False,
+        french=False,
+        indonesian=False,
+        portuguese=False,
+        russian=False,
+        logtype="False",
+    ):
         try:  # detect candidate languages and retrieve most likely one
             toplanguages = detect_langs(" ".join(list_))
             toplanguage = toplanguages[0]
@@ -354,11 +363,18 @@ class ElanFile:
             if aa.text is not None
         ]
         timelistanno = []
-        for anno in self.get_annotation_list(t):
+        annotation_list = self.get_annotation_list(t)
+        for anno in annotation_list:
             timelistanno.append(anno.get_duration(include_void_annotations=False))
-        # cleaned_duration_list = timelistanno
-        #FIXME crude way to remove duplicates stemming from symbolically associated annotations inflating the time count
-        cleaned_duration_list = list(set(timelistanno))
+        # timelistanno will contain duplicate entries if there are symbolically associated associations pointing to the same time-aligned annotation.
+        # We deduplicate this list by only retaining time information once for any
+        # given start time
+        found_start_times = []
+        cleaned_duration_list = []
+        for anno in annotation_list:
+            if anno.starttime not in found_start_times:
+                cleaned_duration_list.append(anno.get_duration())
+                found_start_times.append(anno.starttime)
         return sum(cleaned_duration_list) / 1000
 
     def has_minimal_translation_length(self, t, tierID):
@@ -384,18 +400,31 @@ class ElanFile:
         translationcandidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
         glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,
         commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES,
-        spanish=False, french=False, indonesian=False, portuguese=False, russian=False
+        spanish=False,
+        french=False,
+        indonesian=False,
+        portuguese=False,
+        russian=False,
     ):
         self.populate_transcriptions(candidates=transcriptioncandidates)
-        self.populate_translations(candidates=translationcandidates, spanish=spanish, french=french, portuguese=portuguese, indonesian=indonesian, russian=russian)
+        self.populate_translations(
+            candidates=translationcandidates,
+            spanish=spanish,
+            french=french,
+            portuguese=portuguese,
+            indonesian=indonesian,
+            russian=russian,
+        )
         self.populate_glosses(candidates=glosscandidates)
         self.populate_comments(candidates=commentcandidates)
-
 
     def get_segment_counts(self):
         root = self.root
         querystring = ".//TIER"
-        alltiers = root.findall(querystring)
+        try:
+            alltiers = root.findall(querystring)
+        except AttributeError:
+            return 0, 0
         segment_count = 0
         empty_segment_count = 0
         for tier in alltiers:
@@ -404,8 +433,6 @@ class ElanFile:
             segment_count += len(wordlist)
             empty_segment_count += len(empty_segments)
         return empty_segment_count, segment_count
-
-
 
     def populate_transcriptions(
         self, candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES
@@ -437,11 +464,18 @@ class ElanFile:
                 if self.is_ID_tier(wordlist):
                     # print("skipping ID tier")
                     continue
-                if self.is_major_language(wordlist, spanish=True, french=True, indonesian=True, portuguese=True, russian=True):
+                if self.is_major_language(
+                    wordlist,
+                    spanish=True,
+                    french=True,
+                    indonesian=True,
+                    portuguese=True,
+                    russian=True,
+                ):
                     continue
                 newseconds = self.get_seconds_from_tier(tier)
                 time_in_seconds.append(newseconds)
-                print(candidate, tier, newseconds)
+                # print(candidate, tier, newseconds)
                 transcriptions[candidate][tierID] = wordlist
                 transcriptions_with_IDs[candidate][tierID] = wordlist_with_IDs
             # pprint.pprint(transcriptions)
@@ -451,9 +485,14 @@ class ElanFile:
         self.transcriptions = transcriptions
         self.transcriptions_with_IDs = transcriptions_with_IDs
 
-
     def populate_translations(
-        self, candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES, spanish=False, french=True, indonesian=False, portuguese=False, russian=False
+        self,
+        candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
+        spanish=False,
+        french=True,
+        indonesian=False,
+        portuguese=False,
+        russian=False,
     ):
         """fill the attribute translation with translations from the ELAN file"""
 
@@ -481,7 +520,14 @@ class ElanFile:
                         continue
                     # Sometimes, annotators put non-English contents in translation tiers
                     # For our purposes, we want to discard such content
-                    if not self.is_major_language(wordlist, spanish=spanish, french=french, portuguese=portuguese, indonesian=indonesian, russian=russian):
+                    if not self.is_major_language(
+                        wordlist,
+                        spanish=spanish,
+                        french=french,
+                        portuguese=portuguese,
+                        indonesian=indonesian,
+                        russian=russian,
+                    ):
                         continue
                     if not self.has_minimal_translation_length(wordlist, tierID):
                         continue
@@ -560,7 +606,7 @@ class ElanFile:
         tmp_translations_dict = copy.deepcopy(self.translations_with_IDs)
         try:
             tier_to_retain = {}
-            tiername_to_retain = ''
+            tiername_to_retain = ""
             # print(f"found {len(tmp_translations_dict)} possible gloss types: {list(tmp_translations_dict.keys())}")
             max_charcount = 0
             for type_candidate in tmp_translations_dict:
@@ -570,7 +616,9 @@ class ElanFile:
                     # pprint.pprint(tmp_translations_dict[type_candidate][tier].keys())
                     charcount = 0
                     for top_element in tmp_translations_dict[type_candidate][tier]:
-                        charcount += len(tmp_translations_dict[type_candidate][tier][top_element])
+                        charcount += len(
+                            tmp_translations_dict[type_candidate][tier][top_element]
+                        )
                     # print(f"  tier {tier} has {charcount} characters. Current maximum is {max_charcount}")
                     if charcount >= max_charcount:
                         max_charcount = charcount
@@ -593,7 +641,9 @@ class ElanFile:
         try:
             glosses_d = copy.deepcopy(self.glossed_sentences)
         except AttributeError:
-            raise EldpyError(f"No glosses found in {self.filename}. Try providing the tier type of the gloss tier explicitly")
+            raise EldpyError(
+                f"No glosses found in {self.filename}. Try providing the tier type of the gloss tier explicitly"
+            )
         best_tier_ratio = 0
         tier_to_retain = {}
         # print(f"found {len(glosses_d)} possible gloss types")
@@ -607,7 +657,7 @@ class ElanFile:
                         tier_glosses += glosses
                 distinct_glosses = list(set(tier_glosses))
                 try:
-                    ratio = len(distinct_glosses)/len(tier_glosses)
+                    ratio = len(distinct_glosses) / len(tier_glosses)
                 except ZeroDivisionError:
                     ratio = 0
                 # print(f"  tier {tier} has {ratio:.4f} gloss diversity")
@@ -646,11 +696,8 @@ class ElanFile:
                 try:
                     next_integer = int(integer_part) + 1
                 except ValueError:
-                        logger.warning(
-                            "translation",
-                            ID,
-                            "could not be retrieved ")
-                        primary_text = "PRIMARY TEXT NOT RETRIEVED"
+                    logger.warning("translation", ID, "could not be retrieved ")
+                    primary_text = "PRIMARY TEXT NOT RETRIEVED"
                 else:
                     try:
                         primary_text = transcription_ID_dict[f"ann{next_integer}"]
@@ -679,11 +726,7 @@ class ElanFile:
                     next_integer = int(integer_part) + 1
                     # print(next_integer)
                 except ValueError:
-                    logger.warning(
-                        "translation",
-                        ID,
-                        "could not be retrieved"
-                    )
+                    logger.warning("translation", ID, "could not be retrieved")
                     translation = "TRANSLATION NOT RETRIEVED"
                 else:
                     try:
@@ -939,10 +982,6 @@ class ElanFile:
         aas = root.findall(".//ALIGNABLE_ANNOTATION")
         return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
 
-
-
-
-
     def print_overview(self, writer=sys.stdout):  # FIXME print tier ID
         filename = self.path.split("/")[-1]
         # outputstring = f"{filename[:4]}...{filename[-8:-4]}"
@@ -960,39 +999,48 @@ class ElanFile:
         duration_in_seconds = (last_timecode - first_timecode) / 1000
         duration_timeslots = self.readable_duration(duration_in_seconds)
         translation_tier_names = list(self.translations.keys())
-        primary_translation_tier_name = ""
+        translation_tier_names_string = ",".join(translation_tier_names)
         translated_sentence_count = 0
         translated_word_count = 0
         translated_char_count = 0
         if len(translation_tier_names) > 1:
             logger.warning(f"{self.path} more than one translation tier found")
         if len(translation_tier_names) > 0:
-            primary_translation_tier_name = translation_tier_names[0]
-            translation_tier_tokens = self.translations[primary_translation_tier_name]
-            for at_name in translation_tier_tokens.values():
-                for sentence in at_name:
-                    translated_sentence_count += 1
-                    words = sentence.split()
-                    translated_word_count += len(words)
-                    translated_char_count += sum([len(w) for w in words])
+            for translation_tier in self.translations:
+                for at_name in self.translations[translation_tier].values():
+                    for sentence in at_name:
+                        translated_sentence_count += 1
+                        words = sentence.split()
+                        translated_word_count += len(words)
+                        translated_char_count += sum([len(w) for w in words])
+        try:
+            translated_sec_percentage = (
+                self.secondstranslated * 100 / duration_in_seconds
+            )
+        except ZeroDivisionError:
+            translated_sec_percentage = -1
         transcription_tier_names = list(self.transcriptions.keys())
-        primary_transcription_tier_name = ""
+        # primary_transcription_tier_name = ""
         transcribed_sentence_count = 0
         transcribed_word_count = 0
         transcribed_char_count = 0
         if len(transcription_tier_names) > 1:
             logger.warning(f"{self.path} more than one transcription tier found")
+        transcription_tier_names_string = ",".join(transcription_tier_names)
         if len(transcription_tier_names) > 0:
-            primary_transcription_tier_name = transcription_tier_names[0]
-            transcription_tier_tokens = self.transcriptions[
-                primary_transcription_tier_name
-            ]
-            for at_name in transcription_tier_tokens.values():
-                for sentence in at_name:
-                    transcribed_sentence_count += 1
-                    words = sentence.split()
-                    transcribed_word_count += len(words)
-                    transcribed_char_count += sum([len(w) for w in words])
+            for transcription_tier in self.transcriptions:
+                for at_name in self.transcriptions[transcription_tier].values():
+                    for sentence in at_name:
+                        transcribed_sentence_count += 1
+                        words = sentence.split()
+                        transcribed_word_count += len(words)
+                        transcribed_char_count += sum([len(w) for w in words])
+        try:
+            transcribed_sec_percentage = (
+                self.secondstranscribed * 100 / duration_in_seconds
+            )
+        except ZeroDivisionError:
+            transcribed_sec_percentage = -1
         try:
             gloss_tier_names = list(self.glossed_sentences.keys())
         except AttributeError:
@@ -1059,7 +1107,7 @@ class ElanFile:
             distinct_glosses = {None: True}
         empty_segment_count, segment_count = self.get_segment_counts()
         try:
-            empty_segment_ratio = empty_segment_count/segment_count
+            empty_segment_ratio = empty_segment_count / segment_count
         except ZeroDivisionError:
             empty_segment_ratio = -1
         outputstring = "\t".join(
@@ -1067,23 +1115,23 @@ class ElanFile:
                 filename,
                 duration_timeslots,
                 # #
-                primary_translation_tier_name,
+                translation_tier_names_string,
                 str(translated_sentence_count),
                 str(translated_word_count),
                 str(translated_char_count),
                 str(round(translated_word_count / translated_sentence_count, 2)),
                 str(round(translated_char_count / translated_word_count, 2)),
                 self.readable_duration(self.secondstranslated),
+                str(round(translated_sec_percentage, 2)),
                 # #
-                primary_transcription_tier_name,
+                transcription_tier_names_string,
                 str(transcribed_sentence_count),
                 str(transcribed_word_count),
                 str(transcribed_char_count),
                 str(round(transcribed_word_count / transcribed_sentence_count, 2)),
                 str(round(transcribed_char_count / transcribed_word_count, 2)),
-                self.readable_duration(
-                    self.secondstranscribed
-                ),  #  most probably wrong # FIXME
+                self.readable_duration(self.secondstranscribed),
+                str(round(transcribed_sec_percentage, 2)),
                 # #
                 primary_gloss_tier_name,
                 str(glossed_sentences_count),
@@ -1094,10 +1142,10 @@ class ElanFile:
                 str(round(zipf2, 2)),
                 str(empty_segment_count),
                 str(segment_count),
-                str(round(empty_segment_ratio, 3))
+                str(round(empty_segment_ratio * 100, 2)),
             ]
         )
-        writer.write(f"{outputstring}\n")
+        # writer.write(f"{outputstring}\n")
         return outputstring.split("\t")
 
 
@@ -1152,7 +1200,6 @@ class Tier:
             if key not in constants.LGRLIST:
                 del result[key]
         return result
-
 
 
 class EldpyError(Exception):
