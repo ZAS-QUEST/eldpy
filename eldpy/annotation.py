@@ -13,9 +13,9 @@ class Annotation:
         self.text = ""
         self.starttime = 0
         self.endtime = 0
-        self.ID = None
+        self.id_ = None
         self.parent_id = None
-        self.previous_annotation_ID = None
+        self.previous_annotation_I = None
         # ELAN stores the annotation information in two different types of elements.
         # One is ANNOTATION, the other one is ALIGNABLE_ANNOTATION. We do not know which
         # kind is submitted to the constructor. If it is ANNOTATION, we have to drill
@@ -35,12 +35,12 @@ class Annotation:
                 print("Annotation without ID in", self.text)
                 print(element[0].text)
                 raise ValueError
-                self.ID = None
+                self.id_ = None
                 self.parent_id = None
             else:
-                self.ID = ref_annotation.attrib["ANNOTATION_ID"]
+                self.id_ = ref_annotation.attrib["ANNOTATION_ID"]
                 self.parent_id = ref_annotation.attrib["ANNOTATION_REF"]
-                self.previous_annotation_ID = ref_annotation.attrib.get("PREVIOUS_ANNOTATION")
+                self.previous_annotation_id = ref_annotation.attrib.get("PREVIOUS_ANNOTATION")
                 try:
                     parentAnnoID = ref_annotations[self.parent_id]
                     parentAnno = alignable_annotations[parentAnnoID]
@@ -51,7 +51,7 @@ class Annotation:
                 except KeyError:
                     pass
         else:  #   time aligned
-            self.ID = alignable_annotation.attrib["ANNOTATION_ID"]
+            self.id_ = alignable_annotation.attrib["ANNOTATION_ID"]
             self.parent_id = None
             try:
                 self.starttime = int(
