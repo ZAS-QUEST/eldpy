@@ -267,7 +267,7 @@ def test_saek(capsys):
 
 def test_yaminawa(capsys):
     ef = ElanFile("yaminawa_test.eaf", "www")
-    ef.populate(spanish=True)
+    ef.populate(major_languages=["en", "es"])
     x = ef.get_cldfs()
     assert x[233:453] == '"a4707","Pẽxẽwãkũĩkĩã, pẽxẽwã, datiu pẽxẽwã","pexe\t-wã\t-kũĩ\t=kĩã\tpexe\t-wã\tda\t=tiu\tpexe\t-wã","casa\tAUG\tINTENS\t=EXIST\tcasa\tAUG\tmorir\t=tamaño\tcasa\tAUG","Era una casa grande, una casa grande, una casa grande de este tamaño."'
 
@@ -275,7 +275,7 @@ def test_yaminawa(capsys):
 
 def test_yaminawa_p(capsys):
     ef = ElanFile("Pashpiexample01.eaf", "www")
-    ef.populate(spanish=True)
+    ef.populate(major_languages=["en", "es"])
     x = ef.get_cldfs()
     # with capsys.disabled():
     #     print(repr(x[204:527]))

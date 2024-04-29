@@ -26,6 +26,8 @@ logger = logging.getLogger("eldpy")
 
 
 class ElanFile:
+    """A representation of an ELAN file"""
+
     def __init__(self, path, url, namespace=None):
         logger.info("starting init")
         self.path = path
@@ -101,6 +103,9 @@ class ElanFile:
         return self.path >= other.path
 
     def get_timeslotted_parents(self):
+        """
+        return the ulimate ancestor of this annotation which has timing information
+        """
         def get_timeslotted_parent(child_id, d):
             parent_id = self.ref_annotations[child_id]
             if parent_id in self.alignable_annotations:
@@ -231,8 +236,11 @@ class ElanFile:
                     "[0-9]+", wl[1]
                 ):  # this is an ID tier
                     return True
+        return False
 
     def get_annotation_list(self, t):
+        """return a list of the annotations for a given tier"""
+
         aas = self.get_alignable_annotations(self.root)
         result = []
         for ref_annotation in t.findall(".//REF_ANNOTATION"):
@@ -253,12 +261,13 @@ class ElanFile:
     def is_major_language(
         self,
         list_,
-        spanish=False,
-        french=False,
-        indonesian=False,
-        portuguese=False,
-        russian=False,
-        logtype="False",
+        accepted_languages = ["en"],
+        # spanish=False,
+        # french=False,
+        # indonesian=False,
+        # portuguese=False,
+        # russian=False,
+        logtype="False"
     ):
         """
         return True if this string is from a language of wider communication,
@@ -272,17 +281,18 @@ class ElanFile:
             # we are happy that this is an unknown language
             toplanguage = None
 
-        accepted_languages = ["en"]
-        if spanish:
-            accepted_languages.append("es")
-        if french:
-            accepted_languages.append("fr")
+        # if spanish:
+        #     accepted_languages.append("es")
+        # if french:
+        #     accepted_languages.append("fr")
         # if indonesian: #indonesian causes some random errors for muyu
-        #     accepted_languages.append("id")
+        #     pass
+        # #     accepted_languages.append("id")
         # if portuguese:#portuguese throws falls positives
-        #     accepted_languages.append("pt")
-        if russian:
-            accepted_languages.append("ru")
+        #     pass
+        # #     accepted_languages.append("pt")
+        # if russian:
+        #     accepted_languages.append("ru")
         # print(toplanguage.lang,toplanguage.prob,accepted_languages)
         if (
             toplanguage
@@ -290,27 +300,22 @@ class ElanFile:
             and toplanguage.prob > self.LANGDETECTTHRESHOLD
         ):
             if logtype == "True":
-                logger.info(
-                    'ignored vernacular tier with "%s" language content at %.2f%% probability ("%s ...")'
-                    % (
-                        toplanguage.lang,
-                        toplanguage.prob * 100,
-                        " ".join(list_)[:100],
-                    )
-                )
+                probability_percentage = toplanguage.prob * 100
+                tier_start_words =  " ".join(list_)[:100]
+                logger.info(f'ignored vernacular tier with {toplanguage.lang} language content at {probability_percentage:.2f}% probability ("{tier_start_words} ...")')
             return True
         if toplanguage is None:
-            # if logtype == "False":
-            #     logger.warning("could not detect language for %s in %s" % (list_, self.path))
+            if logtype == "False":
+                logger.warning("could not detect language for %s in %s" % (list_, self.path))
             return False
         if toplanguage.prob < self.LANGDETECTTHRESHOLD:
             # language is English or Spanish, but likelihood is too small
             if logtype == "False":
-                logger.info(
-                    'ignored %.2f%% probability %s for "%s ..."'
-                    % (toplanguage.prob * 100, toplanguage.lang, " ".join(list_)[:100])
-                )
+                percentage_probablity = toplanguage.prob * 100
+                tier_first_words = " ".join(list_)[:100]
+                logger.info(f'ignored {percentage_probablity:.2f}% probability {toplanguage.prob} for "{tier_first_words} ..."')
             return False
+        return False
 
     def tier_to_id_wordlist(self, t):
         """
@@ -393,20 +398,28 @@ class ElanFile:
         translationcandidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
         glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,
         commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES,
-        spanish=False,
-        french=False,
-        indonesian=False,
-        portuguese=False,
-        russian=False,
+        major_languages = ["en"]
+        # spanish=False,
+        # french=False,
+        # indonesian=False,
+        # portuguese=False,
+        # russian=False,
     ):
-        self.populate_transcriptions(candidates=transcriptioncandidates)
+        """
+        fill all tiers which can be populated
+        """
+
+        # pylint: disable=dangerous-default-value
+        self.populate_transcriptions(candidates=transcriptioncandidates,
+            major_languages = major_languages)
         self.populate_translations(
             candidates=translationcandidates,
-            spanish=spanish,
-            french=french,
-            portuguese=portuguese,
-            indonesian=indonesian,
-            russian=russian,
+            major_languages = major_languages
+            # spanish=spanish,
+            # french=french,
+            # portuguese=portuguese,
+            # indonesian=indonesian,
+            # russian=russian,
         )
         self.populate_glosses(candidates=glosscandidates)
         self.populate_comments(candidates=commentcandidates)
@@ -429,9 +442,10 @@ class ElanFile:
         return empty_segment_count, segment_count
 
     def populate_transcriptions(
-        self, candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES # pylint: disable=dangerous-default-value
+        self, candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES, major_languages=["en"]
     ):
         """fill the attribute transcriptions with translations from the ELAN file"""
+        # pylint: disable=dangerous-default-value
 
         transcriptioncandidates = candidates
         transcriptions = defaultdict(dict)
@@ -460,11 +474,7 @@ class ElanFile:
                     continue
                 if self.is_major_language(
                     wordlist,
-                    spanish=True,
-                    french=True,
-                    indonesian=True,
-                    portuguese=True,
-                    russian=True,
+                    accepted_languages=major_languages
                 ):
                     continue
                 newseconds = self.get_seconds_from_tier(tier)
@@ -478,13 +488,15 @@ class ElanFile:
 
     def populate_translations(
         self,
-        candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES, # pylint: disable=dangerous-default-value
-        spanish=False,
-        french=True,
-        indonesian=False,
-        portuguese=False,
-        russian=False,
+        candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
+        major_languages=["en"]
+        # spanish=False,
+        # french=True,
+        # indonesian=False,
+        # portuguese=False,
+        # russian=False,
     ):
+        # pylint: disable=dangerous-default-value
         """fill the attribute translation with translations from the ELAN file"""
 
         translationcandidates = candidates
@@ -513,11 +525,12 @@ class ElanFile:
                     # For our purposes, we want to discard such content
                     if not self.is_major_language(
                         wordlist,
-                        spanish=spanish,
-                        french=french,
-                        portuguese=portuguese,
-                        indonesian=indonesian,
-                        russian=russian,
+                        accepted_languages=major_languages
+                        # spanish=spanish,
+                        # french=french,
+                        # portuguese=portuguese,
+                        # indonesian=indonesian,
+                        # russian=russian,
                     ):
                         continue
                     if not self.has_minimal_translation_length(wordlist, tier_id):
@@ -589,6 +602,11 @@ class ElanFile:
         ]
 
     def get_cldfs(self, provided_gloss_tier_name=False, matrix=False):
+        """
+        return a representation of the ELAN file in the
+        Cross-Linguistic Data Format
+        """
+
         lines = []
         tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_ids)
         d = {}
@@ -643,9 +661,9 @@ class ElanFile:
             # print(f" found {len(glosses_d[type_candidate])} possible tiers in {type_candidate}")
             for tier in glosses_d[type_candidate]:
                 tier_glosses = []
-                for annotation in glosses_d[type_candidate][tier]:
-                    for element in annotation:
-                        glosses = [x[1] for x in annotation[element]]
+                for current_annotation in glosses_d[type_candidate][tier]:
+                    for element in current_annotation:
+                        glosses = [x[1] for x in current_annotation[element]]
                         tier_glosses += glosses
                 distinct_glosses = list(set(tier_glosses))
                 try:
@@ -897,6 +915,10 @@ class ElanFile:
         self.child_parent_dic = d
 
     def get_tier_hierarchy(self):
+        """
+        map tiers to their parents
+        """
+
         tree = self.root
         dico = defaultdict(list)
         linguistic_types = tree.findall(".//LINGUISTIC_TYPE")
