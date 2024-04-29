@@ -306,7 +306,7 @@ class ElanFile:
             return True
         if toplanguage is None:
             if logtype == "False":
-                logger.warning("could not detect language for %s in %s" % (list_, self.path))
+                logger.warning(f"could not detect language for {list_} in {self.path}")
             return False
         if toplanguage.prob < self.LANGDETECTTHRESHOLD:
             # language is English or Spanish, but likelihood is too small
@@ -409,7 +409,7 @@ class ElanFile:
         fill all tiers which can be populated
         """
 
-        # pylint: disable=dangerous-default-value
+        # pylint: disable=dangerous-default-value,too-many-arguments
         self.populate_transcriptions(candidates=transcriptioncandidates,
             major_languages = major_languages)
         self.populate_translations(
@@ -425,6 +425,8 @@ class ElanFile:
         self.populate_comments(candidates=commentcandidates)
 
     def get_segment_counts(self):
+        """count the number of annotations which have no content"""
+
         root = self.root
         querystring = ".//TIER"
         try:
@@ -447,7 +449,6 @@ class ElanFile:
         """fill the attribute transcriptions with translations from the ELAN file"""
         # pylint: disable=dangerous-default-value
 
-        transcriptioncandidates = candidates
         transcriptions = defaultdict(dict)
         transcriptions_with_ids = defaultdict(dict)
         root = self.root
@@ -459,7 +460,7 @@ class ElanFile:
         # there might be several transcription tiers with different names, hence we store them
         # in a dictionary
         time_in_seconds = []
-        for candidate in transcriptioncandidates:
+        for candidate in candidates:
             # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
             querystring = f"TIER[@LINGUISTIC_TYPE_REF='{candidate}']"
             vernaculartiers = root.findall(querystring)
@@ -499,7 +500,6 @@ class ElanFile:
         # pylint: disable=dangerous-default-value
         """fill the attribute translation with translations from the ELAN file"""
 
-        translationcandidates = candidates
         root = self.root
         if root is None:
             self.translations = {}
@@ -511,7 +511,7 @@ class ElanFile:
         translations = defaultdict(dict)
         translations_with_ids = defaultdict(dict)
         time_in_seconds = []
-        for candidate in translationcandidates:
+        for candidate in candidates:
             # try different LINGUISTIC_TYPE_REF's to identify the relevant tiers
             querystring = f"TIER[@LINGUISTIC_TYPE_REF='{candidate}']"
             translationtiers = root.findall(querystring)
@@ -543,7 +543,6 @@ class ElanFile:
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
         self.secondstranslated += sum(time_in_seconds)
-        # FIXME make sure that only filled annotations are counted. Add negative test
         if len(translations) > 0:
             self.translations = translations
             self.translations_with_ids = translations_with_ids
@@ -606,6 +605,51 @@ class ElanFile:
         return a representation of the ELAN file in the
         Cross-Linguistic Data Format
         """
+
+
+        def increment_key(s, tier_type):
+            """increment the integer value of an ID by 1"""
+            m = re.match("(a)(n*)([0-9]+)", s)
+            if not m:
+                logger.warning(f"{tier_type} {s} could not be retrieved in {self.path}")
+                return None
+            prefix = ''.join(m.groups()[:2])
+            integer_part = m.groups()[2]
+            next_integer = int(integer_part) + 1
+            return f"{prefix}{next_integer}"
+
+        def get_transcription_text(d, id_):
+            """get the transcription for an annotation"""
+
+            try:
+                primary_text = d[id_]
+            except KeyError:
+                try:
+                    new_key = increment_key(id_, "primary text")
+                    primary_text = d[new_key]
+                except KeyError:
+                    # we try to retrieve a tier dependent on the ref tier which does have a primary text
+                    for v in self.timeslotted_reversedic[id_]:
+                        primary_text = transcription_id_dict.get(v)
+                        if primary_text:
+                            break
+                    else:
+                        logger.warning(f"primary text {id_} could not be retrieved, nor could {new_key} be retrieved")
+                        return None
+            return primary_text
+
+        def get_translation_text(d, id_):
+            """get the translation for an annotation"""
+            try:
+                translation = d[id_]
+            except KeyError:
+                try:
+                    new_key = increment_key(id_, "translation")
+                    translation = d[new_key]
+                except KeyError:
+                    logger.warning(f"translation {id_} could not be retrieved, nor could {new_key} be retrieved")
+                    return None
+            return translation
 
         lines = []
         tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_ids)
@@ -705,54 +749,18 @@ class ElanFile:
                     gloss = ""
                 vernacular_subcells.append(vernacular)
                 gloss_subcells.append(gloss)
-            try:
-                primary_text = transcription_id_dict[id_]
-            except KeyError:
-                # FIXME gigantic hack to align glosses with transcriptions
-                integer_part = id_.replace("ann", "").replace("a", "")
-                try:
-                    next_integer = int(integer_part) + 1
-                except ValueError:
-                    # logger.warning(f"translation {ID} could not be retrieved in {self.path}, word-gloss pair {vernacular}:{gloss}")
-                    primary_text = "PRIMARY TEXT NOT RETRIEVED"
-                else:
-                    try:
-                        primary_text = transcription_id_dict[f"ann{next_integer}"]
-                    except KeyError:
-                        # we try to retrieve a tier dependent on the ref tier which does have a primary text
-                        for v in self.timeslotted_reversedic[id_]:
-                            primary_text = transcription_id_dict.get(v)
-                            if primary_text:
-                                break
-                        else:
-                            # logger.warning(f"primary text {id_} could not be retrieved, nor could {next_integer} be retrieved")
-                            primary_text = "PRIMARY TEXT NOT RETRIEVED"
+            primary_text = get_transcription_text(transcription_id_dict , id_)
+            if primary_text is None:
+                primary_text = "PRIMARY TEXT NOT RETRIEVED"
+            translation = get_translation_text(translation_id_dict , id_)
+            if translation is None:
+                translation = "TRANSLATION NOT RETRIEVED"
 
-            try:
-                translation = translation_id_dict[id_]
-            except KeyError:
-                # FIXME gigantic hack to align glosses with translations
-                integer_part = id_.replace("ann", "").replace("a", "")
-                try:
-                    next_integer = int(integer_part) + 1
-                except ValueError:
-                    # logger.warning(f"translation {id_} could not be retrieved")
-                    translation = "TRANSLATION NOT RETRIEVED"
-                else:
-                    try:
-                        new_key = f"ann{next_integer}"
-                        #FIXME check for "aINT" has well
-                        translation = translation_id_dict[new_key]
-                    except KeyError:
-                        # logger.warning(f"translation {id_} could not be retrieved, nor could {next_integer} be retrieved")
-                        translation = "TRANSLATION NOT RETRIEVED"
             primary_text_cell = primary_text or ""
             vernacular_cell = "\t".join(vernacular_subcells) or ""
             gloss_cell = "\t".join(gloss_subcells) or ""
             translation_cell = translation or ""
-            comment = comments_id_dict.get(
-                id_, ""
-            )  # FIXME check whether any comments are discarded which should be saved
+            comment = comments_id_dict.get(id_, "")
             # ignore completely empty annotations
             if (
                 primary_text_cell + vernacular_cell + gloss_cell + translation_cell
@@ -957,6 +965,8 @@ class ElanFile:
     #     self.annotation_time = 0
 
     def readable_duration(self, seconds):
+        """return the duration in seconds in human readable format"""
+
         return time.strftime("%H:%M:%S", time.gmtime(seconds))
 
     def get_timeslots(self):
@@ -983,10 +993,13 @@ class ElanFile:
         aas = root.findall(".//ALIGNABLE_ANNOTATION")
         return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
 
-    def print_overview(self, writer=sys.stdout):  # FIXME print tier ID
+    def print_overview(self,
+                       # writer=sys.stdout
+                       ):  # FIXME print tier ID
         """
         generate a report string with information about an eaf file
         """
+        # pylint: disable=use-implicit-booleaness-not-comparison
 
         filename = self.path.split("/")[-1]
         # outputstring = f"{filename[:4]}...{filename[-8:-4]}"

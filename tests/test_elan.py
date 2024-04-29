@@ -42,7 +42,9 @@ def test_overview(capsys):
     ef.populate_glosses()
     with capsys.disabled():
         out = open("test.csv", "w")
-        output = ef.print_overview(writer=out)
+        output = ef.print_overview(
+            # writer=out
+            )
         out.close()
     assert output == [
         "goemai_test.eaf",
