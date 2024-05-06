@@ -3,25 +3,34 @@ A representation of an ELAN file
 """
 
 import copy
+
 # import json
 import logging
+
 # import pprint
 import re
+
 # import requests
-import time
 import csv
 import io
-import sys
 from collections import defaultdict
 from lxml import etree
-from langdetect import detect_langs, lang_detect_exception
 
 from eldpy import annotation
 from eldpy import constants
 from eldpy.eldpyerror import EldpyError
+from eldpy.helpers import (
+    is_major_language,
+    is_id_tier,
+    tier_to_annotation_id_list,
+    tier_to_wordlist,
+    tier_to_id_wordlist,
+    get_alignable_annotations,
+    readable_duration,
+)
 
 
-logging.basicConfig(filename='eldpy.log', level=logging.WARNING)
+logging.basicConfig(filename="eldpy.log", level=logging.WARNING)
 logger = logging.getLogger("eldpy")
 
 
@@ -80,8 +89,6 @@ class ElanFile:
         }
         self.glossed_sentences = {}
 
-    LANGDETECTTHRESHOLD = 0.95  # 85% seems to have no false positives in a first run
-
     def __eq__(
         self, other
     ):  # this is needed for some rdflib function which throws unclear errors
@@ -106,6 +113,7 @@ class ElanFile:
         """
         return the ulimate ancestor of this annotation which has timing information
         """
+
         def get_timeslotted_parent(child_id, d):
             parent_id = self.ref_annotations[child_id]
             if parent_id in self.alignable_annotations:
@@ -133,8 +141,6 @@ class ElanFile:
             raise EldpyError(f"the file {self.path} is not valid XML", logger) from exc
         return root
 
-
-
     # def analyze(self, fingerprint=False):
     # """
     # get information about:
@@ -146,8 +152,6 @@ class ElanFile:
     # if fingerprint:
     # return self.fingerprint()
     # return None
-
-
 
     def get_fingerprint(self):
         """
@@ -190,28 +194,22 @@ class ElanFile:
         by x.
 
         """
+
+        typedic = {
+            "Symbolic_Subdivision": "s",
+            "Symbolic Subdivision": "s",
+            "Symbolic_Association": "a",
+            "Symbolic Association": "a",
+            "Time_Subdivision": "t",
+            "Time Subdivision": "t",
+            "Included_In": "i",
+            "root": "R",
+        }
         constraint = d["constraint"]
-        code = "x"
-        if constraint in ("Symbolic_Subdivision", "Symbolic Subdivision"):
+        code = typedic.get(constraint, "x")
+        if lump and code in ("ti"):
+            # fold both "t" and "i" into "s"
             code = "s"
-        elif constraint in ("Symbolic_Association", "Symbolic Association"):
-            code = "a"
-        elif constraint in ("Time_Subdivision", "Time Subdivision"):
-            if lump:
-                code = "s"
-            else:
-                code = "t"
-        elif constraint == "Included_In":
-            if lump:
-                code = "s"
-            else:
-                code = "i"
-        elif constraint == "root":
-            code = "R"
-        elif constraint == "":
-            code = "x"
-        elif constraint is None:
-            code = "x"
         self.fingerprint += code
         children = self.tier_hierarchy[d["id"]]
         if children == []:
@@ -221,27 +219,10 @@ class ElanFile:
             self.analyze_tier(child, level + 1, lump=lump)
         self.fingerprint += "]"
 
-    def is_id_tier(self, wl):
-        """
-        check for ID tiers.
-
-        ID tiers either have only digits, or they have an ID consisting of the filename
-        and a running number. We have to find at least three digits since some tone languages
-        use two digit tone indications like "ma24ma52"
-        """
-
-        if re.search("[0-9]{3}$", wl[0]) or re.match("[0-9]+", wl[0]):
-            if len(wl) > 1:
-                if re.search("[0-9]{3}$", wl[1]) or re.match(
-                    "[0-9]+", wl[1]
-                ):  # this is an ID tier
-                    return True
-        return False
-
     def get_annotation_list(self, t):
         """return a list of the annotations for a given tier"""
 
-        aas = self.get_alignable_annotations(self.root)
+        aas = get_alignable_annotations(self.root)
         result = []
         for ref_annotation in t.findall(".//REF_ANNOTATION"):
             if ref_annotation.find(".//ANNOTATION_VALUE").text is not None:
@@ -254,106 +235,9 @@ class ElanFile:
                     )
                     result.append(anno)
                 except ValueError:
-                    #there is no text
+                    # there is no text
                     continue
         return result
-
-    def is_major_language(
-        self,
-        list_,
-        accepted_languages = ["en"],
-        # spanish=False,
-        # french=False,
-        # indonesian=False,
-        # portuguese=False,
-        # russian=False,
-        logtype="False"
-    ):
-        """
-        return True if this string is from a language of wider communication,
-        which could possibly be used for a translation tier
-        """
-
-        try:  # detect candidate languages and retrieve most likely one
-            toplanguages = detect_langs(" ".join(list_))
-            toplanguage = toplanguages[0]
-        except lang_detect_exception.LangDetectException:
-            # we are happy that this is an unknown language
-            toplanguage = None
-
-        # if spanish:
-        #     accepted_languages.append("es")
-        # if french:
-        #     accepted_languages.append("fr")
-        # if indonesian: #indonesian causes some random errors for muyu
-        #     pass
-        # #     accepted_languages.append("id")
-        # if portuguese:#portuguese throws falls positives
-        #     pass
-        # #     accepted_languages.append("pt")
-        # if russian:
-        #     accepted_languages.append("ru")
-        # print(toplanguage.lang,toplanguage.prob,accepted_languages)
-        if (
-            toplanguage
-            and toplanguage.lang in accepted_languages
-            and toplanguage.prob > self.LANGDETECTTHRESHOLD
-        ):
-            if logtype == "True":
-                probability_percentage = toplanguage.prob * 100
-                tier_start_words =  " ".join(list_)[:100]
-                logger.info(f'ignored vernacular tier with {toplanguage.lang} language content at {probability_percentage:.2f}% probability ("{tier_start_words} ...")')
-            return True
-        if toplanguage is None:
-            if logtype == "False":
-                logger.warning(f"could not detect language for {list_} in {self.path}")
-            return False
-        if toplanguage.prob < self.LANGDETECTTHRESHOLD:
-            # language is English or Spanish, but likelihood is too small
-            if logtype == "False":
-                percentage_probablity = toplanguage.prob * 100
-                tier_first_words = " ".join(list_)[:100]
-                logger.info(f'ignored {percentage_probablity:.2f}% probability {toplanguage.prob} for "{tier_first_words} ..."')
-            return False
-        return False
-
-    def tier_to_id_wordlist(self, t):
-        """
-        create a list of all words in that tier by splitting
-        and collating all annotation values of that tier
-        """
-
-        result = []
-        for ref_ann in t.findall(".//REF_ANNOTATION") + t.findall(
-            ".//ALIGNABLE_ANNOTATION"
-        ):
-            ref_ann_id = ref_ann.attrib["ANNOTATION_ID"]
-            try:
-                annotation_text = ref_ann.find(".//ANNOTATION_VALUE").text.strip()
-            except AttributeError:
-                # there is no text
-                annotation_text = ""
-            result.append((ref_ann_id, annotation_text))
-        return result
-
-    def tier_to_wordlist(self, t):
-        """
-        extract all strings representing words from a tier
-        """
-
-        tier_with_ids = self.tier_to_id_wordlist(t)
-        result = [el[1] for el in tier_with_ids]
-        return result
-
-    def tier_to_annotation_id_list(self, t):
-        """
-        create a list of all IDs in that tier
-        """
-
-        return [  # FIXME use generic method
-            (ra.attrib["ANNOTATION_ID"], ra.attrib["ANNOTATION_REF"])
-            for ra in t.findall(".//REF_ANNOTATION")
-        ]
 
     def get_seconds_from_tier(self, t):
         """
@@ -367,7 +251,7 @@ class ElanFile:
             for aa in t.findall("./ANNOTATION")
             if aa.text is not None
         ]
-        if len(timelist)>1 and sum(timelist) != 0:
+        if len(timelist) > 1 and sum(timelist) != 0:
             return sum(timelist) / 1000
         annotation_list = self.get_annotation_list(t)
         found_start_times = []
@@ -388,7 +272,9 @@ class ElanFile:
         translation_minimum = 1.5
         avg_annotation_length = sum(len(x.strip().split()) for x in t) / len(t)
         if avg_annotation_length < translation_minimum:
-            logger.warning(f"{tier_id} has too short annotations {avg_annotation_length} for the tier to be a translation ({', '.join(t[:3])} ,...)"            )
+            logger.warning(
+                f"{tier_id} has too short annotations {avg_annotation_length} for the tier to be a translation ({', '.join(t[:3])} ,...)"
+            )
             return False
         return True
 
@@ -398,7 +284,7 @@ class ElanFile:
         translationcandidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
         glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,
         commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES,
-        major_languages = ["en"]
+        major_languages=["en"]
         # spanish=False,
         # french=False,
         # indonesian=False,
@@ -410,11 +296,12 @@ class ElanFile:
         """
 
         # pylint: disable=dangerous-default-value,too-many-arguments
-        self.populate_transcriptions(candidates=transcriptioncandidates,
-            major_languages = major_languages)
+        self.populate_transcriptions(
+            candidates=transcriptioncandidates, major_languages=major_languages
+        )
         self.populate_translations(
             candidates=translationcandidates,
-            major_languages = major_languages
+            major_languages=major_languages
             # spanish=spanish,
             # french=french,
             # portuguese=portuguese,
@@ -437,14 +324,16 @@ class ElanFile:
         segment_count = 0
         empty_segment_count = 0
         for tier in alltiers:
-            wordlist = self.tier_to_id_wordlist(tier)
+            wordlist = tier_to_id_wordlist(tier)
             empty_segments = [x for x in wordlist if x[1] == ""]
             segment_count += len(wordlist)
             empty_segment_count += len(empty_segments)
         return empty_segment_count, segment_count
 
     def populate_transcriptions(
-        self, candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES, major_languages=["en"]
+        self,
+        candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES,
+        major_languages=["en"],
     ):
         """fill the attribute transcriptions with translations from the ELAN file"""
         # pylint: disable=dangerous-default-value
@@ -466,16 +355,15 @@ class ElanFile:
             vernaculartiers = root.findall(querystring)
             for tier in vernaculartiers:
                 tier_id = tier.attrib["TIER_ID"]
-                wordlist = self.tier_to_wordlist(tier)  # FIXME avoid duplication
-                wordlist_with_ids = self.tier_to_id_wordlist(tier)
+                wordlist = tier_to_wordlist(tier)  # FIXME avoid duplication
+                wordlist_with_ids = tier_to_id_wordlist(tier)
                 if wordlist == []:
                     continue
-                if self.is_id_tier(wordlist):
+                if is_id_tier(wordlist):
                     # print("skipping ID tier")
                     continue
-                if self.is_major_language(
-                    wordlist,
-                    accepted_languages=major_languages
+                if is_major_language(
+                    wordlist, accepted_languages=major_languages, logger=logger
                 ):
                     continue
                 newseconds = self.get_seconds_from_tier(tier)
@@ -518,19 +406,20 @@ class ElanFile:
             if translationtiers != []:  # we found a tier of the linguistic type
                 for tier in translationtiers:
                     tier_id = tier.attrib["TIER_ID"]
-                    wordlist = self.tier_to_wordlist(tier)
+                    wordlist = tier_to_wordlist(tier)
                     if wordlist == []:
                         continue
                     # Sometimes, annotators put non-English contents in translation tiers
                     # For our purposes, we want to discard such content
-                    if not self.is_major_language(
+                    if not is_major_language(
                         wordlist,
-                        accepted_languages=major_languages
+                        accepted_languages=major_languages,
                         # spanish=spanish,
                         # french=french,
                         # portuguese=portuguese,
                         # indonesian=indonesian,
                         # russian=russian,
+                        logger=logger,
                     ):
                         continue
                     if not self.has_minimal_translation_length(wordlist, tier_id):
@@ -538,7 +427,7 @@ class ElanFile:
                     newseconds = self.get_seconds_from_tier(tier)
                     time_in_seconds.append(newseconds)
                     translations[candidate][tier_id] = wordlist
-                    tmp = self.tier_to_annotation_id_list(tier)
+                    tmp = tier_to_annotation_id_list(tier)
                     translations_with_ids[candidate][tier_id] = {
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
@@ -547,7 +436,9 @@ class ElanFile:
             self.translations = translations
             self.translations_with_ids = translations_with_ids
 
-    def populate_comments(self, candidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES):  # pylint: disable=dangerous-default-value
+    def populate_comments(
+        self, candidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES
+    ):  # pylint: disable=dangerous-default-value
         """
         fill the attribute comment with comments from the ELAN file
         """
@@ -570,11 +461,11 @@ class ElanFile:
             if commenttiers != []:  # we found a tier of the linguistic type
                 for tier in commenttiers:
                     tier_id = tier.attrib["TIER_ID"]
-                    wordlist = self.tier_to_wordlist(tier)
+                    wordlist = tier_to_wordlist(tier)
                     if wordlist == []:
                         continue
                     comments[candidate][tier_id] = wordlist
-                    tmp = self.tier_to_annotation_id_list(tier)
+                    tmp = tier_to_annotation_id_list(tier)
                     comments_with_ids[candidate][tier_id] = {
                         x[1]: wordlist[i] for i, x in enumerate(tmp)
                     }
@@ -606,14 +497,13 @@ class ElanFile:
         Cross-Linguistic Data Format
         """
 
-
         def increment_key(s, tier_type):
             """increment the integer value of an ID by 1"""
             m = re.match("(a)(n*)([0-9]+)", s)
             if not m:
                 logger.warning(f"{tier_type} {s} could not be retrieved in {self.path}")
                 return None
-            prefix = ''.join(m.groups()[:2])
+            prefix = "".join(m.groups()[:2])
             integer_part = m.groups()[2]
             next_integer = int(integer_part) + 1
             return f"{prefix}{next_integer}"
@@ -634,7 +524,9 @@ class ElanFile:
                         if primary_text:
                             break
                     else:
-                        logger.warning(f"primary text {id_} could not be retrieved, nor could {new_key} be retrieved")
+                        logger.warning(
+                            f"primary text {id_} could not be retrieved, nor could {new_key} be retrieved"
+                        )
                         return None
             return primary_text
 
@@ -647,7 +539,9 @@ class ElanFile:
                     new_key = increment_key(id_, "translation")
                     translation = d[new_key]
                 except KeyError:
-                    logger.warning(f"translation {id_} could not be retrieved, nor could {new_key} be retrieved")
+                    logger.warning(
+                        f"translation {id_} could not be retrieved, nor could {new_key} be retrieved"
+                    )
                     return None
             return translation
 
@@ -680,8 +574,12 @@ class ElanFile:
                     if charcount >= max_charcount:
                         max_charcount = charcount
                         translation_tiername_to_retain = tier
-                        translation_tier_to_retain = tmp_translations_dict[type_candidate][tier]
-            logger.info(f"  retaining {translation_tiername_to_retain} as the tier with most characters ({max_charcount})")
+                        translation_tier_to_retain = tmp_translations_dict[
+                            type_candidate
+                        ][tier]
+            logger.info(
+                f"  retaining {translation_tiername_to_retain} as the tier with most characters ({max_charcount})"
+            )
             translation_id_dict = translation_tier_to_retain
         except (ValueError, AttributeError, KeyError) as exc:
             raise EldpyError(f"No translations found in {self.path}", logger) from exc
@@ -695,10 +593,11 @@ class ElanFile:
             glosses_d = copy.deepcopy(self.glossed_sentences)
         except AttributeError as exc:
             raise EldpyError(
-                f"No glosses found in {self.path}. Try providing the tier type of the gloss tier explicitly", logger
+                f"No glosses found in {self.path}. Try providing the tier type of the gloss tier explicitly",
+                logger,
             ) from exc
         best_tier_ratio = 0
-        glosstiername_to_retain = ''
+        glosstiername_to_retain = ""
         glosstier_to_retain = {}
         # print(f"found {len(glosses_d)} possible gloss types")
         for type_candidate in glosses_d:
@@ -727,7 +626,10 @@ class ElanFile:
         # print(f"  retaining {glosstiername_to_retain} as the tier with most gloss diversity ({best_tier_ratio})")
         glosses = glosstier_to_retain
         if glosses is None:
-            raise EldpyError(f"Glosses could not be retrieved from {self.path} > {glosstiername_to_retain}", logger)
+            raise EldpyError(
+                f"Glosses could not be retrieved from {self.path} > {glosstiername_to_retain}",
+                logger,
+            )
         for g in glosses:
             if g == {}:
                 return ""
@@ -738,21 +640,23 @@ class ElanFile:
                 vernacular = tupl[0]
                 gloss = tupl[1]
                 if vernacular is None and gloss is None:
-                    #no need to act
+                    # no need to act
                     continue
                 if vernacular is None:
                     # raise EldpyError(f"empty transcription with gloss {tupl[0]}:{tupl[1]} in " , logger)
-                    logger.warning(f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting vernacular to ''")
+                    logger.warning(
+                        f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting vernacular to ''"
+                    )
                     vernacular = ""
                 if gloss is None:
                     # logger.warning(f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting gloss to ''")
                     gloss = ""
                 vernacular_subcells.append(vernacular)
                 gloss_subcells.append(gloss)
-            primary_text = get_transcription_text(transcription_id_dict , id_)
+            primary_text = get_transcription_text(transcription_id_dict, id_)
             if primary_text is None:
                 primary_text = "PRIMARY TEXT NOT RETRIEVED"
-            translation = get_translation_text(translation_id_dict , id_)
+            translation = get_translation_text(translation_id_dict, id_)
             if translation is None:
                 translation = "TRANSLATION NOT RETRIEVED"
 
@@ -791,7 +695,9 @@ class ElanFile:
             csv_writer.writerow(line)
         return cldfstringbuffer.getvalue()
 
-    def populate_glosses(self, candidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES): # pylint: disable=dangerous-default-value
+    def populate_glosses(
+        self, candidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES
+    ):  # pylint: disable=dangerous-default-value
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
 
         # def get_word_for_gloss(annotation_value, mapping):
@@ -849,7 +755,9 @@ class ElanFile:
                     except TypeError:
                         pass
                     except KeyError:
-                        logger.warning(f"tried to update non-existing word for gloss in {self.path} > {sentence_id}")
+                        logger.warning(
+                            f"tried to update non-existing word for gloss in {self.path} > {sentence_id}"
+                        )
                     continue
                 if sentence_id != current_sentence_id:
                     if current_sentence_id:
@@ -860,7 +768,9 @@ class ElanFile:
                     try:
                         d[sentence_id].append([word, gloss])
                     except KeyError:
-                        logger.warning(f"gloss with no parent {self.path} > {tier_id} > {annos[i].id_}")
+                        logger.warning(
+                            f"gloss with no parent {self.path} > {tier_id} > {annos[i].id_}"
+                        )
             new_glossed_sentences.append(d)
             return new_glossed_sentences
 
@@ -904,7 +814,7 @@ class ElanFile:
                     retrieved_glosstiers[candidate][tier_id] = get_glossed_sentences(
                         annotations
                     )
-        if len(retrieved_glosstiers)>0:
+        if len(retrieved_glosstiers) > 0:
             self.glossed_sentences = retrieved_glosstiers
         else:
             self.glossed_sentences = {}
@@ -946,7 +856,10 @@ class ElanFile:
             try:
                 constraint = tierconstraints[linguistic_type]
             except KeyError as exc:
-                raise EldpyError("reference to unknown LINGUISTIC_TYPE_ID  {linguistic_type} when establishing constraints in {self.path}", logger) from exc
+                raise EldpyError(
+                    "reference to unknown LINGUISTIC_TYPE_ID  {linguistic_type} when establishing constraints in {self.path}",
+                    logger,
+                ) from exc
             dico[parent_ref].append(
                 {"id": id_, "constraint": constraint, "ltype": linguistic_type}
             )
@@ -964,11 +877,6 @@ class ElanFile:
     # def annotation_time(self):
     #     self.annotation_time = 0
 
-    def readable_duration(self, seconds):
-        """return the duration in seconds in human readable format"""
-
-        return time.strftime("%H:%M:%S", time.gmtime(seconds))
-
     def get_timeslots(self):
         """
         Create a dictionary with time slot ID as keys and offset in ms as values
@@ -985,17 +893,10 @@ class ElanFile:
             timeslots = {}
         return timeslots
 
-    def get_alignable_annotations(self, root):
-        """
-        Create a dictionary with alignable annotations ID as keys and the elements themselves as values
-        """
-
-        aas = root.findall(".//ALIGNABLE_ANNOTATION")
-        return {aa.attrib["ANNOTATION_ID"]: aa for aa in aas}
-
-    def print_overview(self,
-                       # writer=sys.stdout
-                       ):  # FIXME print tier ID
+    def print_overview(
+        self,
+        # writer=sys.stdout
+    ):  # FIXME print tier ID
         """
         generate a report string with information about an eaf file
         """
@@ -1017,7 +918,7 @@ class ElanFile:
         duration_in_seconds = (last_timecode - first_timecode) / 1000
         if duration_in_seconds == 0:
             logger.warning(f"{self.path} has a duration of 0 seconds")
-        duration_timeslots = self.readable_duration(duration_in_seconds)
+        duration_timeslots = readable_duration(duration_in_seconds)
         translation_tier_names = list(self.translations.keys())
         translation_tier_names_string = ",".join(translation_tier_names)
         translated_sentence_count = 0
@@ -1141,7 +1042,7 @@ class ElanFile:
                 str(translated_char_count),
                 str(round(translated_word_count / translated_sentence_count, 2)),
                 str(round(translated_char_count / translated_word_count, 2)),
-                self.readable_duration(self.secondstranslated),
+                readable_duration(self.secondstranslated),
                 str(round(translated_sec_percentage, 2)),
                 # #
                 transcription_tier_names_string,
@@ -1150,7 +1051,7 @@ class ElanFile:
                 str(transcribed_char_count),
                 str(round(transcribed_word_count / transcribed_sentence_count, 2)),
                 str(round(transcribed_char_count / transcribed_word_count, 2)),
-                self.readable_duration(self.secondstranscribed),
+                readable_duration(self.secondstranscribed),
                 str(round(transcribed_sec_percentage, 2)),
                 # #
                 primary_gloss_tier_name,
