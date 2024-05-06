@@ -279,3 +279,116 @@ def get_transcription_text(transcription_id_dict, id_,timeslotted_reversedic):
                 )
                 return None
     return primary_text
+
+
+def get_translation_retain(tmp_translations_dict,logger=None):
+        translation_tier_to_retain = {}
+        translation_tiername_to_retain = ""
+        # print(f"found {len(tmp_translations_dict)} possible gloss types: {list(tmp_translations_dict.keys())}")
+        max_charcount = 0
+        for type_candidate in tmp_translations_dict:
+            # print(f" found {len(tmp_translations_dict[type_candidate])} possible tiers in {type_candidate}: {list(tmp_translations_dict[type_candidate])}")
+            for tier in tmp_translations_dict[type_candidate]:
+                # print(tier)
+                # pprint.pprint(tmp_translations_dict[type_candidate][tier].keys())
+                charcount = 0
+                for top_element in tmp_translations_dict[type_candidate][tier]:
+                    charcount += len(
+                        tmp_translations_dict[type_candidate][tier][top_element]
+                    )
+                # print(f"  tier {tier} has {charcount} characters. Current maximum is {max_charcount}")
+                if charcount >= max_charcount:
+                    max_charcount = charcount
+                    translation_tiername_to_retain = tier
+                    translation_tier_to_retain = tmp_translations_dict[
+                        type_candidate
+                    ][tier]
+        if logger:
+            logger.info(
+            f"  retaining {translation_tiername_to_retain} as the tier with most characters ({max_charcount})"
+        )
+        translation_id_dict = translation_tier_to_retain
+
+        return translation_tier_to_retain
+
+def get_glosstier_to_retain(glosses_d, provided_gloss_tier_name):
+    best_tier_ratio = 0
+    glosstiername_to_retain = ""
+    glosstier_to_retain = {}
+    # print(f"found {len(glosses_d)} possible gloss types")
+    for type_candidate in glosses_d:
+        # print(f" found {len(glosses_d[type_candidate])} possible tiers in {type_candidate}")
+        for tier in glosses_d[type_candidate]:
+            tier_glosses = []
+            for current_annotation in glosses_d[type_candidate][tier]:
+                for element in current_annotation:
+                    glosses = [x[1] for x in current_annotation[element]]
+                    tier_glosses += glosses
+            distinct_glosses = list(set(tier_glosses))
+            try:
+                ratio = len(distinct_glosses) / len(tier_glosses)
+            except ZeroDivisionError:
+                ratio = 0
+            # print(f"  tier {tier} has {ratio:.4f} gloss diversity")
+            if provided_gloss_tier_name and tier == provided_gloss_tier_name:
+                best_tier_ratio = 100
+                glosstiername_to_retain = tier
+                glosstier_to_retain = glosses_d[type_candidate][tier]
+                break
+            if ratio > best_tier_ratio:
+                best_tier_ratio = ratio
+                glosstiername_to_retain = tier
+                glosstier_to_retain = glosses_d[type_candidate][tier]
+    # print(f"  retaining {glosstiername_to_retain} as the tier with most gloss diversity ({best_tier_ratio})")
+    return glosstier_to_retain, glosstiername_to_retain
+
+
+def get_line(g,transcription_id_dict,timeslotted_reversedic,translation_id_dict,comments_id_dict,logger=None):
+    if g == {}:
+        return ["","","","","","",""]
+    vernacular_subcells = []
+    gloss_subcells = []
+    id_, word_gloss_list = g.popitem()
+    for tupl in word_gloss_list:
+        vernacular = tupl[0]
+        gloss = tupl[1]
+        if vernacular is None and gloss is None:
+            # no need to act
+            continue
+        if vernacular is None:
+            # raise EldpyError(f"empty transcription with gloss {tupl[0]}:{tupl[1]} in " , logger=logger)
+            if logger:
+                logger.warning(
+                    f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting vernacular to ''"
+                )
+            vernacular = ""
+        if gloss is None:
+            # logger.warning(f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting gloss to ''")
+            gloss = ""
+        vernacular_subcells.append(vernacular)
+        gloss_subcells.append(gloss)
+
+    primary_text = get_transcription_text(transcription_id_dict, id_,timeslotted_reversedic)
+    if primary_text is None:
+        primary_text = "PRIMARY TEXT NOT RETRIEVED"
+    translation = get_translation_text(translation_id_dict, id_)
+    if translation is None:
+        translation = "TRANSLATION NOT RETRIEVED"
+
+    primary_text_cell = primary_text or ""
+    vernacular_cell = "\t".join(vernacular_subcells) or ""
+    gloss_cell = "\t".join(gloss_subcells) or ""
+    translation_cell = translation or ""
+    comment = comments_id_dict.get(id_, "")
+    lgr_cell = "WORD_ALIGNED"
+    # FIXME check for morpheme alignment
+    line = [
+        id_,
+        primary_text_cell,
+        vernacular_cell,
+        gloss_cell,
+        translation_cell,
+        comment,
+        lgr_cell,
+    ]
+    return line
