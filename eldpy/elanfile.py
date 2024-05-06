@@ -27,6 +27,9 @@ from eldpy.helpers import (
     tier_to_id_wordlist,
     get_alignable_annotations,
     readable_duration,
+    get_zipfs,
+    get_words_from_transcription_tiers,
+    get_words_from_translation_tiers
 )
 
 
@@ -904,12 +907,23 @@ class ElanFile:
 
         filename = self.path.split("/")[-1]
         # outputstring = f"{filename[:4]}...{filename[-8:-4]}"
+        first_timecode = 0
+        last_timecode = 0
+        translated_sentence_count = 0
+        translated_word_count = 0
+        translated_char_count = 0
+        transcribed_sentence_count = 0
+        transcribed_word_count = 0
+        transcribed_char_count = 0
+        glossed_sentences_count = 0
+        gloss_count = 0
+        zipf1 = 0
+        zipf2 = 0
+
         try:
             sorted_timecodes = sorted([int(x) for x in self.timeslots.values()])
         except AttributeError:
             sorted_timecodes = [0, 0]
-        first_timecode = 0
-        last_timecode = 0
         try:
             first_timecode = sorted_timecodes[0]
             last_timecode = sorted_timecodes[-1]
@@ -921,19 +935,10 @@ class ElanFile:
         duration_timeslots = readable_duration(duration_in_seconds)
         translation_tier_names = list(self.translations.keys())
         translation_tier_names_string = ",".join(translation_tier_names)
-        translated_sentence_count = 0
-        translated_word_count = 0
-        translated_char_count = 0
-        if len(translation_tier_names) > 1:
-            logger.warning(f"{self.path} more than one translation tier found")
-        if len(translation_tier_names) > 0:
-            for translation_tier in self.translations:
-                for at_name in self.translations[translation_tier].values():
-                    for sentence in at_name:
-                        translated_sentence_count += 1
-                        words = sentence.split()
-                        translated_word_count += len(words)
-                        translated_char_count += sum(len(w) for w in words)
+        words, sentence_count = get_words_from_translation_tiers(translation_tier_names, self.translations, logger=logger)
+        translated_word_count += len(words)
+        translated_char_count += sum(len(w) for w in words)
+        translated_sentence_count += sentence_count
         try:
             translated_sec_percentage = (
                 self.secondstranslated * 100 / duration_in_seconds
@@ -941,21 +946,13 @@ class ElanFile:
         except ZeroDivisionError:
             translated_sec_percentage = -1
         transcription_tier_names = list(self.transcriptions.keys())
-        # primary_transcription_tier_name = ""
-        transcribed_sentence_count = 0
-        transcribed_word_count = 0
-        transcribed_char_count = 0
-        if len(transcription_tier_names) > 1:
-            logger.warning(f"{self.path} more than one transcription tier found")
         transcription_tier_names_string = ",".join(transcription_tier_names)
-        if len(transcription_tier_names) > 0:
-            for transcription_tier in self.transcriptions:
-                for at_name in self.transcriptions[transcription_tier].values():
-                    for sentence in at_name:
-                        transcribed_sentence_count += 1
-                        words = sentence.split()
-                        transcribed_word_count += len(words)
-                        transcribed_char_count += sum(len(w) for w in words)
+        # primary_transcription_tier_name = ""
+
+        words, sentence_count = get_words_from_transcription_tiers(transcription_tier_names, self.transcriptions, logger=logger)
+        transcribed_word_count += len(words)
+        transcribed_char_count += sum(len(w) for w in words)
+        transcribed_sentence_count += sentence_count
         try:
             transcribed_sec_percentage = (
                 self.secondstranscribed * 100 / duration_in_seconds
@@ -967,10 +964,6 @@ class ElanFile:
         except AttributeError:
             gloss_tier_names = []
         primary_gloss_tier_name = ""
-        glossed_sentences_count = 0
-        gloss_count = 0
-        zipf1 = 0
-        zipf2 = 0
         distinct_glosses = defaultdict(int)
         if len(gloss_tier_names) > 1:
             logger.warning(f"{self.path} more than one gloss tier found")
@@ -996,26 +989,7 @@ class ElanFile:
                             continue
                         gloss_count += 1
                         distinct_glosses[gloss] += 1
-        max_glosses = sorted(
-            [distinct_glosses[k] for k in distinct_glosses],
-            key=lambda x: x,
-            reverse=True,
-        )
-
-        try:
-            max1 = float(max_glosses[0])
-            max2 = float(max_glosses[1])
-        except IndexError:
-            max1 = False
-            max2 = False
-        try:
-            max3 = float(max_glosses[2])
-        except IndexError:
-            max3 = False
-        if max3:
-            zipf2 = max2 / max3
-        if max2:
-            zipf1 = max1 / max2
+        zipf1, zipf2 = get_zipfs(distinct_glosses)
         if translated_sentence_count == 0:
             translated_sentence_count = -1
         if translated_word_count == 0:

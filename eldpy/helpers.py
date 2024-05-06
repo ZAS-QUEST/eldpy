@@ -138,3 +138,53 @@ def readable_duration(seconds):
     """return the duration in seconds in human readable format"""
 
     return time.strftime("%H:%M:%S", time.gmtime(seconds))
+
+def get_zipfs(distinct_glosses):
+    max_glosses = sorted(
+        [distinct_glosses[k] for k in distinct_glosses],
+        key=lambda x: x,
+        reverse=True,
+    )
+    try:
+        max1 = float(max_glosses[0])
+        max2 = float(max_glosses[1])
+    except IndexError:
+        max1 = False
+        max2 = False
+    try:
+        max3 = float(max_glosses[2])
+    except IndexError:
+        max3 = False
+    if max3:
+        zipf2 = max2 / max3
+    if max2:
+        zipf1 = max1 / max2
+    return zipf1, zipf2
+
+def get_words_from_translation_tiers(translation_tier_names, translations, logger=None):
+    words = []
+    translated_sentence_count = 0
+    if len(translation_tier_names) > 1:
+        logger.warning(f"more than one translation tier found")
+    if len(translation_tier_names) > 0:
+        for translation_tier in translations:
+            for at_name in translations[translation_tier].values():
+                for sentence in at_name:
+                    translated_sentence_count += 1
+                    current_words = sentence.split()
+                    words += current_words
+    return words, translated_sentence_count
+
+def get_words_from_transcription_tiers(transcription_tier_names, transcriptions, logger=None):
+    words = []
+    transcribed_sentence_count = 0
+    if logger and len(transcription_tier_names) > 1:
+        logger.warning(f"more than one transcription tier found")
+    if len(transcription_tier_names) > 0:
+        for transcription_tier in transcriptions:
+            for at_name in transcriptions[transcription_tier].values():
+                for sentence in at_name:
+                    transcribed_sentence_count += 1
+                    current_words = sentence.split()
+                    words += current_words
+    return words, transcribed_sentence_count
