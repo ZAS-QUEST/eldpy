@@ -32,8 +32,9 @@ from eldpy.helpers import (
     get_words_from_translation_tiers,
     get_gloss_metadata,
     get_annotation_text_mapping,
-    increment_key,
-    get_translation_text
+    # increment_key,
+    get_translation_text,
+    get_transcription_text
 )
 
 
@@ -489,27 +490,6 @@ class ElanFile:
         Cross-Linguistic Data Format
         """
 
-        def get_transcription_text(d, id_):
-            """get the transcription for an annotation"""
-
-            try:
-                primary_text = d[id_]
-            except KeyError:
-                try:
-                    new_key = increment_key(id_, "primary text")
-                    primary_text = d[new_key]
-                except KeyError:
-                    # we try to retrieve a tier dependent on the ref tier which does have a primary text
-                    for v in self.timeslotted_reversedic[id_]:
-                        primary_text = transcription_id_dict.get(v)
-                        if primary_text:
-                            break
-                    else:
-                        logger.warning(
-                            f"primary text {id_} could not be retrieved, nor could {new_key} be retrieved"
-                        )
-                        return None
-            return primary_text
 
 
 
@@ -621,7 +601,7 @@ class ElanFile:
                     gloss = ""
                 vernacular_subcells.append(vernacular)
                 gloss_subcells.append(gloss)
-            primary_text = get_transcription_text(transcription_id_dict, id_)
+            primary_text = get_transcription_text(transcription_id_dict, id_,self.timeslotted_reversedic)
             if primary_text is None:
                 primary_text = "PRIMARY TEXT NOT RETRIEVED"
             translation = get_translation_text(translation_id_dict, id_)

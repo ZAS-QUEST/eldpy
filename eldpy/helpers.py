@@ -256,3 +256,26 @@ def get_translation_text(d, id_):
             )
             return None
     return translation
+
+
+def get_transcription_text(transcription_id_dict, id_,timeslotted_reversedic):
+    """get the transcription for an annotation"""
+
+    try:
+        primary_text = transcription_id_dict[id_]
+    except KeyError:
+        try:
+            new_key = increment_key(id_, "primary text")
+            primary_text = transcription_id_dict[new_key]
+        except KeyError:
+            # we try to retrieve a tier dependent on the ref tier which does have a primary text
+            for v in timeslotted_reversedic[id_]:
+                primary_text = transcription_id_dict.get(v)
+                if primary_text:
+                    break
+            else:
+                logger.warning(
+                    f"primary text {id_} could not be retrieved, nor could {new_key} be retrieved"
+                )
+                return None
+    return primary_text
