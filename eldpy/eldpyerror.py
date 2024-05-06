@@ -1,4 +1,5 @@
 class EldpyError(Exception):
-    def __init__(self, message, logger):
+    def __init__(self, message, logger=None):
         self.message = message
-        logger.error(self.message)
+        if logger:
+            logger.error(self.message)

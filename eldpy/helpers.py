@@ -217,3 +217,42 @@ def get_gloss_metadata(gloss_tier_tokens, logger=None):
     return distinct_glosses, len(distinct_glossed_sentences)
 
 
+
+
+def get_annotation_text_mapping(root):
+    if root is None:
+        return {}
+    textdic = {
+        ref_annotation.attrib.get("ANNOTATION_ID"): ref_annotation.find(
+            "./ANNOTATION_VALUE"
+        ).text
+        for ref_annotation in root.findall(".//REF_ANNOTATION")
+    }
+    return textdic
+
+
+def increment_key(s, tier_type):
+    """increment the integer value of an ID by 1"""
+    m = re.match("(a)(n*)([0-9]+)", s)
+    if not m:
+        logger.warning(f"{tier_type} {s} could not be retrieved in {self.path}")
+        return None
+    prefix = "".join(m.groups()[:2])
+    integer_part = m.groups()[2]
+    next_integer = int(integer_part) + 1
+    return f"{prefix}{next_integer}"
+
+def get_translation_text(d, id_):
+    """get the translation for an annotation"""
+    try:
+        translation = d[id_]
+    except KeyError:
+        try:
+            new_key = increment_key(id_, "translation")
+            translation = d[new_key]
+        except KeyError:
+            logger.warning(
+                f"translation {id_} could not be retrieved, nor could {new_key} be retrieved"
+            )
+            return None
+    return translation

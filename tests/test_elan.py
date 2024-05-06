@@ -164,7 +164,7 @@ def test_minimal(capsys):
     ef.populate()
     # with capsys.disabled():
     #     print(123)
-    #     print(ef.transcriptions.keys())
+    #     print(ef.translations)
     assert ef.transcriptions["po"]["tx@A"] == [
         "oino irore",
         "ire awu boe etore emaragodudö",

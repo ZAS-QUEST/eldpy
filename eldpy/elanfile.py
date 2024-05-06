@@ -7,8 +7,8 @@ import copy
 # import json
 import logging
 
-import pprint
-import re
+# import pprint
+# import re
 
 # import requests
 import csv
@@ -30,7 +30,10 @@ from eldpy.helpers import (
     get_zipfs,
     get_words_from_transcription_tiers,
     get_words_from_translation_tiers,
-    get_gloss_metadata
+    get_gloss_metadata,
+    get_annotation_text_mapping,
+    increment_key,
+    get_translation_text
 )
 
 
@@ -142,7 +145,7 @@ class ElanFile:
         try:
             root = etree.parse(self.path)
         except etree.XMLSyntaxError as exc:
-            raise EldpyError(f"the file {self.path} is not valid XML", logger) from exc
+            raise EldpyError(f"the file {self.path} is not valid XML", logger=logger) from exc
         return root
 
     # def analyze(self, fingerprint=False):
@@ -289,11 +292,6 @@ class ElanFile:
         glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,
         commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES,
         major_languages=["en"]
-        # spanish=False,
-        # french=False,
-        # indonesian=False,
-        # portuguese=False,
-        # russian=False,
     ):
         """
         fill all tiers which can be populated
@@ -306,11 +304,6 @@ class ElanFile:
         self.populate_translations(
             candidates=translationcandidates,
             major_languages=major_languages
-            # spanish=spanish,
-            # french=french,
-            # portuguese=portuguese,
-            # indonesian=indonesian,
-            # russian=russian,
         )
         self.populate_glosses(candidates=glosscandidates)
         self.populate_comments(candidates=commentcandidates)
@@ -383,11 +376,6 @@ class ElanFile:
         self,
         candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
         major_languages=["en"]
-        # spanish=False,
-        # french=True,
-        # indonesian=False,
-        # portuguese=False,
-        # russian=False,
     ):
         # pylint: disable=dangerous-default-value
         """fill the attribute translation with translations from the ELAN file"""
@@ -501,17 +489,6 @@ class ElanFile:
         Cross-Linguistic Data Format
         """
 
-        def increment_key(s, tier_type):
-            """increment the integer value of an ID by 1"""
-            m = re.match("(a)(n*)([0-9]+)", s)
-            if not m:
-                logger.warning(f"{tier_type} {s} could not be retrieved in {self.path}")
-                return None
-            prefix = "".join(m.groups()[:2])
-            integer_part = m.groups()[2]
-            next_integer = int(integer_part) + 1
-            return f"{prefix}{next_integer}"
-
         def get_transcription_text(d, id_):
             """get the transcription for an annotation"""
 
@@ -534,20 +511,7 @@ class ElanFile:
                         return None
             return primary_text
 
-        def get_translation_text(d, id_):
-            """get the translation for an annotation"""
-            try:
-                translation = d[id_]
-            except KeyError:
-                try:
-                    new_key = increment_key(id_, "translation")
-                    translation = d[new_key]
-                except KeyError:
-                    logger.warning(
-                        f"translation {id_} could not be retrieved, nor could {new_key} be retrieved"
-                    )
-                    return None
-            return translation
+
 
         lines = []
         tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_ids)
@@ -586,7 +550,7 @@ class ElanFile:
             )
             translation_id_dict = translation_tier_to_retain
         except (ValueError, AttributeError, KeyError) as exc:
-            raise EldpyError(f"No translations found in {self.path}", logger) from exc
+            raise EldpyError(f"No translations found in {self.path}", logger=logger) from exc
         tmp_comments_dict = copy.deepcopy(self.comments_with_ids)
         try:
             comments_id_dict = tmp_comments_dict.popitem()[1].popitem()[1]
@@ -647,7 +611,7 @@ class ElanFile:
                     # no need to act
                     continue
                 if vernacular is None:
-                    # raise EldpyError(f"empty transcription with gloss {tupl[0]}:{tupl[1]} in " , logger)
+                    # raise EldpyError(f"empty transcription with gloss {tupl[0]}:{tupl[1]} in " , logger=logger)
                     logger.warning(
                         f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting vernacular to ''"
                     )
@@ -704,40 +668,8 @@ class ElanFile:
     ):  # pylint: disable=dangerous-default-value
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
 
-        # def get_word_for_gloss(annotation_value, mapping):
-        #     """retrieve the parent annotation's text"""
-        #
-        #     # get the XML parent, called <REF_ANNOTATION>
-        #     ref_annotation = annotation_value.getparent()
-        #     # find the attributed called ANNOTATION_REF, which gives the ID of the referred annotation
-        #     annotation_ref = ref_annotation.attrib["ANNOTATION_REF"]
-        #     wordtext = mapping.get(annotation_ref, "")
-        #     return wordtext
 
-        def get_annotation_text_mapping(root):
-            # querystring = (
-            # ".//REF_ANNOTATION[@ANNOTATION_ID='%s']/ANNOTATION_VALUE" % annotation_ref
-            # )
 
-            if root is None:
-                return {}
-            textdic = {
-                ref_annotation.attrib.get("ANNOTATION_ID"): ref_annotation.find(
-                    "./ANNOTATION_VALUE"
-                ).text
-                for ref_annotation in root.findall(".//REF_ANNOTATION")
-            }
-            return textdic
-
-        # def get_parent_element_id_dic(root):
-        #     # querystring = (
-        #     # ".//REF_ANNOTATION[@ANNOTATION_ID='%s']/ANNOTATION_VALUE" % annotation_ref
-        #     # )
-        #     get_parent_element_id_dic = {
-        #         ref_annotation.attrib.get("ANNOTATION_ID"): ref_annotation.getparent()
-        #         for ref_annotation in root.findall(".//REF_ANNOTATION")
-        #     }
-        #     return get_parent_element_id_dic
 
         def get_glossed_sentences(annos):  # FIXME
             ws = [mapping.get(annotation.parent_id, "") for annotation in annos]
@@ -793,14 +725,6 @@ class ElanFile:
                 retrieved_glosstiers[candidate] = {}
                 for tier in glosstiers:
                     tier_id = tier.attrib["TIER_ID"]
-                    # parent_id = self.child_parent_dic[tier_id] #FIXME
-                    # parent_type = parent.attrib["LINGUISTIC_TYPE_REF"]
-                    # if not parent_type in ACCEPTABLE_WORD_TIER_TYPES:
-                    #     logger.warning(
-                    #     "%s: Type %s is not accepted for potential parent %s of gloss candidate %s" %
-                    #     (self.path, parent_type, parent_id, tier_id)
-                    #     )
-                    #     continue
                     annotations = [
                         annotation.Annotation(
                             el,
@@ -810,11 +734,6 @@ class ElanFile:
                         )
                         for el in tier.findall(".//ANNOTATION")
                     ]
-                    # try:
-                    # new_glossed_sentences = get_glossed_sentences(annotations)
-                    # except KeyError:
-                    # print("problematic parent relations in ", self.path, tier_id)
-                    # continue
                     retrieved_glosstiers[candidate][tier_id] = get_glossed_sentences(
                         annotations
                     )
@@ -862,24 +781,12 @@ class ElanFile:
             except KeyError as exc:
                 raise EldpyError(
                     "reference to unknown LINGUISTIC_TYPE_ID  {linguistic_type} when establishing constraints in {self.path}",
-                    logger,
+                    logger=logger,
                 ) from exc
             dico[parent_ref].append(
                 {"id": id_, "constraint": constraint, "ltype": linguistic_type}
             )
         self.tier_hierarchy = dico
-
-    # def translations_from_tiers(self):
-    #     self.translations = {}
-    #
-    # def transcriptions_from_tiers(self):
-    #     self.transcriptions = {}
-    #
-    # def glosses_from_tiers(self):
-    #     self.glosses = {}
-    #
-    # def annotation_time(self):
-    #     self.annotation_time = 0
 
     def get_timeslots(self):
         """
@@ -904,7 +811,7 @@ class ElanFile:
         """
         generate a report string with information about an eaf file
         """
-        # pylint: disable=use-implicit-booleaness-not-comparison
+        # pylint: disable=use-implicit-booleaness-not-comparison, , too-many-locals, too-many-statements
 
         filename = self.path.split("/")[-1]
         # outputstring = f"{filename[:4]}...{filename[-8:-4]}"
@@ -948,8 +855,6 @@ class ElanFile:
             translated_sec_percentage = -1
         transcription_tier_names = list(self.transcriptions.keys())
         transcription_tier_names_string = ",".join(transcription_tier_names)
-        # primary_transcription_tier_name = ""
-
         words, sentence_count = get_words_from_transcription_tiers(transcription_tier_names, self.transcriptions, logger=logger)
         transcribed_word_count += len(words)
         transcribed_char_count += sum(len(w) for w in words)
@@ -964,36 +869,7 @@ class ElanFile:
             gloss_tier_names = list(self.glossed_sentences.keys())
         except AttributeError:
             gloss_tier_names = []
-
-        # primary_gloss_tier_name = ""
-
-#         if len(gloss_tier_names) > 1:
-#             logger.warning(f"{self.path} more than one gloss tier found")
-#         if len(gloss_tier_names) > 0:
-#             gloss_tier_tokens = self.glossed_sentences[primary_gloss_tier_name]
-#             for at_name in gloss_tier_tokens.values():
-#                 for gloss_list in at_name:
-#                     glossed_sentences_count += 1
-#                     try:
-#                         tuples = list(gloss_list.values())[0]
-#                     except IndexError:
-#                         continue
-#                     gloss_count += len(tuples)
-#                     for t in tuples:
-#                         gloss = t[1]
-#                         if gloss is None:
-#                             continue
-#                         if gloss == "***":
-#                             continue
-#                         max_ascii = max(ord(c) for c in gloss)
-#                         if max_ascii < 65:  # we have no letters in gloss
-#                             continue
-#                         gloss_count += 1
-#                         distinct_glosses[gloss] += 1
-#
         primary_gloss_tier_name = gloss_tier_names[0]
-        # glossed_sentences_count = (self.glossed_sentences[primary_gloss_tier_name])
-        # print(primary_gloss_tier_name, self.glossed_sentences[primary_gloss_tier_name].keys())
         distinct_glosses, glossed_sentences_count  =  get_gloss_metadata(self.glossed_sentences[primary_gloss_tier_name],
                                                                         logger=logger)
 
