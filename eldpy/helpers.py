@@ -1,8 +1,7 @@
 import re
-
 import time
 from langdetect import detect_langs, lang_detect_exception
-
+from collections import defaultdict
 
 def tier_to_id_wordlist(t):
     """
@@ -188,3 +187,33 @@ def get_words_from_transcription_tiers(transcription_tier_names, transcriptions,
                     current_words = sentence.split()
                     words += current_words
     return words, transcribed_sentence_count
+
+
+def get_gloss_metadata(gloss_tier_tokens, logger=None):
+    glossed_sentences_count = 0
+    distinct_glosses = defaultdict(int)
+    distinct_glossed_sentences = {}
+    # if len(gloss_tier_names) > 1:
+    #     logger.warning(f"{self.path} more than one gloss tier found")
+    # if len(gloss_tier_names) > 0:
+    for at_name in gloss_tier_tokens.values():
+        glossed_sentences_count += len(at_name)
+        for gloss_list in at_name:
+            distinct_glossed_sentences[list(gloss_list.keys())[0]]  = True
+            try:
+                tuples = list(gloss_list.values())[0]
+            except IndexError:
+                continue
+            for t in tuples:
+                gloss = t[1]
+                if gloss is None:
+                    continue
+                if gloss == "***":
+                    continue
+                max_ascii = max(ord(c) for c in gloss)
+                if max_ascii < 65:  # we have no letters in gloss
+                    continue
+                distinct_glosses[gloss] += 1
+    return distinct_glosses, len(distinct_glossed_sentences)
+
+

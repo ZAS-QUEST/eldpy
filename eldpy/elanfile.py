@@ -7,7 +7,7 @@ import copy
 # import json
 import logging
 
-# import pprint
+import pprint
 import re
 
 # import requests
@@ -29,7 +29,8 @@ from eldpy.helpers import (
     readable_duration,
     get_zipfs,
     get_words_from_transcription_tiers,
-    get_words_from_translation_tiers
+    get_words_from_translation_tiers,
+    get_gloss_metadata
 )
 
 
@@ -963,32 +964,41 @@ class ElanFile:
             gloss_tier_names = list(self.glossed_sentences.keys())
         except AttributeError:
             gloss_tier_names = []
-        primary_gloss_tier_name = ""
-        distinct_glosses = defaultdict(int)
-        if len(gloss_tier_names) > 1:
-            logger.warning(f"{self.path} more than one gloss tier found")
-        if len(gloss_tier_names) > 0:
-            primary_gloss_tier_name = gloss_tier_names[0]
-            gloss_tier_tokens = self.glossed_sentences[primary_gloss_tier_name]
-            for at_name in gloss_tier_tokens.values():
-                for gloss_list in at_name:
-                    glossed_sentences_count += 1
-                    try:
-                        tuples = list(gloss_list.values())[0]
-                    except IndexError:
-                        continue
-                    gloss_count += len(tuples)
-                    for t in tuples:
-                        gloss = t[1]
-                        if gloss is None:
-                            continue
-                        if gloss == "***":
-                            continue
-                        max_ascii = max(ord(c) for c in gloss)
-                        if max_ascii < 65:  # we have no letters in gloss
-                            continue
-                        gloss_count += 1
-                        distinct_glosses[gloss] += 1
+
+        # primary_gloss_tier_name = ""
+
+#         if len(gloss_tier_names) > 1:
+#             logger.warning(f"{self.path} more than one gloss tier found")
+#         if len(gloss_tier_names) > 0:
+#             gloss_tier_tokens = self.glossed_sentences[primary_gloss_tier_name]
+#             for at_name in gloss_tier_tokens.values():
+#                 for gloss_list in at_name:
+#                     glossed_sentences_count += 1
+#                     try:
+#                         tuples = list(gloss_list.values())[0]
+#                     except IndexError:
+#                         continue
+#                     gloss_count += len(tuples)
+#                     for t in tuples:
+#                         gloss = t[1]
+#                         if gloss is None:
+#                             continue
+#                         if gloss == "***":
+#                             continue
+#                         max_ascii = max(ord(c) for c in gloss)
+#                         if max_ascii < 65:  # we have no letters in gloss
+#                             continue
+#                         gloss_count += 1
+#                         distinct_glosses[gloss] += 1
+#
+        primary_gloss_tier_name = gloss_tier_names[0]
+        # glossed_sentences_count = (self.glossed_sentences[primary_gloss_tier_name])
+        # print(primary_gloss_tier_name, self.glossed_sentences[primary_gloss_tier_name].keys())
+        distinct_glosses, glossed_sentences_count  =  get_gloss_metadata(self.glossed_sentences[primary_gloss_tier_name],
+                                                                        logger=logger)
+
+        distinct_gloss_count = len(distinct_glosses.keys())
+        gloss_count = sum (distinct_glosses.values())
         zipf1, zipf2 = get_zipfs(distinct_glosses)
         if translated_sentence_count == 0:
             translated_sentence_count = -1
@@ -1031,8 +1041,8 @@ class ElanFile:
                 primary_gloss_tier_name,
                 str(glossed_sentences_count),
                 str(gloss_count),
-                str(len(distinct_glosses)),
-                str(round(gloss_count / len(distinct_glosses), 2)),
+                str(distinct_gloss_count),
+                str(round(gloss_count / distinct_gloss_count, 2)),
                 str(round(zipf1, 2)),
                 str(round(zipf2, 2)),
                 str(empty_segment_count),
