@@ -33,11 +33,14 @@ from eldpy.helpers import (
     get_gloss_metadata,
     get_annotation_text_mapping,
     # increment_key,
-    get_translation_text,
-    get_transcription_text,
-    get_translation_retain,
+    # get_translation_text,
+    # get_transcription_text,
+    # get_translation_retain,
     get_glosstier_to_retain,
-    get_line
+    get_line,
+    get_transcription_id_dict,
+    get_comments_id_dict,
+    get_translation_id_dict
 )
 
 
@@ -492,32 +495,12 @@ class ElanFile:
         return a representation of the ELAN file in the
         Cross-Linguistic Data Format     """
 
-
-        lines = []
         tmp_transcription_dic = copy.deepcopy(self.transcriptions_with_ids)
-        d = {}
-        for candidate in tmp_transcription_dic:
-            for tier in tmp_transcription_dic[candidate]:
-                for tupl in tmp_transcription_dic[candidate][tier]:
-                    d[tupl[0]] = tupl[1]
-        transcription_id_dict = d
-
-        tmp_translations_dict = copy.deepcopy(self.translations_with_ids)
+        transcription_id_dict = get_transcription_id_dict(tmp_transcription_dic)
+        translation_id_dict =get_translation_id_dict(copy.deepcopy(self.translations_with_ids))
+        comments_id_dict = get_comments_id_dict(copy.deepcopy(self.comments_with_ids))
         try:
-            translation_tier_to_retain = get_translation_retain(tmp_translations_dict, logger=logger)
-            translation_id_dict=translation_tier_to_retain
-        except (ValueError, AttributeError, KeyError) as exc:
-            raise EldpyError(f"No translations found in {self.path}", logger=logger) from exc
-
-        tmp_comments_dict = copy.deepcopy(self.comments_with_ids)
-        try:
-            comments_id_dict = tmp_comments_dict.popitem()[1].popitem()[1]
-        except KeyError:
-            logger.info(f"no comments in {self.path}")
-            comments_id_dict = {}
-        try:
-            glosses_d = copy.deepcopy(self.glossed_sentences)
-            glosses, glosstiername_to_retain = get_glosstier_to_retain(glosses_d,provided_gloss_tier_name)
+            glosses, glosstiername_to_retain = get_glosstier_to_retain(copy.deepcopy(self.glossed_sentences),provided_gloss_tier_name)
         except AttributeError as exc:
             raise EldpyError(
                 f"No glosses found in {self.path}. Try providing the tier type of the gloss tier explicitly",
@@ -529,12 +512,13 @@ class ElanFile:
                 f"Glosses could not be retrieved from {self.path} > {glosstiername_to_retain}",
                 logger,
             )
+        lines = []
         for g in glosses:
-            line = get_line(g, transcription_id_dict, self.timeslotted_reversedic,translation_id_dict,comments_id_dict)
+            line = get_line(g, transcription_id_dict, self.timeslotted_reversedic,translation_id_dict,comments_id_dict,logger=logger)
              # ignore completely empty annotations
-            # if "".join(line[1:4]).strip() == "":
-            #     print(line)
-            #     continue
+            if "".join(line[1:4]).strip() == "":
+                print(line)
+                continue
             lines.append(line)
         if matrix:
             return lines

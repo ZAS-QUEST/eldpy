@@ -359,7 +359,7 @@ def get_line(g,transcription_id_dict,timeslotted_reversedic,translation_id_dict,
             # raise EldpyError(f"empty transcription with gloss {tupl[0]}:{tupl[1]} in " , logger=logger)
             if logger:
                 logger.warning(
-                    f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])} in {self.path}. Setting vernacular to ''"
+                    f"empty transcription with gloss {repr(tupl[0])}:{repr(tupl[1])}. Setting vernacular to ''"
                 )
             vernacular = ""
         if gloss is None:
@@ -392,3 +392,30 @@ def get_line(g,transcription_id_dict,timeslotted_reversedic,translation_id_dict,
         lgr_cell,
     ]
     return line
+
+def get_transcription_id_dict(tmp_transcription_dic):
+    transcription_id_dict = {}
+    for candidate in tmp_transcription_dic:
+        for tier in tmp_transcription_dic[candidate]:
+            for tupl in tmp_transcription_dic[candidate][tier]:
+                transcription_id_dict[tupl[0]] = tupl[1]
+    return transcription_id_dict
+
+def get_translation_id_dict(tmp_translations_dict,logger=None):
+    translation_id_dict = {}
+    try:
+        translation_tier_to_retain = get_translation_retain(tmp_translations_dict, logger=logger)
+        translation_id_dict=translation_tier_to_retain
+    except (ValueError, AttributeError, KeyError) as exc:
+        raise EldpyError(f"No translations found in {self.path}", logger=logger) from exc
+    return translation_id_dict
+
+def get_comments_id_dict(tmp_comments_dict,logger=None):
+    comments_id_dict = {}
+    try:
+        comments_id_dict = tmp_comments_dict.popitem()[1].popitem()[1]
+    except KeyError:
+        if logger:
+            logger.info(f"no comments")
+        comments_id_dict = {}
+    return tmp_comments_dict
