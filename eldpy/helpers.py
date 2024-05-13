@@ -405,7 +405,7 @@ def get_line(
     """
     compute one line for the output in a metadata sheet
     """
-
+    #pylint: disable=too-many-arguments
     if g == {}:
         return ["", "", "", "", "", "", ""]
     vernacular_subcells = []
@@ -438,8 +438,7 @@ def get_line(
     translation = get_translation_text(translation_id_dict, id_, logger=logger)
     if translation is None:
         translation = "TRANSLATION NOT RETRIEVED"
-
-    line = [
+    return [
         id_,
         primary_text or "",
         "\t".join(vernacular_subcells) or "",
@@ -448,7 +447,6 @@ def get_line(
         comments_id_dict.get(id_, ""),
         check_lgr_alignment(vernacular_subcells,gloss_subcells),
     ]
-    return line
 
 def check_lgr_alignment(vernaculars, glosses):
     """
