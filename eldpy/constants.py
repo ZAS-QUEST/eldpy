@@ -107,7 +107,7 @@ NER_BLACKLIST = [
 ]
 
 
-ACCEPTABLE_TRANSLATION_TIER_TYPES = [
+ACCEPTABLE_TRANSLATION_TIER_TYPES = (
     "eng",
     "english translation",
     "English translation",
@@ -150,10 +150,10 @@ ACCEPTABLE_TRANSLATION_TIER_TYPES = [
     "Translation",
     "xe",
     "翻译",
-]
+)
 
 
-ACCEPTABLE_TRANSCRIPTION_TIER_TYPES = [
+ACCEPTABLE_TRANSCRIPTION_TIER_TYPES = (
     "alfabetica",
     "arta",
     "Arta",
@@ -265,9 +265,9 @@ ACCEPTABLE_TRANSCRIPTION_TIER_TYPES = [
     "句子",
     "句子 ",
     "句子 ",
-]
+)
 
-ACCEPTABLE_WORD_TIER_TYPES = [
+ACCEPTABLE_WORD_TIER_TYPES = (
     "Word",
     "word",
     "Words",
@@ -284,9 +284,9 @@ ACCEPTABLE_WORD_TIER_TYPES = [
     "wordT",
     "word-txt",
     "morph-txt",
-]
+)
 
-ACCEPTABLE_GLOSS_TIER_TYPES = [
+ACCEPTABLE_GLOSS_TIER_TYPES = (
     "ge",
     "morph-item",
     "morph-gls",
@@ -297,11 +297,11 @@ ACCEPTABLE_GLOSS_TIER_TYPES = [
     "word",
     "word-gls",
     "gl (interlinear gloss)",
-]
+)
 
-ACCEPTABLE_COMMENT_TIER_TYPES = [
+ACCEPTABLE_COMMENT_TIER_TYPES = (
     "cm",
     "cmt",
     "comment"
-]
+)
 

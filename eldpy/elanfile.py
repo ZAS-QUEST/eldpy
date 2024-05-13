@@ -32,10 +32,6 @@ from eldpy.helpers import (
     get_words_from_translation_tiers,
     get_gloss_metadata,
     get_annotation_text_mapping,
-    # increment_key,
-    # get_translation_text,
-    # get_transcription_text,
-    # get_translation_retain,
     get_glosstier_to_retain,
     get_line,
     get_transcription_id_dict,
@@ -103,6 +99,7 @@ class ElanFile:
             for el in self.root.findall(".//ANNOTATION")
         }
         self.glossed_sentences = {}
+        logger.info({self.path})
 
     def __eq__(
         self, other
@@ -299,13 +296,13 @@ class ElanFile:
         translationcandidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
         glosscandidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES,
         commentcandidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES,
-        major_languages=["en"]
+        major_languages=("en",)
     ):
         """
         fill all tiers which can be populated
         """
 
-        # pylint: disable=dangerous-default-value,too-many-arguments
+        # pylint: disable=too-many-arguments
         self.populate_transcriptions(
             candidates=transcriptioncandidates, major_languages=major_languages
         )
@@ -338,10 +335,10 @@ class ElanFile:
     def populate_transcriptions(
         self,
         candidates=constants.ACCEPTABLE_TRANSCRIPTION_TIER_TYPES,
-        major_languages=["en"],
+        major_languages=("en",),
     ):
         """fill the attribute transcriptions with translations from the ELAN file"""
-        # pylint: disable=dangerous-default-value
+
 
         transcriptions = defaultdict(dict)
         transcriptions_with_ids = defaultdict(dict)
@@ -383,9 +380,9 @@ class ElanFile:
     def populate_translations(
         self,
         candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
-        major_languages=["en"]
+        major_languages=("en",)
     ):
-        # pylint: disable=dangerous-default-value
+
         """fill the attribute translation with translations from the ELAN file"""
 
         root = self.root
@@ -438,7 +435,7 @@ class ElanFile:
 
     def populate_comments(
         self, candidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES
-    ):  # pylint: disable=dangerous-default-value
+    ):
         """
         fill the attribute comment with comments from the ELAN file
         """
@@ -536,7 +533,7 @@ class ElanFile:
 
     def populate_glosses(
         self, candidates=constants.ACCEPTABLE_GLOSS_TIER_TYPES
-    ):  # pylint: disable=dangerous-default-value
+    ):
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
 
 
@@ -567,7 +564,8 @@ class ElanFile:
                     retrieved_glosstiers[candidate][tier_id] = get_glossed_sentences(
                         annotations,
                         self.timeslottedancestors,
-                        mapping
+                        mapping,
+                        logger=logger
                     )
         if len(retrieved_glosstiers) > 0:
             self.glossed_sentences = retrieved_glosstiers
