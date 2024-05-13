@@ -402,6 +402,10 @@ def get_line(
     comments_id_dict,
     logger=None,
 ):
+    """
+    compute one line for the output in a metadata sheet
+    """
+
     if g == {}:
         return ["", "", "", "", "", "", ""]
     vernacular_subcells = []
@@ -435,20 +439,14 @@ def get_line(
     if translation is None:
         translation = "TRANSLATION NOT RETRIEVED"
 
-    primary_text_cell = primary_text or ""
-    vernacular_cell = "\t".join(vernacular_subcells) or ""
-    gloss_cell = "\t".join(gloss_subcells) or ""
-    translation_cell = translation or ""
-    comment = comments_id_dict.get(id_, "")
-    lgr_cell = check_lgr_alignment(vernacular_subcells,gloss_subcells)
     line = [
         id_,
-        primary_text_cell,
-        vernacular_cell,
-        gloss_cell,
-        translation_cell,
-        comment,
-        lgr_cell,
+        primary_text or "",
+        "\t".join(vernacular_subcells) or "",
+        "\t".join(gloss_subcells) or "",
+        translation or "",
+        comments_id_dict.get(id_, ""),
+        check_lgr_alignment(vernacular_subcells,gloss_subcells),
     ]
     return line
 
