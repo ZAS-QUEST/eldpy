@@ -419,3 +419,44 @@ def get_comments_id_dict(tmp_comments_dict,logger=None):
             logger.info(f"no comments")
         comments_id_dict = {}
     return tmp_comments_dict
+
+
+
+def get_glossed_sentences(annos, timeslottedancestors,mapping):
+    ws = [mapping.get(annotation.parent_id, "") for annotation in annos]
+    ids = [
+        timeslottedancestors.get(annotation.id_, None)
+        for annotation in annos
+    ]
+    current_sentence_id = None
+    d = {}
+    new_glossed_sentences = []
+    for i, current_annotation in enumerate(annos):
+        gloss = annos[i].text
+        sentence_id = ids[i]
+        if current_annotation.previous_annotation_id is None:
+            word = ws[i]
+        else:
+            try:
+                d[sentence_id][-1][1] += gloss
+            except TypeError:
+                pass
+            except KeyError:
+                logger.warning(
+                    f"tried to update non-existing word for gloss {sentence_id}"
+                )
+            continue
+        if sentence_id != current_sentence_id:
+            if current_sentence_id:
+                new_glossed_sentences.append(d)
+            current_sentence_id = sentence_id
+            d = {sentence_id: [[word, gloss]]}
+        else:
+            try:
+                d[sentence_id].append([word, gloss])
+            except KeyError:
+                logger.warning(
+                    f"gloss with no parent {tier_id} > {annos[i].id_}"
+                )
+    new_glossed_sentences.append(d)
+    return new_glossed_sentences

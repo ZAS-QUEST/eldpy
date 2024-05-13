@@ -40,7 +40,8 @@ from eldpy.helpers import (
     get_line,
     get_transcription_id_dict,
     get_comments_id_dict,
-    get_translation_id_dict
+    get_translation_id_dict,
+    get_glossed_sentences
 )
 
 
@@ -359,12 +360,12 @@ class ElanFile:
             vernaculartiers = root.findall(querystring)
             for tier in vernaculartiers:
                 tier_id = tier.attrib["TIER_ID"]
-                wordlist = tier_to_wordlist(tier)  # FIXME avoid duplication
                 wordlist_with_ids = tier_to_id_wordlist(tier)
+                wordlist = [el[1] for el in wordlist_with_ids]
                 if wordlist == []:
                     continue
                 if is_id_tier(wordlist):
-                    # print("skipping ID tier")
+                    logger.info("skipping ID tier")
                     continue
                 if is_major_language(
                     wordlist, accepted_languages=major_languages, logger=logger
@@ -539,47 +540,6 @@ class ElanFile:
         """retrieve all glosses from an eaf file and map to text from parent annotation"""
 
 
-
-
-        def get_glossed_sentences(annos):  # FIXME
-            ws = [mapping.get(annotation.parent_id, "") for annotation in annos]
-            ids = [
-                self.timeslottedancestors.get(annotation.id_, None)
-                for annotation in annos
-            ]
-            current_sentence_id = None
-            d = {}
-            new_glossed_sentences = []
-            for i, current_annotation in enumerate(annos):
-                gloss = annos[i].text
-                sentence_id = ids[i]
-                if current_annotation.previous_annotation_id is None:
-                    word = ws[i]
-                else:
-                    try:
-                        d[sentence_id][-1][1] += gloss
-                    except TypeError:
-                        pass
-                    except KeyError:
-                        logger.warning(
-                            f"tried to update non-existing word for gloss in {self.path} > {sentence_id}"
-                        )
-                    continue
-                if sentence_id != current_sentence_id:
-                    if current_sentence_id:
-                        new_glossed_sentences.append(d)
-                    current_sentence_id = sentence_id
-                    d = {sentence_id: [[word, gloss]]}
-                else:
-                    try:
-                        d[sentence_id].append([word, gloss])
-                    except KeyError:
-                        logger.warning(
-                            f"gloss with no parent {self.path} > {tier_id} > {annos[i].id_}"
-                        )
-            new_glossed_sentences.append(d)
-            return new_glossed_sentences
-
         root = self.root
         if root is None:
             self.glossed_sentences = {}
@@ -605,7 +565,9 @@ class ElanFile:
                         for el in tier.findall(".//ANNOTATION")
                     ]
                     retrieved_glosstiers[candidate][tier_id] = get_glossed_sentences(
-                        annotations
+                        annotations,
+                        self.timeslottedancestors,
+                        mapping
                     )
         if len(retrieved_glosstiers) > 0:
             self.glossed_sentences = retrieved_glosstiers
