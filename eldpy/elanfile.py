@@ -43,14 +43,14 @@ from eldpy.helpers import (
 
 logging.basicConfig(filename="eldpy.log", level=logging.WARNING)
 logger = logging.getLogger("eldpy")
-
+logger.disabled = True
 
 class ElanFile:
     """A representation of an ELAN file"""
 
     def __init__(self, path, url, namespace=None):
-        logger.info("starting init")
         self.path = path
+        logger.info(f"starting init {self.path}")
         self.id_ = self.path.split("/")[-1]
         self.url = url
         self.namespace = namespace
@@ -697,15 +697,19 @@ class ElanFile:
             transcribed_sec_percentage = -1
         try:
             gloss_tier_names = list(self.glossed_sentences.keys())
-        except AttributeError:
-            gloss_tier_names = []
-        primary_gloss_tier_name = gloss_tier_names[0]
-        distinct_glosses, glossed_sentences_count  =  get_gloss_metadata(self.glossed_sentences[primary_gloss_tier_name],
+            primary_gloss_tier_name = gloss_tier_names[0]
+            distinct_glosses, glossed_sentences_count  =  get_gloss_metadata(self.glossed_sentences[primary_gloss_tier_name],
                                                                         logger=logger)
-
-        distinct_gloss_count = len(distinct_glosses.keys())
-        gloss_count = sum (distinct_glosses.values())
-        zipf1, zipf2 = get_zipfs(distinct_glosses)
+            distinct_gloss_count = len(distinct_glosses.keys()) or -1
+            gloss_count = sum (distinct_glosses.values())
+            zipf1, zipf2 = get_zipfs(distinct_glosses)
+        except (AttributeError, IndexError):
+            distinct_glosses = {}
+            gloss_count = 0
+            distinct_gloss_count = -1
+            zipf1 = 0
+            zipf2 = 0
+            primary_gloss_tier_name = ''
         if translated_sentence_count == 0:
             translated_sentence_count = -1
         if translated_word_count == 0:

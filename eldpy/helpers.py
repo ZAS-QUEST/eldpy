@@ -174,6 +174,8 @@ def get_zipfs(distinct_glosses):
         max3 = float(max_glosses[2])
     except IndexError:
         max3 = False
+    zipf1 = 0
+    zipf2 = 0
     if max3:
         zipf2 = max2 / max3
     if max2:
@@ -531,7 +533,7 @@ def get_glossed_sentences(annos, timeslottedancestors, mapping, logger=None):
     for i, current_annotation in enumerate(annos):
         gloss = annos[i].text
         sentence_id = ids[i]
-        if current_annotation.previous_annotation_id is None:
+        if getattr(current_annotation, "previous_annotation_id", None) is None:
             word = ws[i]
         else:
             try:
