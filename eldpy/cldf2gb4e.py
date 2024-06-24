@@ -49,15 +49,18 @@ def get_matrix_content_from_csv(filename,provided_title=""):
             matrix.append([ID,primary_text,analyzed_word,gloss,translation,comment])
     return matrix
 
-def get_tex_content_from_csv(filename,provided_title="", output_type="examples", orthographic_line=True):
+def get_tex_content_from_csv(filename,provided_title="", output_type="examples", orthographic_line=True,standalone=True):
     matrix = get_matrix_content_from_csv(filename,provided_title="")
-    return get_tex_content(matrix,provided_title=provided_title,output_type=output_type,orthographic_line=orthographic_line)
+    return get_tex_content(matrix,provided_title=provided_title,output_type=output_type,orthographic_line=orthographic_line,standalone=standalone)
 
 
-def get_tex_content(matrix,provided_title="",output_type="examples",orthographic_line=True):
+def get_tex_content(matrix,provided_title="",output_type="examples",orthographic_line=True,standalone=True):
     title = "\\title{%s}\date{}"%provided_title
     maketitle = "\maketitle"
-    resultstring = preamble % (title,maketitle)
+    if standalone:
+        resultstring = preamble % (title,maketitle)
+    else:
+        resultstring = ""
     vernaculars = []
     translations = []
     comments = []
@@ -96,7 +99,7 @@ def get_tex_content(matrix,provided_title="",output_type="examples",orthographic
             resultstring += ("\\z\n\n")
         if output_type == "lines":
             resultstring += ("\\verntrans{%s}{%s}\n" % (recomposed_vernacular_string,processed_translation))
-        if output_type in ["pages","columns"]:
+        if output_type in ["pages","columns", "translation"]:
             vernaculars.append(recomposed_vernacular_string)
             translations.append(processed_translation)
     if output_type == "columns":
@@ -160,11 +163,19 @@ def get_tex_content(matrix,provided_title="",output_type="examples",orthographic
         resultstring += ("\n".join(vernacular_cell))
         resultstring += ("\\newpage\n")
         resultstring += ("\n".join(translation_cell))
-    resultstring += (end_document)
+    if output_type == "translation":
+        translation_cell = []
+        for i,_ in enumerate(translations):
+            translation = translations[i]
+            translation_cell.append(translation)
+        resultstring += ("\n".join(translation_cell))
+    if standalone:
+        resultstring += (end_document)
     return(resultstring)
 
 
 if __name__ == "__main__":
+    standalone = False #FIXME
     examples = True
     output_type = "examples"
     orthographic_line = True
@@ -184,7 +195,7 @@ if __name__ == "__main__":
     filename = sys.argv[1]
     if not filename.endswith("csv"):
         print("please provide a file of type csv")
-    else:
-        tex_filemame = filename[0:-4]+".tex"
-        with open(tex_filemame, "w", encoding="utf-8") as tex_file:
-            tex_file.write(get_tex_content_from_csv(filename,provided_title=provided_title,output_type=output_type,orthographic_line=orthographic_line))
+        sys.exit()
+    tex_filename = filename[0:-4]+".tex"
+    with open(tex_filename, "w", encoding="utf-8") as tex_file:
+        tex_file.write(get_tex_content_from_csv(filename,provided_title=provided_title,output_type=output_type,orthographic_line=orthographic_line,standalone=standalone))

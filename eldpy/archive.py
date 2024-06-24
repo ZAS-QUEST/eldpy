@@ -11,6 +11,7 @@ import urllib
 from collections import Counter, defaultdict
 from lxml.html.soupparser import fromstring
 
+from bs4 import BeautifulSoup
 
 # from random import shuffle
 import matplotlib.pyplot as plt
@@ -18,8 +19,9 @@ from matplotlib import cm
 # import squarify
 from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
 
-from .collection import Collection
-from . import lod
+from collection import Collection
+# from . import lod
+import lod
 
 # from collections import defaultdict
 
@@ -78,7 +80,6 @@ class Archive:
                         for bundle in cached_links[collection]
                         for path in cached_links[collection][bundle]
                     ]
-
             if self.name == "ANLA":
                 # print("loading cached information")
                 try:
@@ -690,3 +691,88 @@ class Archive:
         print("  entities")
         self.write_entities_rdf()
         print("  done")
+
+    def get_elar_collections():
+        collections = []
+        for i in range(40):
+            catalogpage = f'https://www.elararchive.org/uncategorized/SO_5f038640-311d-4296-a3e9-502e8a18f5b7/?pg={i}'
+            with urlopen(catalogpage) as catalog_reader:
+                content = catalog_reader.read()
+                new_collection_links = get_elar_collection_links(content)
+                collections += new_collection_links
+        return collections
+
+    def get_elar_collection_links(page):
+        soup = BeautifulSoup(page, 'html.parser')
+        collection_links = [(a['href'], a.text) for h5 in soup.find_all('h5') for a in h5.find_all('a')]
+        return collection_links
+
+    def get_elar_bundles(collections):
+        elar_bundles = []
+        for collection in collections:
+            elar_bundles += get_collection_bundles(collection)
+
+    def get_bundles_on_page(soup):
+        return [(a['href'], a.text) for h5 in soup.find_all('h5') for a in h5.find_all('a')]
+
+    def get_files_on_page(soup):
+        return [(a['href'], a.text, a.findNext('div').text.strip()) for h5 in soup.find_all('h5') for a in h5.find_all('a')]
+
+    def get_collection_bundles(collection):
+        url = collection[0]
+        print(url)
+        with urlopen(url) as collection_reader:
+            content = collection_reader.read()
+            soup = BeautifulSoup(content, 'html.parser')
+            try:
+                limit = int(soup.find('div',class_='pagination').find_all('a')[-2].text)
+            except IndexError:
+                limit = 1
+            bundles = get_bundles_on_page(soup)
+            current = 2
+        while current <= limit:
+            current_url =  url + f"?pg={current}"
+            print(current_url)
+            with urlopen(current_url) as current_collection_reader:
+                current_content = current_collection_reader.read()
+                current_soup = BeautifulSoup(current_content, 'html.parser')
+                bundles += get_bundles_on_page(current_soup)
+            current += 1
+    return bundles
+
+    def get_files(bundle):
+        url = bundle[0]
+        print(url)
+
+        with urlopen(url) as bundle_reader:
+            try:
+                content = bundle_reader.read()
+            except urllib.error.HTTPError:
+                print (f"{url} could not be opened")
+                return []
+            soup = BeautifulSoup(content, 'html.parser')
+            try:
+                limit = int(soup.find('div',class_='pagination').find_all('a')[-2].text)
+            except IndexError:
+                limit = 1
+            files = get_files_on_page(soup)
+            current = 2
+        while current <= limit:
+            current_url =  url + f"?pg={current}"
+            print(current_url)
+            with urlopen(current_url) as current_file_reader:
+                current_content = current_file_reader.read()
+                current_soup = BeautifulSoup(current_content, 'html.parser')
+                files += get_bundles_on_page(current_soup)
+            current += 1
+        return files
+
+
+
+
+
+
+
+
+
+

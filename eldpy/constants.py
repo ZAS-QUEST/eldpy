@@ -200,6 +200,7 @@ ACCEPTABLE_TRANSCRIPTION_TIER_TYPES = (
     "sentence",
     "sentences",
     "speech",
+    "Speech",
     "Standardised-phonology",
     "Sumi",
     "t",  # check this
