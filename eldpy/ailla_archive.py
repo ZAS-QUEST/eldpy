@@ -5,12 +5,13 @@ import re
 import urllib
 import pprint
 import json
+import humanize
 
 from collections import Counter, defaultdict
 from bs4 import BeautifulSoup
 
 from ailla_collection import  AillaCollection
-# from ailla_bundle import  AillaBundle
+from ailla_bundle import  AillaBundle
 # from ailla_file import  AillaFile
 
 class AillaArchive:
@@ -64,6 +65,40 @@ class AillaArchive:
         # self.populate_files()
         # self.write_json(add='_f')
 
+    def json_run_showcase(self,file_limit=999999):
+        with open("showcase_ailla_copy_b.json") as json_in:
+            d = json.load(json_in)
+        for collection_name, collection_d in d.items():
+            collection_url = collection_d['url']
+            c = AillaCollection(collection_name, collection_url)
+            collection_bundles = []
+            for bundle_name, bundle_d in collection_d['bundles'].items():
+                bundle_url = bundle_d['url']
+                bundle_id = bundle_url.split('/')[-1]
+                b = AillaBundle(bundle_name, bundle_id)
+                b.populate_files()
+                collection_bundles.append(b)
+            c.bundles = collection_bundles
+            print(f" There are {len(c.bundles)} bundles")
+            self.collections.append(c)
+        self.write_json(add='_f')
+        self.report()
 
+
+    def report(self):
+        collections = self.collections
+        bundles = [b for c in collections for b in c.bundles]
+        files = [f for c in collections for b in c.bundles for f in b.files]
+        types = [f.type_ for f in files]
+        print(f"There are {len(collections)} collections")
+        print(f"There are {len(bundles)} bundles")
+        print(f"There are {len(files)} files")
+        types_d = defaultdict(int)
+        for f in files:
+            types_d[f.type_] += f.size
+        counter = Counter(types)
+        for k, v in counter.items():
+            readable_size = humanize.naturalsize(types_d[k])
+            print (f" {k} files: {v} ({readable_size} total)")
 
 

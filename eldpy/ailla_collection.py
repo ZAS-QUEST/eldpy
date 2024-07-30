@@ -19,16 +19,14 @@ class AillaCollection(Collection):
         j = json.loads(soup.find('script',type="application/json").text)
         try:
             folders = j['props']['pageProps']['data']['folders'][:hardlimit]
-            print(f"There are {len(folders)} bundles in {self.url}")
+            print(f" There are {len(folders)} bundles in {self.url}")
         except KeyError:
-            print(f"no data on {self.url}")
+            print(f" no data on {self.url}")
             self.bundles = []
             return
-        print(1)
         self.bundles = [AillaBundle(folder['title']['en'],
                                     folder['id']
                                     )
                     for folder
                     in folders]
-        print(2)
 

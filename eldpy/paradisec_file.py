@@ -1,0 +1,22 @@
+import requests
+
+class ParadisecFile:
+    def __init__(self, name, url, type_, size, duration):
+        self.name = name
+        self.url = url
+        self.type_ = type_
+        self.size = self.get_size(size)
+        self.duration = duration
+
+def get_size(self, s):
+    number, unit = s.split()
+    factor = 1
+    if unit == "KB":
+        factor = 1024
+    if unit == "MB":
+        factor = 1024**2
+    if unit == "GB":
+        factor = 1024**3
+    if unit == "TB":
+        factor = 1024**4
+    return int(float(number)*factor)
