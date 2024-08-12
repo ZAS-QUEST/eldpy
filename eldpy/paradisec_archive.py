@@ -69,7 +69,7 @@ class ParadisecArchive:
 
 
     def run(self):
-        # self.populate_collections()
+        self.populate_collections()
         # self.write_json(add='_c')
         with  open("paradisec_copy_b.json") as jin:
             s = jin.read()
@@ -77,31 +77,33 @@ class ParadisecArchive:
         for c_in in j:
             c_temp = ParadisecCollection(j[c_in]['name'], j[c_in]['url'])
             id_ = j[c_in]['url'].split('/')[-1]
-            print(id_)
-            with open(f"paradisecjson/{id_}.json") as bundle_in:
-                s2 = bundle_in.read()
-            j2 = json.loads(s2)
-            for bundle in j2['bundles']:
-                name = j2['bundles'][bundle]['name']
-                url = j2['bundles'][bundle]['url']
-                languages = j2['bundles'][bundle]['languages']
-                b = ParadisecBundle(name, url, languages)
-                files = []
-                for f in j2['bundles'][name]['files']:
-                    name = f['name']
-                    url = f['url']
-                    type_ = f['type_']
-                    duration = f['duration']
-                    size = f"{f['size']}B"
-                    if "\n" in name:
-                        continue
-                    files.append(ParadisecFile(name, url, type_, size, duration))
-                b.files = files
-                c_temp.bundles.append(b)
+        #     print(id_)
+        #     with open(f"paradisecjson/{id_}.json") as bundle_in:
+        #         s2 = bundle_in.read()
+        #     j2 = json.loads(s2)
+        #     for bundle in j2['bundles']:
+        #         name = j2['bundles'][bundle]['name']
+        #         url = j2['bundles'][bundle]['url']
+        #         languages = j2['bundles'][bundle]['languages']
+        #         b = ParadisecBundle(name, url, languages)
+        #         files = []
+        #         for f in j2['bundles'][name]['files']:
+        #             name = f['name']
+        #             url = f['url']
+        #             type_ = f['type_']
+        #             duration = f['duration']
+        #             size = f"{f['size']}B"
+        #             if "\n" in name:
+        #                 continue
+        #             files.append(ParadisecFile(name, url, type_, size, duration))
+        #         b.files = files
+        #         c_temp.bundles.append(b)
             self.collections.append(c_temp)
-        # self.populate_bundles()
-        # self.write_json(add='_b')
-        # self.populate_files(writeout=True)
+        # self.collections = self.collections[:4]
+        print(f"found {len(self.collections)} collections")
+        self.populate_bundles()
+        self.write_json(add='_b')
+        self.populate_files(writeout=True)
         self.write_json(add='_f')
 
 

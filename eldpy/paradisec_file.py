@@ -1,12 +1,13 @@
 import requests
 
 class ParadisecFile:
-    def __init__(self, name, url, type_, size, duration):
+    def __init__(self, name, url, type_, size, duration, languages):
         self.name = name
         self.url = url
         self.type_ = type_
         self.size = self.get_size(size)
         self.duration = duration
+        self.languages = languages
 
     def get_size(self, s):
         try:
