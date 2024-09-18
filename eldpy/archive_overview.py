@@ -1,7 +1,52 @@
 import json
+import sqlite3
 from collections import defaultdict
 import humanize
 import datetime
+
+
+iso_replacements=[
+    ("mul", '_', "multiple languages"),
+    ("awd", "Generic Arawakan", "Arawakan"),
+    ("sai", '_', "Generic South American"),
+    ("xep", "Isthmian Script", '_'),
+    ("tup", "Generic Tupi", "Tupian"),
+    ("zap", "Generic Zapotec", "Eastern Otomanguean"),
+    ("qwe", "Generic Quechuan", "Quechuan"),
+    ("zxx", '_', "Not a language"),
+    ("omq", "Generic Otomanguean", "Otomanguean"),
+    ("oto", "Oto-Pame", "Otomanguean"),
+    ("cba", "Generic Chibchan", "Chibchan"),
+    ("nah", "Generic Nahuatl", "Uto-Aztecan"),
+    ("sio", "Generic Siouan", "Siouan"),
+    ("alg", "Generic Algonquian", "Algonquian-Blackfoot"),
+    ("azc", "Generic Uto-Aztecan", "Uto-Aztecan"),
+    ("cai", '_', "Generic Central-American"),
+    ("nai", '_', "Generic North-American"),
+    ("zho", '_', "Generic Chinese"),
+    ("chi", '_', "Generic Chinese"),
+    ("myn", "Generic Mayan", "Mayan"),
+    ("swa", "Generic Swahili", "Benue-Congo"),
+    ("aym", "Generic Aymara", "Aymaran"),
+    ("hmo", "Hiri Motu", "Malayo-Polynesian (Main)"),
+    ("srp", "Serbian", "Classical Indo-European"),
+    ("hrv", "Croatian", "Classical Indo-European"),
+    ("est", "Estonian", "Classical Indo-European"),
+    ("msa", "Malay", "Malayo-Polynesian (Main)"),
+    ("zsm", "Malay", "Malayo-Polynesian (Main)"),
+    ("fas", "Persian", "Classical Indo-European"),
+    ("nep", "Nepali", "Classical Indo-European"),
+    ("ori", "Oriya", "Classical Indo-European"),
+    ("ase", "American Sign Language", "Sign language"),
+    ("fsl", "Langue des signes française", "Sign language"),
+    ("bal", "Balochi", "Classical Indo-European"),
+    ("pus", "Pashto", "Classical Indo-European"),
+    ("ara", "Arabic", "Semitic"),
+    ("twi", "Twi", "Kwa Volta-Congo"),
+    ("gba", "Gbaya", "Gbaya-Manza-Ngbaka"),
+    ("ful", "Fulfulde", "North-Central Atlantic"),
+    ("ger", "German", "Classical Indo-European")
+    ]
 
 
 
@@ -123,133 +168,159 @@ with open("mandanaunits.csv") as infile:
         lgd[language]={'family':family, 'unit':unit, 'iso6393':iso6393}
         isod[iso6393]={'family':family, 'unit':unit, 'name':language}
 
-
-with open("tla_copy_f.json") as infile:
-    j = json.loads(infile.read())
-
-for collection in j:
-    for bundle in j[collection]['bundles']:
-        for file_ in j[collection]['bundles'][bundle]['files']:
-            url = file_['url']
-            size = file_['size']
-            type_ = file_['type_'].lower()
-            if type_ == 'jpeg':
-                type_ = 'jpg'
-            if type_ == 'mpeg':
-                type_ = 'mpg'
-            if type_ not in "mpg mp4 mov avi wav mp3 xml eaf txt".split():
-                continue
-            languages = [x for field in file_['languages'] for x in field.split('\n')]
-            for language_in in languages:
-                language = round_trip(language_in)
-                try:
-                    unit = lgd[language]['unit']
-                except KeyError:
-                    unit = '_unknown'
-                if unit not in d:
-                    d[unit] = {'languages':{}}
-                try:
-                    d[unit][type_]['count'] += 1
-                    d[unit][type_]['size'] += size
-                except KeyError:
-                    d[unit][type_] = {'count': 1, 'size': size, 'duration': 0}
-                if language not in d[unit]['languages']:
-                    d[unit]['languages'][language] = {}
-                try:
-                    d[unit]['languages'][language][type_]['count'] += 1
-                    d[unit]['languages'][language][type_]['size'] += size
-                except KeyError:
-                    d[unit]['languages'][language][type_] = {'count': 1, 'size': size, 'duration': 0}
+iso_replacement_d = {t[0]: {'family':'_', 'unit':t[2], 'name':t[1]} for t in iso_replacements}
+isod.update(iso_replacement_d)
+language_replacement_d = {t[1]: {'family':'_', 'iso':t[0], 'unit':t[2]} for t in iso_replacements}
+for key in language_replacement_d:
+    if key in lgd:
+        continue
+    lgd[key] = language_replacement_d[key]
 
 
-with open("ailla_copy_f.json") as infile:
-    j = json.loads(infile.read())
+# CREATE TABLE delaman_report.files(ID TEXT, archive TEXT NOT NULL, collection TEXT NOT NULL, bundle TEXT, megatype TEXT, filetype TEXT NOT NULL, size int, length int, PRIMARY KEY (ID, archive));
 
-for collection in j:
-    for bundle in j[collection]['bundles']:
-        for file_ in j[collection]['bundles'][bundle]['files']:
-            url = file_['url']
-            size = file_['size']
-            type_ = file_['type_'].lower()
-            if type_ == 'jpeg':
-                type_ = 'jpg'
-            if type_ == 'mpeg':
-                type_ = 'mpg'
-            # if type_ not in "mpg mp4 mov avi wav mp3 xml eaf txt".split():
-            #     continue
-            languages = file_['languages']
-            for isocode in languages:
-                language  = iso2language_name(isocode)
-                try:
-                    unit = lgd[language]['unit']
-                except KeyError:
-                    unit = '_unknown'
-                if unit not in d:
-                    d[unit] = {'languages':{}}
-                try:
-                    d[unit][type_]['count'] += 1
-                    d[unit][type_]['size'] += size
-                except KeyError:
-                    d[unit][type_] = {'count': 1, 'size': size, 'duration': 0}
-                if language not in d[unit]['languages']:
-                    d[unit]['languages'][language] = {}
-                try:
-                    d[unit]['languages'][language][type_]['count'] += 1
-                    d[unit]['languages'][language][type_]['size'] += size
-                except KeyError:
-                    d[unit]['languages'][language][type_] = {'count': 1, 'size': size, 'duration': 0}
+# connection = sqlite3.connect('sqlite://delaman_report.db')
+# cursor = cnx.cursor()
+# # sql_insertstring = f"INSERT INTO files VALUES ({},{},{})")
+# # cursor.execute(sql_insertstring)
+# # sql_insert_many_list = [()]
+# # c.executemany("INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", sql_insert_many_list)
+# connection.commit()
+# connection.close()
 
 
-with open("paradisec_copy_f.json") as infile:
-    j = json.loads(infile.read())
-
-for collection in j:
-    for bundle in j[collection]['bundles']:
-        for file_ in j[collection]['bundles'][bundle]['files']:
-            url = file_['url']
-            size = file_['size']
-            type_ = file_['type_'].lower().split('/')[-1]
-            duration_tmp = file_['duration'].lower()
-            #convert to seconds
-            try:
-                duration = sum(x * float(t) for x, t in zip([1, 60, 3600], reversed(duration_tmp.split(":"))))
-            except ValueError:
-                duration = 0
-            if type_ == 'jpeg':
-                type_ = 'jpg'
-            if type_ == 'mpeg':
-                type_ = 'mpg'
-            if type_ == 'eaf+xml':
-                type_ = 'eaf'
-            if type_ == 'flextext+xml':
-                type_ = 'flex'
-            if type_ in 'png jpg tiff':
-                type_ = 'image'
-            if type_ not in "mpg mp4 mov avi wav mp3 xml eaf txt webm vnd.wav audio video text image flex".split():
-                continue
-            languages = file_['languages']
-            for isocode in languages:
-                language = iso2language_name(isocode)
-                try:
-                    unit = lgd[language]['unit']
-                except KeyError:
-                    unit = '_unknown'
-                if unit not in d:
-                    d[unit] = {'languages':{}}
-                try:
-                    d[unit][type_]['count'] += 1
-                    d[unit][type_]['size'] += size
-                    d[unit][type_]['duration'] += duration
-                except KeyError:
-                    d[unit][type_] = {'count': 1, 'size': size, 'duration': duration}
-                if language not in d[unit]['languages']:
-                    d[unit]['languages'][language] = {}
-                try:
-                    d[unit]['languages'][language][type_]['count'] += 1
-                    d[unit]['languages'][language][type_]['size'] += size
-                    d[unit]['languages'][language][type_]['duration'] += duration
-                except KeyError:
-                    d[unit]['languages'][language][type_] = {'count': 1, 'size': size, 'duration': duration}
+# with open("tla_copy_f.json") as infile:
+#     j = json.loads(infile.read())
+#
+# for collection in j:
+#     for bundle in j[collection]['bundles']:
+#         for file_ in j[collection]['bundles'][bundle]['files']:
+#             url = file_['url']
+#             size = file_['size']
+#             type_ = file_['type_'].lower()
+#             if type_ == 'jpeg':
+#                 type_ = 'jpg'
+#             if type_ == 'mpeg':
+#                 type_ = 'mpg'
+#             if type_ not in "mpg mp4 mov avi wav mp3 xml eaf txt".split():
+#                 continue
+#             languages = [x for field in file_['languages'] for x in field.split('\n')]
+#             for language_in in languages:
+#                 language = round_trip(language_in)
+#                 try:
+#                     unit = lgd[language]['unit']
+#                 except KeyError:
+#                     unit = '_unknown'
+#                 if unit not in d:
+#                     d[unit] = {'languages':{}}
+#                 try:
+#                     d[unit][type_]['count'] += 1
+#                     d[unit][type_]['size'] += size
+#                 except KeyError:
+#                     d[unit][type_] = {'count': 1, 'size': size, 'duration': 0}
+#                 if language not in d[unit]['languages']:
+#                     d[unit]['languages'][language] = {}
+#                 try:
+#                     d[unit]['languages'][language][type_]['count'] += 1
+#                     d[unit]['languages'][language][type_]['size'] += size
+#                 except KeyError:
+#                     d[unit]['languages'][language][type_] = {'count': 1, 'size': size, 'duration': 0}
+#
+#
+# with open("ailla_copy_f.json") as infile:
+#     j = json.loads(infile.read())
+#
+#
+#
+# for collection in j:
+#     for bundle in j[collection]['bundles']:
+#         for file_ in j[collection]['bundles'][bundle]['files']:
+#             url = file_['url']
+#             size = file_['size']
+#             type_ = file_['type_'].lower()
+#             if type_ == 'jpeg':
+#                 type_ = 'jpg'
+#             if type_ == 'mpeg':
+#                 type_ = 'mpg'
+#             # if type_ not in "mpg mp4 mov avi wav mp3 xml eaf txt".split():
+#             #     continue
+#             languages = file_['languages']
+#             for isocode in languages:
+#                 language  = iso2language_name(isocode)
+#                 try:
+#                     unit = lgd[language]['unit']
+#                 except KeyError:
+#                     unit = '_unknown'
+#                 if unit not in d:
+#                     d[unit] = {'languages':{}}
+#                 try:
+#                     d[unit][type_]['count'] += 1
+#                     d[unit][type_]['size'] += size
+#                 except KeyError:
+#                     d[unit][type_] = {'count': 1, 'size': size, 'duration': 0}
+#                 if language not in d[unit]['languages']:
+#                     d[unit]['languages'][language] = {}
+#                 try:
+#                     d[unit]['languages'][language][type_]['count'] += 1
+#                     d[unit]['languages'][language][type_]['size'] += size
+#                 except KeyError:
+#                     d[unit]['languages'][language][type_] = {'count': 1, 'size': size, 'duration': 0}
+#
+#
+# with open("paradisec_copy_f.json") as infile:
+#     j = json.loads(infile.read())
+#
+# for collection in j:
+#     for bundle in j[collection]['bundles']:
+#         for file_ in j[collection]['bundles'][bundle]['files']:
+#             url = file_['url']
+#             size = file_['size']
+#             type_ = file_['type_'].lower().split('/')[-1]
+#             duration_tmp = file_['duration'].lower()
+#             #convert to seconds
+#             try:
+#                 duration = sum(x * float(t) for x, t in zip([1, 60, 3600], reversed(duration_tmp.split(":"))))
+#             except ValueError:
+#                 duration = 0
+#             if type_ == 'jpeg':
+#                 type_ = 'jpg'
+#             if type_ == 'mpeg':
+#                 type_ = 'mpg'
+#             if type_ == 'eaf+xml':
+#                 type_ = 'eaf'
+#             if type_ == 'flextext+xml':
+#                 type_ = 'flex'
+#             if type_ in 'wav vnd.wav mp3'.split():
+#                 type_ = 'audio'
+#             if type_ in 'png jpg tiff'.split():
+#                 type_ = 'image'
+#             if type_ in 'mp4 mpg webm mov avi'.split():
+#                 type_ = 'video'
+#             if type_ not in "mpg mp4 mov avi wav mp3 xml eaf txt webm vnd.wav audio video text image flex".split():
+#                 continue
+#             languages = file_['languages']
+#             for isocode in languages:
+#                 language = iso2language_name(isocode)
+#                 try:
+#                     unit = lgd[language]['unit']
+#                 except KeyError:
+#                     unit = '_unknown'
+#                 if unit not in d:
+#                     d[unit] = {'languages':{}}
+#                 try:
+#                     d[unit][type_]['count'] += 1
+#                     d[unit][type_]['size'] += size
+#                     d[unit][type_]['duration'] += duration
+#                 except KeyError:
+#                     d[unit][type_] = {'count': 1, 'size': size, 'duration': duration}
+#                 if language not in d[unit]['languages']:
+#                     d[unit]['languages'][language] = {}
+#                 try:
+#                     d[unit]['languages'][language][type_]['count'] += 1
+#                     d[unit]['languages'][language][type_]['size'] += size
+#                     d[unit]['languages'][language][type_]['duration'] += duration
+#                 except KeyError:
+#                     d[unit]['languages'][language][type_] = {'count': 1, 'size': size, 'duration': duration}
 
 
 with open("thomasout.json") as infile:
@@ -263,7 +334,8 @@ with open("thomasout.json") as infile:
         imdi_lgs = ld.get('imdi.languageId', [])
         languages = [lg.split(':')[-1] for lg in imdi_lgs if ':' in lg]
         for type_ in types:
-            type_ = file_['type_'].lower()
+            type_ = type_.split('/')[0].lower()
+            # print(type_,imdi_lgs,size)
             if type_ == 'jpeg':
                 type_ = 'jpg'
             if type_ == 'mpeg':
@@ -298,15 +370,35 @@ with  open('report.txt', 'w', encoding='utf8') as out:
         out.write(f'\n{unit}: ')
         for field in d[unit]:
             if field != 'languages':
-                out.write(f'{field}:{d[unit][field]["count"]} ({humanize.naturalsize(d[unit][field]["size"])}) '.replace(' Bytes',''))
-        for language in d[unit]['languages']:
+                out.write(f'{field}:{d[unit][field]["count"]} '.replace(' Bytes',''))
+        for language in sorted(d[unit]['languages'].keys()):
             out.write(f'\n  {language}: ')
             for field2 in d[unit]['languages'][language]:
-                out.write(f'{field2}:{d[unit]["languages"][language][field2]["count"]} ({humanize.naturalsize(d[unit]["languages"][language][field2]["size"])}) '.replace(' Bytes',''))
+                out.write(f'{field2}:{d[unit]["languages"][language][field2]["count"]} '.replace(' Bytes',''))
                 if d[unit]["languages"][language][field2]["duration"] > 0:
                     out.write(f'[{datetime.timedelta(seconds = int(d[unit]["languages"][language][field2]["duration"]))}] ')
 
+with  open('report_units_elar.csv', 'w', encoding='utf8') as out:
+    out.write('Unit\tVideo\tSize\tDuration\tAudio\tSize\tDuration\tEAF\tSize\tDuration\tXML\tSize\tDuration')
+    for unit in sorted(d.keys()):
+        out.write(f'\n{unit}\t')
+        for field in 'video audio eaf xml'.split():
+            try:
+                out.write(f'{d[unit][field]["count"]}\t{d[unit][field]["size"]}\t{int(d[unit][field]["duration"])}\t')
+            except KeyError:
+                out.write('\t\t\t')
 
+with  open('report_lgs_elar.csv', 'w', encoding='utf8') as out:
+    out.write('Language\tVideo\tSize\tDuration\tAudio\tSize\tDuration\tEAF\tSize\tDuration\tXML\tSize\tDuration')
+    for unit in sorted(d.keys()):
+        for language in d[unit]['languages']:
+            out.write(f'\n{language}\t')
+            current_lg = d[unit]['languages'][language]
+            for field in 'video audio eaf xml'.split():
+                try:
+                    out.write(f'{current_lg[field]["count"]}\t{current_lg[field]["size"]}\t{int(current_lg[field]["duration"])}\t')
+                except KeyError:
+                    out.write('\t\t\t')
 
 
 
