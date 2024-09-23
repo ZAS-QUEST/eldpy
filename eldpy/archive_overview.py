@@ -113,6 +113,10 @@ explict_matches={
     'Saami, Skolt':'sms',
     'Sami, Skolt':'sms',
     'Sami,Skolt':'sms',
+    'Saami, Inari':'smn',
+    'Saami, North':'sme',
+    'Saami, Pite':'sje',
+    'Saami, South':'sma',
     'Chadian Arabic (Dakara dialect)':'shu',
     'Lacandón':'lac',
     'Maya, Yucatán':'yua',
@@ -159,6 +163,25 @@ explict_matches={
     'Yurakaré':'yuz',
     'Yuracare':'yuz',
     'Malay':'zsm',
+    "Anta": "tci",
+    "Batek Deq": "btq",
+    "BatekTeh": "btq",
+    "Bilinarra": "nbj",
+    "Hakhi": "njb",
+    "Isubu": "szv",
+    "Kaili": "kzf",
+    "Kentaq Bukit Asu": "",
+    "Kuikuro ": "kui",
+    "Mawng": "mph",
+    "Monguor": "mjg",
+    "Nama": "naq",
+    "Semnam Air Bah": "ssm",
+    "TRUMAI": "tpy",
+    "Unknown": "und",
+    "Unspecified": "und",
+    "Warta Thuntai": "gnt",
+    "Wèré": "wei",
+    "Fulfulde": "fub"
     }
 
 def round_trip(language_string):
@@ -185,7 +208,11 @@ with open("mandanaunits.csv") as infile:
         family, unit, language, iso6393 = line.strip().split('\t')
         lgd[language]={'family':family, 'unit':unit, 'iso6393':iso6393}
         isod[iso6393]={'family':family, 'unit':unit, 'name':language}
-
+lgd['Huitoto'] = {'family':'Huitotoan', 'unit':'Huitotoan', 'iso6393':'hto'}
+lgd['Huitoto buue'] = {'family':'Huitotoan', 'unit':'Huitotoan', 'iso6393':'hto'}
+for em in explict_matches:
+    # print(em, explict_matches[em])
+    lgd[em] = {'family':'unknown', 'unit':'unknown', 'iso6393':explict_matches[em]}
 iso_replacement_d = {t[0]: {'family':'_', 'unit':t[2], 'name':t[1]} for t in iso_replacements}
 isod.update(iso_replacement_d)
 language_replacement_d = {t[1]: {'family':'_', 'iso':t[0], 'unit':t[2]} for t in iso_replacements}
@@ -219,8 +246,14 @@ for collection in j:
             #     continue
             languages = [x for field in file_['languages'] for x in field.split('\n')]
             for language_in in languages:
-                language = round_trip(language_in)
-                file2language_manylist.append((id_, archive, language))
+                # print(lgd['Yurakaré'])
+                try:
+                    iso = lgd[language_in]['iso6393']
+                    language = round_trip(language_in)
+                    file2language_manylist.append((id_, archive, iso))
+                except KeyError:
+                    pass
+                    # print(language_in)
 #                 # try:
 #                 #     unit = lgd[language]['unit']
 #                 # except KeyError:
@@ -264,7 +297,7 @@ for collection in j:
             languages = file_['languages']
             for isocode in languages:
                 language  = iso2language_name(isocode)
-                file2language_manylist.append((id_,archive, language))
+                file2language_manylist.append((id_,archive, isocode))
                 # try:
                 #     unit = lgd[language]['unit']
 #                 except KeyError:
@@ -327,7 +360,7 @@ for collection in j:
             languages = file_['languages']
             for isocode in languages:
                 language = iso2language_name(isocode)
-                file2language_manylist.append((id_, archive, language))
+                file2language_manylist.append((id_, archive, isocode))
 #                 try:
 #                     unit = lgd[language]['unit']
 #                 except KeyError:
@@ -438,13 +471,13 @@ connection = sqlite3.connect('/home/snordhoff/git/eldpy/eldpy/delaman_report.db'
 cursor = connection.cursor()
 # sql_insertstring = f"INSERT INTO files VALUES ({},{},{})")
 # cursor.execute(sql_insertstring)
-sql_insert_many_list = [(1,2,3,4,5,6,7,8),(9,8,9,0,1,2,3,4)]
+# sql_insert_many_list = [(1,2,3,4,5,6,7,8),(9,8,9,0,1,2,3,4)]
 # pprint.pprint(manylist)
-for ml in manylist:
-    try:
-        cursor.execute("INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", ml)
-    except sqlite3.IntegrityError:
-        pass
+# for ml in manylist:
+#     try:
+#         cursor.execute("INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", ml)
+#     except sqlite3.IntegrityError:
+#         pass
         # print(ml)
 for mlg in set(file2language_manylist):
     try:
