@@ -2,6 +2,7 @@ import re
 import urllib
 import pprint
 import json
+import sqlite3
 import humanize
 import requests
 from collections import Counter, defaultdict
@@ -124,6 +125,83 @@ class ParadisecArchive:
         with open(f'paradisec_copy{add}.json', 'w') as jsonout:
             jsonout.write(json.dumps(archive_dict, indent=4, sort_keys=True))
 
+
+
+    def insert_into_database(self, db_name='test.db'):
+        insert_file_list = []
+        insert_language_list = []
+        found_ids = {}
+        with open("paradisec_copy_f.json") as json_in:
+            d = json.load(json_in)
+        for collection_name, collection_d in d.items():
+            collection_has_duplicates = False
+            for bundle_name, bundle_d in collection_d['bundles'].items():
+                for f in bundle_d['files']:
+                    id_ = f['name']
+                    if " files" in id_:
+                        continue
+                    if not id_:
+                        continue
+                    type_ = f['type_']
+                    try:
+                        megatype, tmptype = type_.split('/')
+                        if tmptype == 'pfsx+xml':
+                            continue
+                        if tmptype == 'flextext+xml':
+                            megatype = 'xml'
+                        if tmptype == 'eaf+xml':
+                            megatype = 'xml'
+                        if tmptype == 'pdf':
+                            megatype = 'text'
+                        if tmptype == 'x-iso9660-image':
+                            megatype = 'image'
+                        if tmptype == 'pdf':
+                            megatype = 'text'
+                        if tmptype == 'vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                            continue
+                        if tmptype == 'vnd.oasis.opendocument.spreadsheet':
+                            continue
+                        if tmptype == 'vnd.openxmlformats-officedocument.wordprocessingml.document':
+                            megatype = 'text'
+                        if tmptype == 'vnd.oasis.opendocument.text':
+                            megatype = 'text'
+                        if tmptype == 'mxf':
+                            megatype = 'video'
+                    except IndexError:
+                        megatype = None
+                    size = f['size']
+                    duration = f.get('duration','').strip()
+                    if duration in ('', '--'):
+                        length = 0
+                    else:
+                        h, m, s = duration.split(':')
+                        length = float(s) + 60*int(m) +60*60*int(h)
+                    if found_ids.get(id_):
+                        if found_ids[id_] > 1:
+                            collection_has_duplicates = True
+                        found_ids[id_] += 1
+                        continue
+                    found_ids[id_] = 1
+                    insert_file_tuple = (id_, "Paradisec", collection_name, bundle_name, megatype, type_, size, length)
+                    insert_file_list.append(insert_file_tuple)
+                    for language in f['languages']:
+                        insert_language_tuple = (id_,"Paradisec",language)
+                        insert_language_list.append(insert_language_tuple)
+            if collection_has_duplicates:
+                print(f"{collection_name} has duplicates:", end="\n    ")
+                print(','.join([id_.strip() for id_ in found_ids if found_ids[id_]>1]))
+                found_ids = {}
+        connection = sqlite3.connect(db_name)
+        cursor = connection.cursor()
+        cursor.executemany("INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", insert_file_list)
+        cursor.executemany("INSERT INTO languagesfiles VALUES(?,?,?)", set(insert_language_list))
+        connection.commit()
+        connection.close()
+
+
 if __name__ == "__main__":
     pa = ParadisecArchive()
-    pa.run()
+    pa.insert_into_database()
+
+
+
