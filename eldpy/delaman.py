@@ -3,82 +3,17 @@ import sqlite3
 from archive import Archive
 from phyla import phyla
 from tla_sizes import tla_sizes
+from ailla_archive import AillaArchive
+from elar_archive import ElarArchive
+from paradisec_archive import ParadisecArchive
+from tla_archive import TLAArchive
 
 archives = {
-    "ANLA": Archive(
-        "ANLA",
-        "https://www.uaf.edu/anla/collections/",
-        collectionprefix="https://uafanlc.alaska.edu/Online",
-        landingpage_template = "https://www.uaf.edu/anla/collections/search/resultDetail.xml?resource=%s"
-    ),
-    "PARADISEC": Archive(
-        "PARADISEC",
-        "https://catalog.paradisec.org.au/",
-        collectionprefix="http://catalog.paradisec.org.au/repository",
-        collection_url_template="http://catalog.paradisec.org.au/repository/%s/%s/%s",
-        landingpage_template = "https://catalog.paradisec.org.au/collections/%s"
-    ),
-    "ELAR": Archive(
-        "ELAR",
-        "elar.soas.ac.uk",
-        collectionprefix="https://elar.soas.ac.uk/Collection/",
-        collection_url_template="https://elar.soas.ac.uk/Collection/%s",
-        landingpage_template = "https://elar.soas.ac.uk/Collection/%s"
-    ),
-    "TLA": Archive(
-        "TLA",
-        "https://archive.mpi.nl",
-        collectionprefix="https://archive.mpi.nl/islandora/object/",
-        collection_url_template="https://archive.mpi.nl/islandora/object/%s",
-        landingpage_template = "https://archive.mpi.nl/islandora/object/%s"
-    ),
-    "AILLA": Archive(
-        "AILLA",
-        "https://ailla.utexas.org",
-        collectionprefix="https://ailla.utexas.org/islandora/object/",
-        collection_url_template="https://ailla.utexas.org/islandora/object/%s",
-        landingpage_template = "https://ailla.utexas.org/islandora/object/%s"
-    ),
-}
-
-
-
-testarchives = {
-    "ANLA2": Archive(
-        "ANLA2",
-        "https://www.uaf.edu/anla/collections/",
-        collectionprefix="https://uafanlc.alaska.edu/Online",
-        landingpage_template = "https://www.uaf.edu/anla/collections/search/resultDetail.xml?resource=%s"
-    ),
-    "PARADISEC2": Archive(
-        "PARADISEC2",
-        "https://catalog.paradisec.org.au/",
-        collectionprefix="http://catalog.paradisec.org.au/repository",
-        collection_url_template="http://catalog.paradisec.org.au/repository/%s/%s/%s",
-        landingpage_template = "https://catalog.paradisec.org.au/collections/%s"
-    ),
-    "ELAR2": Archive(
-        "ELAR2",
-        "elar.soas.ac.uk",
-        collectionprefix="https://elar.soas.ac.uk/Collection/",
-        collection_url_template="https://elar.soas.ac.uk/Collection/%s",
-        landingpage_template = "https://elar.soas.ac.uk/Collection/%s"
-    ),
-    "TLA2": Archive(
-        "TLA2",
-        "https://archive.mpi.nl",
-        collectionprefix="https://archive.mpi.nl/islandora/object/",
-        collection_url_template="https://archive.mpi.nl/islandora/object/%s",
-        landingpage_template = "https://archive.mpi.nl/islandora/object/%s"
-    ),
-    "AILLA2": Archive(
-        "AILLA2",
-        "https://ailla.utexas.org",
-        collectionprefix="https://ailla.utexas.org/islandora/object/",
-        collection_url_template="https://ailla.utexas.org/islandora/object/%s",
-        landingpage_template = "https://ailla.utexas.org/islandora/object/%s"
-    ),
-}
+    "PARADISEC": ParadisecArchive(),
+    "AILLA": AillaArchive(),
+    "ELAR": ElarArchive(),
+    "TLA": TLAArchive()
+    }
 
 def setup_metadata_database(db_name='delaman_holdings.db'):
     connection = sqlite3.connect(db_name)
@@ -214,7 +149,7 @@ def populate_tla_sizes(db_name='delaman_holdings.db'):
     connection = sqlite3.connect(db_name)
     cursor = connection.cursor()
     size_by_id_list = []
-    for tuple_ in tla_sizes
+    for tuple_ in tla_sizes:
         id_=f"tla%3A{id_[4:]}"
         size_by_id_list.append((size,id_))
         for element in size_by_id_list:
@@ -225,4 +160,5 @@ def populate_tla_sizes(db_name='delaman_holdings.db'):
 
 
 if __name__ == "__main__":
-    populate_tla_sizes('test.db')
+    setup_metadata_database(db_name='test.db')
+    # populate_tla_sizes(db_name='test.db')
