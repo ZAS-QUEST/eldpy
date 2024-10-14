@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 
 from archive import Archive
 from phyla import phyla
@@ -11,14 +12,13 @@ from tla_archive import TLAArchive
 archives = {
     "PARADISEC": ParadisecArchive(),
     "AILLA": AillaArchive(),
-    "ELAR": ElarArchive(),
+    # "ELAR": ElarArchive(),
     "TLA": TLAArchive()
     }
 
 def setup_metadata_database(db_name='delaman_holdings.db'):
     connection = sqlite3.connect(db_name)
     cursor = connection.cursor()
-
     files_table_string = """CREATE TABLE files(id TEXT,
                                         archive TEXT NOT NULL,
                                         collection TEXT NOT NULL,
@@ -145,20 +145,17 @@ def populate_phyla(db_name='delaman_holdings.db'):
     connection.close()
 
 
-def populate_tla_sizes(db_name='delaman_holdings.db'):
-    connection = sqlite3.connect(db_name)
-    cursor = connection.cursor()
-    size_by_id_list = []
-    for tuple_ in tla_sizes:
-        id_=f"tla%3A{id_[4:]}"
-        size_by_id_list.append((size,id_))
-        for element in size_by_id_list:
-            cursor.execute('update files set size=? where ID=? and archive="TLA"', element)
-    connection.commit()
-    connection.close()
-
-
 
 if __name__ == "__main__":
-    setup_metadata_database(db_name='test.db')
-    # populate_tla_sizes(db_name='test.db')
+    try:
+        db_name = sys.argv[1]
+    except IndexError:
+        db_name = 'test.db'
+    print("setting up tables")
+    setup_metadata_database(db_name=db_name)
+    populate_phyla(db_name=db_name)
+    print("ingesting archives")
+    for archive_name in archives:
+        archive = archives[archive_name]
+        print("ingesting", archive_name)
+        archive.insert_into_database(db_name=db_name)
