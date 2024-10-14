@@ -170,7 +170,7 @@ if __name__ == "__main__":
     print("setting up tables")
     setup_metadata_database(db_name=given_db_name)
     populate_phyla(db_name=given_db_name)
-    # print("ingesting archives")
-    # for archive_name, archive in archives.items():
-    #     print("ingesting", archive_name)
-    #     archive.insert_into_database(db_name=given_db_name)
+    print("ingesting archives")
+    for archive_name, archive in archives.items():
+        print(" ingesting", archive_name)
+        archive.insert_into_database(f"{archive_name.lower()}_copy_f.json", db_name=given_db_name)

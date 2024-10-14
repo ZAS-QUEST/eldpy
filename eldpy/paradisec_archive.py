@@ -15,9 +15,9 @@ from paradisec_collection import ParadisecCollection
 from helpers import type2megatype
 # from paradisec_bundle import ParadisecBundle
 # from paradisec_file import ParadisecFile
+from archive import Archive
 
-
-class ParadisecArchive:
+class ParadisecArchive(Archive):
     """
     an instance of Pacific and Regional Archive for Digital Sources in Endangered Cultures
     """
@@ -26,6 +26,7 @@ class ParadisecArchive:
         self.collections = []
         self.bundles = []
         self.files = []
+        self.name = "PARADISEC"
 
     def populate_collections(self, hardlimit=1000):
         """
@@ -153,77 +154,38 @@ class ParadisecArchive:
         with open(f"paradisec_copy{add}.json", "w", encoding='utf8') as jsonout:
             jsonout.write(json.dumps(archive_dict, indent=4, sort_keys=True))
 
-    def insert_into_database(self, db_name="test.db"):
-        """
-        read the json file and insert it into a sqlite3 database
-        """
-        insert_file_list = []
-        insert_language_list = []
-        found_ids = {}
-        with open("paradisec_copy_f.json", encoding='utf8') as json_in:
-            d = json.load(json_in)
-        for collection_name, collection_d in d.items():
-            collection_has_duplicates = False
-            for bundle_name, bundle_d in collection_d["bundles"].items():
-                for f in bundle_d["files"]:
-                    id_ = f["name"]
-                    if " files" in id_:
-                        continue
-                    if not id_:
-                        continue
-                    type_ = f["type_"]
-                    try:
-                        megatype, tmptype = type_.split("/")
-                        megatype = type2megatype(tmptype)
-                    except IndexError:
-                        megatype = ''
-                    size = f["size"]
-                    duration = f.get("duration", "").strip()
-                    if duration in ("", "--"):
-                        length = 0
-                    else:
-                        h, m, s = duration.split(":")
-                        length = float(s) + 60 * int(m) + 60 * 60 * int(h)
-                    if found_ids.get(id_):
-                        if found_ids[id_] > 1:
-                            collection_has_duplicates = True
-                        found_ids[id_] += 1
-                        continue
-                    found_ids[id_] = 1
-                    insert_file_tuple = (
-                        id_,
-                        "Paradisec",
-                        collection_name,
-                        bundle_name,
-                        megatype,
-                        type_,
-                        size,
-                        length,
-                    )
-                    insert_file_list.append(insert_file_tuple)
-                    for language in f["languages"]:
-                        insert_language_tuple = (id_, "Paradisec", language)
-                        insert_language_list.append(insert_language_tuple)
-            if collection_has_duplicates:
-                print(f"{collection_name} has duplicates:", end="\n    ")
-                print(
-                    ",".join(
-                        [id_ for id_, occurences in found_ids.items() if occurences > 1]
-                    )
-                )
-                found_ids = {}
-        connection = sqlite3.connect(db_name)
-        cursor = connection.cursor()
-        cursor.executemany(
-            "INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", insert_file_list
-        )
-        cursor.executemany(
-            "INSERT INTO languagesfiles VALUES(?,?,?)", set(insert_language_list)
-        )
-        connection.commit()
-        connection.close()
+    def get_id(self, f):
+        id_ = f["name"]
+        if " files" in id_:
+            return None
+        if not id_:
+            return None
+        return id_
+
+    def get_megatype(self, type_):
+        try:
+            tmptype = type_.split("/")[1]
+            megatype = type2megatype(tmptype)
+        except IndexError:
+            megatype = ''
+        return megatype
+
+    def get_type(self, type_):
+        return type_.split("/")[1]
+
+    def get_length(self, f):
+        duration = f.get("duration", "").strip()
+        if duration in ("", "--"):
+            length = 0
+        else:
+            h, m, s = duration.split(":")
+            length = float(s) + 60 * int(m) + 60 * 60 * int(h)
+        return length
+
+
+
 
 
 if __name__ == "__main__":
     pa = ParadisecArchive()
-    pa.insert_into_database()
+    pa.insert_into_database("paradisec_copy_f.json")

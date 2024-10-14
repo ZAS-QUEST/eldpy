@@ -594,6 +594,7 @@ def type2megatype(t):
         "pdf": "text",
         "vnd.openxmlformats-officedocument.wordprocessingml.document": "text",
         "vnd.oasis.opendocument.text": "text",
+        "vnd.wav": "audio",
         "mxf": "video",
         "mpeg": "video",
         "m4a": "audio",

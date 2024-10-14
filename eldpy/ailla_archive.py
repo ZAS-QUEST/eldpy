@@ -1,5 +1,5 @@
 """
-instances of the Archive of the Indigenous Languages of Latin America
+instances of Pacific and Regional Archive for Digital Sources in Endangered Cultures
 """
 
 import json
@@ -16,13 +16,13 @@ import requests
 # from bs4 import BeautifulSoup
 
 from ailla_collection import AillaCollection
-
+from archive import Archive
 # from ailla_bundle import AillaBundle
 
 # from ailla_file import  AillaFile
 
 
-class AillaArchive:
+class AillaArchive(Archive):
     """
     An instance of the Archive of the Indigenous Languages of Latin America
     """
@@ -31,6 +31,7 @@ class AillaArchive:
         self.collections = []
         self.bundles = []
         self.files = []
+        self.name = "AILLA"
 
     def populate_collections(self, hardlimit=10000):
         """
@@ -49,17 +50,17 @@ class AillaArchive:
             name = collection["title"]["en"]
             self.collections.append(AillaCollection(name, url))
 
-    def populate_bundles(self, hardlimit=10000):
-        """
-        get all bundles for the collections
-        """
-
-        print("populating bundles")
-        for collection in self.collections:
-            print(collection.name)
-            if collection.bundles == []:
-                collection.populate_bundles(hardlimit=hardlimit)
-            self.bundles += collection.bundles
+    # def populate_bundles(self, hardlimit=10000):
+    #     """
+    #     get all bundles for the collections
+    #     """
+    #
+    #     print("populating bundles")
+    #     for collection in self.collections:
+    #         print(collection.name)
+    #         if collection.bundles == []:
+    #             collection.populate_bundles(hardlimit=hardlimit)
+    #         self.bundles += collection.bundles
 
     def write_json(self, add=""):
         """
@@ -119,66 +120,17 @@ class AillaArchive:
     #         readable_size = humanize.naturalsize(types_d[k])
     #         print(f" {k} files: {v} ({readable_size} total)")
 
-    def insert_into_database(self, db_name="test.db"):
-        """
-        read the json file and insert it into a sqlite3 database
-        """
+    def get_megatype(self, type_):
+        return type_
 
-        insert_file_list = []
-        insert_language_list = []
-        found_ids = {}
-        with open("ailla_copy_f.json", encoding="utf8") as json_in:
-            d = json.load(json_in)
-        for collection_name, collection_d in d.items():
-            collection_has_duplicates = False
-            for bundle_name, bundle_d in collection_d["bundles"].items():
-                for f in bundle_d["files"]:
-                    id_ = f["url"].split("/")[-4].strip()
-                    if not id_:
-                        continue
-                    type_ = f["type_"]
-                    size = f["size"]
-                    length = 0
-                    if found_ids.get(id_):
-                        if found_ids[id_] > 1:
-                            collection_has_duplicates = True
-                        found_ids[id_] += 1
-                        continue
-                    found_ids[id_] = 1
-                    insert_file_tuple = (
-                        id_,
-                        "AILLA",
-                        collection_name,
-                        bundle_name,
-                        type_,
-                        type_,
-                        size,
-                        length,
-                    )
-                    insert_file_list.append(insert_file_tuple)
-                    for language in f["languages"]:
-                        insert_language_tuple = (id_, "AILLA", language)
-                        insert_language_list.append(insert_language_tuple)
-            if collection_has_duplicates:
-                print(f"{collection_name} has duplicates:", end="\n    ")
-                print(
-                    ",".join(
-                        [id_ for id_, occurences in found_ids.items() if occurences > 1]
-                    )
-                )
-                found_ids = {}
-        connection = sqlite3.connect(db_name)
-        cursor = connection.cursor()
-        cursor.executemany(
-            "INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", insert_file_list
-        )
-        cursor.executemany(
-            "INSERT INTO languagesfiles VALUES(?,?,?)", set(insert_language_list)
-        )
-        connection.commit()
-        connection.close()
+    def get_length(self, f):
+        return 0
+
+    def get_id(self, f):
+        return f["url"].split("/")[-4].strip()
 
 
 if __name__ == "__main__":
     aa = AillaArchive()
-    aa.insert_into_database()
+    # aa.populate_bundles()
+    aa.insert_into_database("ailla_copy_f.json")
