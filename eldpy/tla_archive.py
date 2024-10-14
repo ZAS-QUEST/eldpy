@@ -4,14 +4,16 @@ import pprint
 import json
 import humanize
 import requests
+import sqlite3
+
 from collections import Counter, defaultdict
 from bs4 import BeautifulSoup
 
 from tla_collection import  TLACollection
 from tla_bundle import  TLABundle
 from tla_file import  TLAFile
-
-
+from helpers import type2megatype, language_dictionary
+from tla_sizes import tla_sizes
 
 class TLAArchive:
 
@@ -86,3 +88,72 @@ class TLAArchive:
             archive_dict[collection.name] = collection_dict
         with open(f'tla_copy{add}.json', 'w') as jsonout:
             jsonout.write(json.dumps(archive_dict, indent=4, sort_keys=True))
+
+
+    def insert_into_database(self, db_name='test.db'):
+        insert_file_list = []
+        insert_language_list = []
+        found_ids = {}
+        with open("tla_copy_f.json") as json_in:
+            d = json.load(json_in)
+        for collection_name, collection_d in d.items():
+            collection_has_duplicates = False
+            # collection_url = collection_d['url']
+            # c = AillaCollection(collection_name, collection_url)
+            # collection_bundles = []
+            for bundle_name, bundle_d in collection_d['bundles'].items():
+                # bundle_url = bundle_d['url']
+                # bundle_id = bundle_url.split('/')[-1]
+                # b = AillaBundle(bundle_name, bundle_id)
+                for f in bundle_d['files']:
+                    id_ = f['url'].split('/')[-1].strip().replace('%3A',':')
+                    if not id_:
+                        continue
+                    type_ = f['type_']
+                    megatype = type2megatype(type_)
+                    size = tla_sizes.get(id_, 0)
+                    length = 0
+                    if found_ids.get(id_):
+                        if found_ids[id_] > 1:
+                            collection_has_duplicates = True
+                        found_ids[id_] += 1
+                        continue
+                    found_ids[id_] = 1
+                    insert_file_tuple = (id_, "TLA", collection_name, bundle_name, type_, megatype,size,length)
+                    insert_file_list.append(insert_file_tuple)
+                    try:
+                        languages = f['languages'][0].split('\n')
+                    except IndexError:
+                        languages  = []
+                    for language in languages:
+                        try:
+                            iso6393 = language_dictionary[language]['iso6393']
+                        except KeyError:
+                            # print(f"{language} not found in language dictionary")
+                            iso6393 = ''
+                        insert_language_tuple = (id_,"TLA",iso6393)
+                        insert_language_list.append(insert_language_tuple)
+            if collection_has_duplicates:
+                print(f"{collection_name} has duplicates:", end="\n    ")
+                print(','.join([id_ for id_ in found_ids if found_ids[id_]>1]))
+                found_ids = {}
+        connection = sqlite3.connect(db_name)
+        cursor = connection.cursor()
+        for f in insert_file_list:
+            try:
+                cursor.execute("INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", f)
+            except sqlite3.IntegrityError:
+                print(f"skipping {f} as the ID is already present in the database")
+        for l in insert_language_list:
+            try:
+                cursor.execute("INSERT INTO languagesfiles VALUES(?,?,?)", l)
+            except sqlite3.IntegrityError:
+                print(f"skipping {l} as this combination is already present in the database")
+        connection.commit()
+        connection.close()
+
+
+if __name__ == "__main__":
+    ta = TLAArchive()
+    ta.insert_into_database()
+
