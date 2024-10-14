@@ -1,9 +1,13 @@
+"""
+model the Digital Endangered Languages and Musics Archives Network and its member archives
+"""
+
 import sqlite3
 import sys
 
-from archive import Archive
+# from archive import Archive
 from phyla import phyla
-from tla_sizes import tla_sizes
+# from tla_sizes import tla_sizes
 from ailla_archive import AillaArchive
 from elar_archive import ElarArchive
 from paradisec_archive import ParadisecArchive
@@ -13,10 +17,15 @@ archives = {
     "PARADISEC": ParadisecArchive(),
     "AILLA": AillaArchive(),
     # "ELAR": ElarArchive(),
-    "TLA": TLAArchive()
-    }
+    "TLA": TLAArchive(),
+}
 
-def setup_metadata_database(db_name='delaman_holdings.db'):
+
+def setup_metadata_database(db_name="delaman_holdings.db"):
+    """
+    setup the bare database with basic tables and views but no content
+    """
+
     connection = sqlite3.connect(db_name)
     cursor = connection.cursor()
     files_table_string = """CREATE TABLE files(id TEXT,
@@ -61,7 +70,9 @@ def setup_metadata_database(db_name='delaman_holdings.db'):
             else:
                 operator = "sum"
                 column = type_
-            view_creation_string = (view_creation_template.format(type_, dimension, operator, column))
+            view_creation_string = view_creation_template.format(
+                type_, dimension, operator, column
+            )
             cursor.execute(view_creation_string)
 
     global_language_files_report_string = """CREATE VIEW iso_language_files_report AS
@@ -95,7 +106,7 @@ def setup_metadata_database(db_name='delaman_holdings.db'):
                             """
     cursor.execute(global_language_files_report_string)
 
-    #FIXME needs outer join
+    # FIXME needs outer join
     phylum_report_string = """CREATE view phylum_report AS
                                 SELECT   phylum,
                                          family,
@@ -114,7 +125,7 @@ def setup_metadata_database(db_name='delaman_holdings.db'):
                                 GROUP BY phylum;"""
     cursor.execute(phylum_report_string)
 
-    #FIXME needs outer join
+    # FIXME needs outer join
     language_report_string = """CREATE view language_report AS
                                     SELECT phyla.isocode,
                                             name,
@@ -136,26 +147,30 @@ def setup_metadata_database(db_name='delaman_holdings.db'):
     connection.commit()
     connection.close()
 
-def populate_phyla(db_name='delaman_holdings.db'):
+
+def populate_phyla(db_name="delaman_holdings.db"):
+    """
+    insert information about languages, phyla, families and isocodes
+    """
+
     connection = sqlite3.connect(db_name)
     cursor = connection.cursor()
-    insert_matrix = [(t[2],t[1],t[0],t[3]) for t in phyla]
+    insert_matrix = [(t[2], t[1], t[0], t[3]) for t in phyla]
     cursor.executemany("INSERT INTO phyla VALUES(?,?,?,?)", insert_matrix)
     connection.commit()
     connection.close()
 
 
-
 if __name__ == "__main__":
+    given_db_name = "test.db"
     try:
-        db_name = sys.argv[1]
+        given_db_name = sys.argv[1]
     except IndexError:
-        db_name = 'test.db'
+        pass
     print("setting up tables")
-    setup_metadata_database(db_name=db_name)
-    populate_phyla(db_name=db_name)
-    print("ingesting archives")
-    for archive_name in archives:
-        archive = archives[archive_name]
-        print("ingesting", archive_name)
-        archive.insert_into_database(db_name=db_name)
+    setup_metadata_database(db_name=given_db_name)
+    populate_phyla(db_name=given_db_name)
+    # print("ingesting archives")
+    # for archive_name, archive in archives.items():
+    #     print("ingesting", archive_name)
+    #     archive.insert_into_database(db_name=given_db_name)

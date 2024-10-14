@@ -407,7 +407,7 @@ def get_line(
     """
     compute one line for the output in a metadata sheet
     """
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     if g == {}:
         return ["", "", "", "", "", "", ""]
     vernacular_subcells = []
@@ -448,8 +448,9 @@ def get_line(
         "\t".join(gloss_subcells) or "",
         translation or "",
         comments_id_dict.get(id_, ""),
-        check_lgr_alignment(vernacular_subcells,gloss_subcells),
+        check_lgr_alignment(vernacular_subcells, gloss_subcells),
     ]
+
 
 def check_lgr_alignment(vernaculars, glosses):
     """
@@ -461,7 +462,7 @@ def check_lgr_alignment(vernaculars, glosses):
     tier is morpheme-aligned
     """
 
-    assert len(vernaculars)==len(glosses)
+    assert len(vernaculars) == len(glosses)
     for i, _ in enumerate(vernaculars):
         if get_signature(vernaculars[i]) != get_signature(glosses[i]):
             return "WORD_ALIGNED"
@@ -474,7 +475,7 @@ def get_signature(s):
     return a string collating all of them in order
     """
 
-    return ''.join([ch if ch in "-=" else "" for ch in s])
+    return "".join([ch if ch in "-=" else "" for ch in s])
 
 
 def get_transcription_id_dict(tmp_transcription_dic):
@@ -565,52 +566,51 @@ def get_glossed_sentences(annos, timeslottedancestors, mapping, logger=None):
 
 
 def type2megatype(t):
-    megatype_d = {"jpg" : "image",
-              "png" : "image",
-              "image" : "image",
-              "mpg" : "video",
-              "avi" : "video",
-              "mov" : "video",
-              "mp4" : "video",
-              "video" : "video",
-              "wav" : "audio",
-              "mp3" : "audio",
-              "audio" : "audio",
-              "xml" : "xml",
-              "eaf" : "xml",
-              "flextext" : "xml",
-              "txt" : "text",
-              "trs" : "text",
-                "flextext+xml": "xml",
-                "eaf+xml": "xml",
-                "eaf": "xml",
-                "pdf": "text",
-                "x-iso9660-image": "image",
-                "pdf": "text",
-                "vnd.openxmlformats-officedocument.wordprocessingml.document": "text",
-                "vnd.oasis.opendocument.text": "text",
-                "txt": "text",
-                "mxf": "video",
-                "mpg": "video",
-                "mpeg": "video",
-                "mp4": "video",
-                "wav": "audio",
-                "m4a": "audio",
-                "png": "image",
-                "tif": "image"
-                    }
-    return megatype_d.get(t, '')
+    """
+    match a file type with a file type category, such
+    as "audio" or "video"
+    """
+
+    megatype_d = {
+        "jpg": "image",
+        "png": "image",
+        "image": "image",
+        "mpg": "video",
+        "avi": "video",
+        "mov": "video",
+        "mp4": "video",
+        "video": "video",
+        "wav": "audio",
+        "mp3": "audio",
+        "audio": "audio",
+        "xml": "xml",
+        "flextext": "xml",
+        "txt": "text",
+        "trs": "text",
+        "flextext+xml": "xml",
+        "eaf+xml": "xml",
+        "eaf": "xml",
+        "x-iso9660-image": "image",
+        "pdf": "text",
+        "vnd.openxmlformats-officedocument.wordprocessingml.document": "text",
+        "vnd.oasis.opendocument.text": "text",
+        "mxf": "video",
+        "mpeg": "video",
+        "m4a": "audio",
+        "tif": "image",
+    }
+    return megatype_d.get(t, "")
 
 
-iso_replacements=[
-    ("mul", '_', "multiple languages"),
+iso_replacements = [
+    ("mul", "_", "multiple languages"),
     ("awd", "Generic Arawakan", "Arawakan"),
-    ("sai", '_', "Generic South American"),
-    ("xep", "Isthmian Script", '_'),
+    ("sai", "_", "Generic South American"),
+    ("xep", "Isthmian Script", "_"),
     ("tup", "Generic Tupi", "Tupian"),
     ("zap", "Generic Zapotec", "Eastern Otomanguean"),
     ("qwe", "Generic Quechuan", "Quechuan"),
-    ("zxx", '_', "Not a language"),
+    ("zxx", "_", "Not a language"),
     ("omq", "Generic Otomanguean", "Otomanguean"),
     ("oto", "Oto-Pame", "Otomanguean"),
     ("cba", "Generic Chibchan", "Chibchan"),
@@ -618,10 +618,10 @@ iso_replacements=[
     ("sio", "Generic Siouan", "Siouan"),
     ("alg", "Generic Algonquian", "Algonquian-Blackfoot"),
     ("azc", "Generic Uto-Aztecan", "Uto-Aztecan"),
-    ("cai", '_', "Generic Central-American"),
-    ("nai", '_', "Generic North-American"),
-    ("zho", '_', "Generic Chinese"),
-    ("chi", '_', "Generic Chinese"),
+    ("cai", "_", "Generic Central-American"),
+    ("nai", "_", "Generic North-American"),
+    ("zho", "_", "Generic Chinese"),
+    ("chi", "_", "Generic Chinese"),
     ("myn", "Generic Mayan", "Mayan"),
     ("swa", "Generic Swahili", "Benue-Congo"),
     ("aym", "Generic Aymara", "Aymaran"),
@@ -642,106 +642,105 @@ iso_replacements=[
     ("twi", "Twi", "Kwa Volta-Congo"),
     ("gba", "Gbaya", "Gbaya-Manza-Ngbaka"),
     ("ful", "Fulfulde", "North-Central Atlantic"),
-    ("ger", "German", "Classical Indo-European")
-    ]
+    ("ger", "German", "Classical Indo-European"),
+]
 
 
-
-explict_matches={
-    'Hakhun (variety of Nocte)':'njb',
-    'Nocte - Namsang variety':'njb',
-    'Tangsa - Hakhun variety':'nst',
-    'Tangsa - Cholim variety (general name Tonglum)':'nst',
-    'Tangsa (Cholim)':'nst',
-    'Tangsa - Lochhang variety (general name Langching)':'nst',
-    'Tangsa - Bote variety (general name Bongtai)':'nst',
-    'Tangsa - Hahcheng variety (general name Hasang)':'nst',
-    'Tangsa - Chamchang variety (general name Kimsing)':'nst',
-    'Tangsa - Joglei variety (general name Jugly)':'nst',
-    'Tangsa - Champang variety (general name Thamphang)':'nst',
-    'Tangsa - Haqchum variety':'nst',
-    'Tangsa - Khalak variety':'nst',
-    'Tangsa - Haqcheng variety (general name Hasang)':'nst',
-    'Tangsa - Jiingi variety (general name Donghi)':'nst',
-    'Tangsa - Shechhue variety (general name Shangke)':'nst',
-    'Tangsa - Moshang variety (general name Mossang)':'nst',
-    'Tangsa - Chamkok variety (general name Thamkok)':'nst',
-    'Tangsa - Lakki variety':'nst',
-    'Tangsa - Hawoi variety (general name Havi)':'nst',
-    'Tangsa - Hehle variety (general name Halang)':'nst',
-    'Tangsa - Mueshaung':'nst',
-    'Tangsa - Ngaimong variety':'nst',
-    'Tangsa - Nokya variety':'nst',
-    'Tangsa - Gaqlun variety':'nst',
-    'Bugis':'bug',
-    'Huitoto mïnïka':'hto',
-    'Even language':'eve',
-    'Hoocąk':'win',
-    'Marrku':'mhg-wur',
-    'Gunwinggu':'gup',
-    'Ngaliwurru':'djd',
-    'Djamindjung':'djd',
-    'Sami, Akkala':'sja',
-    'Saami, Akkala':'sja',
-    'Saami, Kildin':'sjd',
-    'Sami, Kildin':'sjd',
-    'Sami,Kildin':'sjd',
-    'Sami, Ter':'sjt',
-    'Saami, Ter':'sjt',
-    'Sami,Ter':'sjt',
-    'Saami, Skolt':'sms',
-    'Sami, Skolt':'sms',
-    'Sami,Skolt':'sms',
-    'Saami, Inari':'smn',
-    'Saami, North':'sme',
-    'Saami, Pite':'sje',
-    'Saami, South':'sma',
-    'Chadian Arabic (Dakara dialect)':'shu',
-    'Lacandón':'lac',
-    'Maya, Yucatán':'yua',
-    'Marquesan, North':'mrq',
-    'Marquesan, South':'mqm',
-    'Kómnzo':'tci',
-    'Wára':'tci',
-    'Wára (Wära)':'tci',
-    'Kómnzo':'tci',
-    'Tibetan, Amdo':'adx',
-    'Solomon Islands Pijin':'pis',
-    'Thai, Southern':'sou',
-    'Maniq Tonok':'tnz',
-    'Maniq Tonte':'tnz',
-    'Batek Deq Kuala Koh':'btq',
-    'Batek Teh Pasir Linggi':'btq',
-    'Kensiw To':'kns',
-    'Kensiw Lubok Legong':'kns',
-    'Lanoh Kertei':'lnh',
-    'Semnam Malau':'ssm',
-    'Batek Teh Sungai Taku':'btq',
-    'Batek Teq':'btq',
-    'Sanzhi':'dar',
-    'Latunde':'ltn',
-    'Salamai':'mnd',
-    'Mekéns':'skf',
-    'Tawande':'xtw',
-    'Taa':'nmn',
-    'Tai Ahom':'aho',
-    'Tai Phake':'phk',
-    'Tai Khamyang':'ksu',
-    'Trumaí':'tpy',
-    'Tuvin':'tyv',
-    'Karagas':'mtm',
-    'Shor':'cjs',
-    'Indonesian':'ind',
-    'ENGLISH':'eng',
-    'PORTUGUESE':'por',
-    'TRUMAÍ':'tpy',
-    'Vanga Vanatɨna (Sudest)':'tgo',
-    'Tetum Prasa':'tet',
-    'Makasai':'mkz',
-    'Dakaka':'bpa',
-    'Yurakaré':'yuz',
-    'Yuracare':'yuz',
-    'Malay':'zsm',
+explict_matches = {
+    "Hakhun (variety of Nocte)": "njb",
+    "Nocte - Namsang variety": "njb",
+    "Tangsa - Hakhun variety": "nst",
+    "Tangsa - Cholim variety (general name Tonglum)": "nst",
+    "Tangsa (Cholim)": "nst",
+    "Tangsa - Lochhang variety (general name Langching)": "nst",
+    "Tangsa - Bote variety (general name Bongtai)": "nst",
+    "Tangsa - Hahcheng variety (general name Hasang)": "nst",
+    "Tangsa - Chamchang variety (general name Kimsing)": "nst",
+    "Tangsa - Joglei variety (general name Jugly)": "nst",
+    "Tangsa - Champang variety (general name Thamphang)": "nst",
+    "Tangsa - Haqchum variety": "nst",
+    "Tangsa - Khalak variety": "nst",
+    "Tangsa - Haqcheng variety (general name Hasang)": "nst",
+    "Tangsa - Jiingi variety (general name Donghi)": "nst",
+    "Tangsa - Shechhue variety (general name Shangke)": "nst",
+    "Tangsa - Moshang variety (general name Mossang)": "nst",
+    "Tangsa - Chamkok variety (general name Thamkok)": "nst",
+    "Tangsa - Lakki variety": "nst",
+    "Tangsa - Hawoi variety (general name Havi)": "nst",
+    "Tangsa - Hehle variety (general name Halang)": "nst",
+    "Tangsa - Mueshaung": "nst",
+    "Tangsa - Ngaimong variety": "nst",
+    "Tangsa - Nokya variety": "nst",
+    "Tangsa - Gaqlun variety": "nst",
+    "Bugis": "bug",
+    "Huitoto mïnïka": "hto",
+    "Even language": "eve",
+    "Hoocąk": "win",
+    "Marrku": "mhg-wur",
+    "Gunwinggu": "gup",
+    "Ngaliwurru": "djd",
+    "Djamindjung": "djd",
+    "Sami, Akkala": "sja",
+    "Saami, Akkala": "sja",
+    "Saami, Kildin": "sjd",
+    "Sami, Kildin": "sjd",
+    "Sami,Kildin": "sjd",
+    "Sami, Ter": "sjt",
+    "Saami, Ter": "sjt",
+    "Sami,Ter": "sjt",
+    "Saami, Skolt": "sms",
+    "Sami, Skolt": "sms",
+    "Sami,Skolt": "sms",
+    "Saami, Inari": "smn",
+    "Saami, North": "sme",
+    "Saami, Pite": "sje",
+    "Saami, South": "sma",
+    "Chadian Arabic (Dakara dialect)": "shu",
+    "Lacandón": "lac",
+    "Maya, Yucatán": "yua",
+    "Marquesan, North": "mrq",
+    "Marquesan, South": "mqm",
+    "Kómnzo": "tci",
+    "Wára": "tci",
+    "Wára (Wära)": "tci",
+    "Kómnzo": "tci",
+    "Tibetan, Amdo": "adx",
+    "Solomon Islands Pijin": "pis",
+    "Thai, Southern": "sou",
+    "Maniq Tonok": "tnz",
+    "Maniq Tonte": "tnz",
+    "Batek Deq Kuala Koh": "btq",
+    "Batek Teh Pasir Linggi": "btq",
+    "Kensiw To": "kns",
+    "Kensiw Lubok Legong": "kns",
+    "Lanoh Kertei": "lnh",
+    "Semnam Malau": "ssm",
+    "Batek Teh Sungai Taku": "btq",
+    "Batek Teq": "btq",
+    "Sanzhi": "dar",
+    "Latunde": "ltn",
+    "Salamai": "mnd",
+    "Mekéns": "skf",
+    "Tawande": "xtw",
+    "Taa": "nmn",
+    "Tai Ahom": "aho",
+    "Tai Phake": "phk",
+    "Tai Khamyang": "ksu",
+    "Trumaí": "tpy",
+    "Tuvin": "tyv",
+    "Karagas": "mtm",
+    "Shor": "cjs",
+    "Indonesian": "ind",
+    "ENGLISH": "eng",
+    "PORTUGUESE": "por",
+    "TRUMAÍ": "tpy",
+    "Vanga Vanatɨna (Sudest)": "tgo",
+    "Tetum Prasa": "tet",
+    "Makasai": "mkz",
+    "Dakaka": "bpa",
+    "Yurakaré": "yuz",
+    "Yuracare": "yuz",
+    "Malay": "zsm",
     "Anta": "tci",
     "Batek Deq": "btq",
     "BatekTeh": "btq",
@@ -776,24 +775,40 @@ explict_matches={
     "Shiri": "dar",
     "Icari": "dar",
     "Mah Meri": "mhe",
-    }
+}
 
 
 # d = defaultdict(dict)
 language_dictionary = {}
 iso_6393_dictionary = {}
-for t in phyla:
-    family, unit, language, iso6393 = t
-    language_dictionary[language]={'family':family, 'unit':unit, 'iso6393':iso6393}
-    iso_6393_dictionary[iso6393]={'family':family, 'unit':unit, 'name':language}
-language_dictionary['Huitoto'] = {'family':'Huitotoan', 'unit':'Huitotoan', 'iso6393':'hto'}
-language_dictionary['Huitoto buue'] = {'family':'Huitotoan', 'unit':'Huitotoan', 'iso6393':'hto'}
-for em in explict_matches:
+for family, unit, language, iso6393 in phyla:
+    # family, unit, language, iso6393 = tuple_
+    language_dictionary[language] = {"family": family, "unit": unit, "iso6393": iso6393}
+    iso_6393_dictionary[iso6393] = {"family": family, "unit": unit, "name": language}
+language_dictionary["Huitoto"] = {
+    "family": "Huitotoan",
+    "unit": "Huitotoan",
+    "iso6393": "hto",
+}
+language_dictionary["Huitoto buue"] = {
+    "family": "Huitotoan",
+    "unit": "Huitotoan",
+    "iso6393": "hto",
+}
+for em, iso6393 in explict_matches.items():
     # print(em, explict_matches[em])
-    language_dictionary[em] = {'family':'unknown', 'unit':'unknown', 'iso6393':explict_matches[em]}
-iso_replacement_d = {t[0]: {'family':'_', 'unit':t[2], 'name':t[1]} for t in iso_replacements}
+    language_dictionary[em] = {
+        "family": "unknown",
+        "unit": "unknown",
+        "iso6393": iso6393,
+    }
+iso_replacement_d = {
+    t[0]: {"family": "_", "unit": t[2], "name": t[1]} for t in iso_replacements
+}
 iso_6393_dictionary.update(iso_replacement_d)
-language_replacement_d = {t[1]: {'family':'_', 'iso':t[0], 'unit':t[2]} for t in iso_replacements}
+language_replacement_d = {
+    t[1]: {"family": "_", "iso": t[0], "unit": t[2]} for t in iso_replacements
+}
 for key in language_replacement_d:
     if key in language_dictionary:
         continue

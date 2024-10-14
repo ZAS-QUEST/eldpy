@@ -227,3 +227,65 @@ class ElarArchive:
         self.populate_bundles(languages=True)
         self.write_json(add='_b')
         self.report()
+
+    def insert_into_database(self, db_name='test.db'):
+        insert_file_list = []
+        insert_language_list = []
+        found_ids = {}
+        with open("tla_copy_f.json") as json_in:
+            d = json.load(json_in)
+        for collection_name, collection_d in d.items():
+            collection_has_duplicates = False
+            for bundle_name, bundle_d in collection_d['bundles'].items():
+                for f in bundle_d['files']:
+                    id_ = f['url'].split('/')[-1].strip().replace('%3A',':')
+                    if not id_:
+                        continue
+                    type_ = f['type_']
+                    megatype = type2megatype(type_)
+                    size = tla_sizes.get(id_, 0)
+                    length = 0
+                    if found_ids.get(id_):
+                        if found_ids[id_] > 1:
+                            collection_has_duplicates = True
+                        found_ids[id_] += 1
+                        continue
+                    found_ids[id_] = 1
+                    insert_file_tuple = (id_, "TLA", collection_name, bundle_name, type_, megatype,size,length)
+                    insert_file_list.append(insert_file_tuple)
+                    try:
+                        languages = f['languages'][0].split('\n')
+                    except IndexError:
+                        languages  = []
+                    for language in languages:
+                        try:
+                            iso6393 = language_dictionary[language]['iso6393']
+                        except KeyError:
+                            # print(f"{language} not found in language dictionary")
+                            iso6393 = ''
+                        insert_language_tuple = (id_,"TLA",iso6393)
+                        insert_language_list.append(insert_language_tuple)
+            if collection_has_duplicates:
+                print(f"{collection_name} has duplicates:", end="\n    ")
+                print(','.join([id_ for id_ in found_ids if found_ids[id_]>1]))
+                found_ids = {}
+        connection = sqlite3.connect(db_name)
+        cursor = connection.cursor()
+        for f in insert_file_list:
+            try:
+                cursor.execute("INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", f)
+            except sqlite3.IntegrityError:
+                print(f"skipping {f} as the ID is already present in the database")
+        for l in insert_language_list:
+            try:
+                cursor.execute("INSERT INTO languagesfiles VALUES(?,?,?)", l)
+            except sqlite3.IntegrityError:
+                print(f"skipping {l} as this combination is already present in the database")
+        connection.commit()
+        connection.close()
+
+
+
+if __name__ == "__main__":
+    ea = ElarArchive()
+    ea.insert_into_database()
