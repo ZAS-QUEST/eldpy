@@ -128,9 +128,6 @@ class TLAArchive(Archive):
     def get_megatype(self, type_):
         return type2megatype(type_)
 
-    def get_type(self, type_):
-        return type_
-
     def get_length(self, f):
         return 0
 
