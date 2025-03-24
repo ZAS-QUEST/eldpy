@@ -526,7 +526,7 @@ def get_glossed_sentences(annos, timeslottedancestors, mapping, logger=None):
     retrieve all glosses together with their transcriptions and map them
     to their timeslotted ancestor
     """
-    print([a.text for a in annos])
+    # print([a.text for a in annos])
     ws = [mapping.get(annotation.parent_id, "") for annotation in annos]
     ids = [timeslottedancestors.get(annotation.id_, None) for annotation in annos]
     current_sentence_id = None
