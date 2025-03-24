@@ -434,7 +434,8 @@ class ElanFile:
             self.translations_with_ids = translations_with_ids
 
     def populate_comments(
-        self, candidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES
+        self, candidates=constants.ACCEPTABLE_COMMENT_TIER_TYPES,
+        comment_tier_id_to_retain = None
     ):
         """
         fill the attribute comment with comments from the ELAN file
@@ -458,6 +459,8 @@ class ElanFile:
             if commenttiers != []:  # we found a tier of the linguistic type
                 for tier in commenttiers:
                     tier_id = tier.attrib["TIER_ID"]
+                    if comment_tier_id_to_retain and comment_tier_id_to_retain != tier_id:
+                        continue
                     wordlist = tier_to_wordlist(tier)
                     if wordlist == []:
                         continue
@@ -515,7 +518,7 @@ class ElanFile:
             line = get_line(g, transcription_id_dict, self.timeslotted_reversedic,translation_id_dict,comments_id_dict,logger=logger)
              # ignore completely empty annotations
             if "".join(line[1:4]).strip() == "":
-                print(line)
+                # print(line)
                 continue
             lines.append(line)
         if matrix:
