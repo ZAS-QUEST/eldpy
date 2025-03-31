@@ -51,7 +51,7 @@ class ElanFile:
     def __init__(self, path, url, namespace=None):
         self.path = path
         logger.info(f"starting init {self.path}")
-        self.id_ = self.path.split("/")[-1]
+        self.id_ = _sanitize(self.path.split("/")[-1])
         self.url = url
         self.namespace = namespace
         self.tiers = []
@@ -100,6 +100,10 @@ class ElanFile:
         }
         self.glossed_sentences = {}
         logger.info({self.path})
+
+    def _sanitize(s):
+        return ''.join([ch for ch in s if ord(ch)<128])
+
 
     def __eq__(
         self, other
