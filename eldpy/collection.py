@@ -159,7 +159,6 @@ class Collection:
             self.glossfiles += filecount
             self.glosstiers += tiercount
             self.glosssentences += sentencecount
-            # check for sentences with more than one gloss tiere TODO
             self.glosswords += wordcount
             self.glossmorphemes += morphemecount
 

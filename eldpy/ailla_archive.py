@@ -49,6 +49,7 @@ class AillaArchive(Archive):
             url = f"https://ailla.utexas.org/collections/{id_}"
             name = collection["title"]["en"]
             self.collections.append(AillaCollection(name, url))
+        print(f"found {len(collection_list)} collections")
 
     # def populate_bundles(self, hardlimit=10000):
     #     """
@@ -132,5 +133,9 @@ class AillaArchive(Archive):
 
 if __name__ == "__main__":
     aa = AillaArchive()
+    aa.populate()
+    # aa.populate_collections()
     # aa.populate_bundles()
-    aa.insert_into_database("ailla_copy_f.json")
+    # aa.populate_files()
+    aa.write_json()
+    # aa.insert_into_database("ailla_copy_f.json")

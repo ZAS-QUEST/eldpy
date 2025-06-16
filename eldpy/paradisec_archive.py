@@ -15,7 +15,7 @@ from paradisec_collection import ParadisecCollection
 from helpers import type2megatype
 # from paradisec_bundle import ParadisecBundle
 # from paradisec_file import ParadisecFile
-from archive import Archive
+from archive import Archive, LIMIT, DEBUG
 
 class ParadisecArchive(Archive):
     """
@@ -28,7 +28,7 @@ class ParadisecArchive(Archive):
         self.files = []
         self.name = "PARADISEC"
 
-    def populate_collections(self, hardlimit=1000):
+    def populate_collections(self, hardlimit=1000, limit=LIMIT):
         """
         get all PARADISEC collections
         """
@@ -40,7 +40,7 @@ class ParadisecArchive(Archive):
         soup = BeautifulSoup(content, "html.parser")
         table = soup.find_all("table")[-1]
         trs = table.find_all("tr")
-        for i, tr in enumerate(trs):
+        for i, tr in enumerate(trs[:LIMIT]):
             print(f"{i}/{len(trs)}")
             tds = tr.find_all("td")
             collection_name = tds[1].text
@@ -51,7 +51,7 @@ class ParadisecArchive(Archive):
                 ParadisecCollection(collection_name, collection_link)
             )
 
-    def populate_bundles(self):
+    def populate_bundles(self, limit=LIMIT):
         """
         get all bundles for the collections
         """
@@ -62,7 +62,7 @@ class ParadisecArchive(Archive):
                 collection.populate_bundles()
             self.bundles += collection.bundles
 
-    def populate_files(self, writeout=False):
+    def populate_files(self, writeout=False, limit=LIMIT):
         """
         get all files for the bundles
         """
@@ -188,4 +188,6 @@ class ParadisecArchive(Archive):
 
 if __name__ == "__main__":
     pa = ParadisecArchive()
-    pa.insert_into_database("paradisec_copy_f.json")
+    pa.populate()
+    pa.write_json()
+    # pa.insert_into_database("paradisec_copy_f.json")

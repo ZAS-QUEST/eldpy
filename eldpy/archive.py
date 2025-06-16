@@ -28,6 +28,13 @@ import lod
 
 # from collections import defaultdict
 
+DEBUG = False
+# DEBUG = True
+
+LIMIT = 10000
+if DEBUG:
+    LIMIT = 3
+    print(f"debugging mode enabled, retrieval limit is {LIMIT}")
 
 class Archive():
     # FILETYPES = {
@@ -55,17 +62,32 @@ class Archive():
         self.fingerprints = {}
         self.landingpage_template = landingpage_template
 
-    def populate_bundles(self, hardlimit=10000):
+    def populate_bundles(self, hardlimit=10000,limit=LIMIT):
         """
         get all bundles for the collections
         """
 
         print("populating bundles")
-        for collection in self.collections:
-            print(collection.name)
+        number_of_collections = len(self.collections)
+        for i, collection in enumerate(self.collections[:LIMIT]):
+            print(f"c{i+1}/{number_of_collections}", end = ' ')
             if collection.bundles == []:
                 collection.populate_bundles(hardlimit=hardlimit)
             self.bundles += collection.bundles
+
+    def populate_files(self, hardlimit=10000,limit=LIMIT):
+        """
+        get all bundles for the collections
+        """
+
+        print("populating files")
+        number_of_collections = len(self.collections)
+        for i, collection in enumerate(self.collections):
+            print(f"c{i+1}/{number_of_collections}" )
+            number_of_bundles = len(self.bundles)
+            for j, bundle in enumerate(collection.bundles[:LIMIT]):
+                print(f" b{j+1}/{number_of_bundles}", end = ' ')
+                bundle.populate_files()
 
 
     def get_languages(self, lg):
@@ -191,6 +213,11 @@ class Archive():
             datetime.timedelta(seconds=d["transcribedseconds"])
         ).split(".")[0]
         self.statistics.update(d)
+
+    def populate(self, limit=LIMIT):
+        self.populate_collections(limit=limit)
+        self.populate_bundles(limit=limit)
+        self.populate_files(limit=limit)
 
     # def getIdentifiers(self, filename, typ):
     # tree = etree.parse(filename)

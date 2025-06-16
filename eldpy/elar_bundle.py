@@ -63,7 +63,7 @@ class ElarBundle():
         except AttributeError:
             print(f"no languages found for {self.url}")
             languages = []
-        print(languages)
+        # print(languages)
         self.languages = languages
 
 

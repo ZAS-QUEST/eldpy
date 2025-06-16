@@ -1,5 +1,6 @@
 from collection import Collection
 import urllib
+import requests
 from bs4 import BeautifulSoup
 from elar_bundle import  ElarBundle
 
@@ -20,17 +21,17 @@ class ElarCollection(Collection):
         limit = 1
         bundles = []
         try:
-            with urllib.request.urlopen(url) as collection_reader:
-                content = collection_reader.read()
-                soup = BeautifulSoup(content, "html.parser")
-                try:
-                    limit = int(
-                        soup.find("div", class_="pagination").find_all("a")[-2].text
-                    )
-                except (IndexError, AttributeError):
-                    limit = 1
-                print(" ", url.split("uncategorized/")[-1], f"[{limit} pages]")
-                bundles = self.get_bundles_on_page(soup)
+            r = requests.get(url)
+            content = r.text
+            soup = BeautifulSoup(content, "html.parser")
+            try:
+                limit = int(
+                    soup.find("div", class_="pagination").find_all("a")[-2].text
+                )
+            except (IndexError, AttributeError):
+                limit = 1
+            print(" ", url.split("uncategorized/")[-1], f"[{limit} pages]")
+            bundles = self.get_bundles_on_page(soup)
         except urllib.error.HTTPError:
             bundles = []
             print(f"  could not download{url}")
@@ -40,12 +41,12 @@ class ElarCollection(Collection):
             current_url = url + f"?pg={current}"
             print(f"  pg={current}", end="", flush=True)
             try:
-                with urllib.request.urlopen(current_url) as current_collection_reader:
-                    current_content = current_collection_reader.read()
-                    current_soup = BeautifulSoup(current_content, "html.parser")
-                    new_bundles = self.get_bundles_on_page(current_soup)
-                    # print(f"  adding {len(new_bundles)} bundles")
-                    bundles += new_bundles
+                r = requests.get(current_url)
+                current_content = r.text
+                current_soup = BeautifulSoup(current_content, "html.parser")
+                new_bundles = self.get_bundles_on_page(current_soup)
+                # print(f"  adding {len(new_bundles)} bundles")
+                bundles += new_bundles
             except urllib.error.HTTPError:
                 print(f"\n  could not download{current_url}")
             current += 1

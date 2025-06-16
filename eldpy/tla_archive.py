@@ -20,7 +20,7 @@ from tla_collection import TLACollection
 # from tla_file import  TLAFile
 from helpers import type2megatype, language_dictionary
 from tla_sizes import tla_sizes
-from archive import Archive
+from archive import Archive, LIMIT, DEBUG
 
 class TLAArchive(Archive):
     """
@@ -33,9 +33,9 @@ class TLAArchive(Archive):
         self.files = []
         self.name = "TLA"
 
-    # def populate_collections(self, pagelimit=4, hardlimit=10000):
-    #     print("populating collections")
-    #     self.collections = self.get_tla_collections(pagelimit=pagelimit, hardlimit=hardlimit)
+    def populate_collections(self, pagelimit=4, hardlimit=10000):
+        print("populating collections")
+        self.collections = self.get_tla_collections(pagelimit=pagelimit, hardlimit=hardlimit)
 
     def get_tla_collections(self, pagelimit=4, hardlimit=10000):
         """
@@ -152,4 +152,5 @@ class TLAArchive(Archive):
 
 if __name__ == "__main__":
     ta = TLAArchive()
-    ta.insert_into_database("tla_copy_f.json")
+    ta.populate()
+    # ta.insert_into_database("tla_copy_f.json")

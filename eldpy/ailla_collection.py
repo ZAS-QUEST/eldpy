@@ -13,13 +13,13 @@ class AillaCollection(Collection):
         self.files = []
 
     def populate_bundles(self, hardlimit=10000):
-        print(self.url)
+        print(f"fetching bundles for {self.name}, {self.url}")
         request_collection = requests.get(self.url)
         soup = BeautifulSoup(request_collection.content, 'html.parser')
         j = json.loads(soup.find('script',type="application/json").text)
         try:
             folders = j['props']['pageProps']['data']['folders'][:hardlimit]
-            print(f" There are {len(folders)} bundles in {self.url}")
+            print(f" Found {len(folders)} bundles")
         except KeyError:
             print(f" no data on {self.url}")
             self.bundles = []

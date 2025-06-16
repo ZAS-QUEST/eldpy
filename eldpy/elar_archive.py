@@ -3,16 +3,19 @@ import urllib
 import pprint
 import json
 import humanize
+import requests
 
 from collections import Counter, defaultdict
 from bs4 import BeautifulSoup
+
+from archive import Archive, DEBUG, LIMIT
 
 from elar_collection import  ElarCollection
 from elar_bundle import  ElarBundle
 from elar_file import  ElarFile
 
 
-class ElarArchive:
+class ElarArchive(Archive):
     # FILETYPES = {
     #     "ELAN": "text/x-eaf+xml",
     #     "Toolbox": "text/x-toolbox-text",
@@ -32,7 +35,7 @@ class ElarArchive:
 
     def populate_bundles(self, hardlimit=10000, languages=True):
         print("populating bundles")
-        for collection in self.collections:
+        for collection in self.collections[:LIMIT]:
             print(collection.name)
             if collection.bundles == []:
                 collection.populate_bundles(hardlimit=hardlimit, languages=True)
@@ -50,18 +53,21 @@ class ElarArchive:
                 self.files += bundle.files
 
     def get_elar_collections(self, pagelimit=40, hardlimit=10000):
+        if DEBUG:
+            pagelimit = LIMIT
+            print(f"limit set to {LIMIT}")
         collections = []
         for i in range(pagelimit):
             catalogpage = f'https://www.elararchive.org/uncategorized/SO_5f038640-311d-4296-a3e9-502e8a18f5b7/?pg={i}'
             print(f"reading {catalogpage}")
-            try:
-                with urllib.request.urlopen(catalogpage) as catalog_reader:
-                    content = catalog_reader.read()
-                    new_collection_links = self.get_elar_collection_links_(content)
-                    print(f" found {len(new_collection_links)} collections")
-                    collections += new_collection_links
-            except urllib.error.HTTPError:
-                print(f"could not download {catalogpage}")
+            # try:
+            r = requests.get(catalogpage)
+            content = r.text
+            new_collection_links = self.get_elar_collection_links_(content)
+            print(f" found {len(new_collection_links)} collections")
+            collections += new_collection_links
+            # except Exception:
+            #     print(f"could not download {catalogpage}")
         if len(collections) >= hardlimit:
             collections = collections[:hardlimit]
         print(f"finished. There are {len(collections)} collections")
@@ -70,7 +76,7 @@ class ElarArchive:
     def get_elar_collection_links_(self, page):
         soup = BeautifulSoup(page, 'html.parser')
         collection_links = [ElarCollection(a.text, a['href']) for h5 in soup.find_all('h5') for a in h5.find_all('a')]
-        return collection_links
+        return collection_links[:LIMIT]
     #
     # def get_elar_bundles(collections):
     #     elar_bundles = []
@@ -288,4 +294,9 @@ class ElarArchive:
 
 if __name__ == "__main__":
     ea = ElarArchive()
-    ea.insert_into_database()
+    # ea.populate()
+    ea.populate_collections()
+    ea.populate_bundles()
+    ea.populate_files()
+    # ea.write_json()
+    # ea.insert_into_database()
