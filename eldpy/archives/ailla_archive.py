@@ -3,11 +3,12 @@ instances of Pacific and Regional Archive for Digital Sources in Endangered Cult
 """
 
 import json
-import sqlite3
+
+# import sqlite3
 
 # import re
 # import urllib
-import pprint
+# import pprint
 
 # import humanize
 import requests
@@ -17,6 +18,7 @@ import requests
 
 from ailla_collection import AillaCollection
 from archive import Archive
+
 # from ailla_bundle import AillaBundle
 
 # from ailla_file import  AillaFile
@@ -28,12 +30,9 @@ class AillaArchive(Archive):
     """
 
     def __init__(self):
-        self.collections = []
-        self.bundles = []
-        self.files = []
-        self.name = "AILLA"
+        super().__init__("AILLA", "https://ailla.utexas.org")
 
-    def populate_collections(self, hardlimit=10000, limit=10000):
+    def populate_collections(self, limit=10000):
         """
         get all AILLA collections
         """
@@ -43,7 +42,7 @@ class AillaArchive(Archive):
             "https://ailla-backend-prod.gsc1-pub.lib.utexas.edu/collections/all",
             timeout=120,
         )
-        collection_list = json.loads(r.content)[:hardlimit]
+        collection_list = json.loads(r.content)[:limit]
         for collection in collection_list:
             id_ = collection["id"]
             url = f"https://ailla.utexas.org/collections/{id_}"
@@ -83,7 +82,7 @@ class AillaArchive(Archive):
                 }
                 collection_dict["bundles"][bundle.name] = bundle_dict
             archive_dict[collection.name] = collection_dict
-        with open(f"ailla_copy{add}.json", "w", encoding="utf8") as jsonout:
+        with open(f"out/ailla_copy{add}.json", "w", encoding="utf8") as jsonout:
             jsonout.write(json.dumps(archive_dict, indent=4, sort_keys=True))
 
     # def json_run_showcase(self, file_limit=999999):

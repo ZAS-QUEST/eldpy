@@ -1,47 +1,51 @@
-import re
-import urllib
-import pprint
-import json
-import humanize
-import requests
+"""
+instances of The Endangered Language Archive
+"""
 
-from collections import Counter, defaultdict
+# import re
+# import urllib
+# import pprint
+import json
+
+# from collections import Counter, defaultdict
+# import sqlite3
 from bs4 import BeautifulSoup
+
+# import humanize
+import requests
 
 from archive import Archive, DEBUG, LIMIT
 
 from elar_collection import  ElarCollection
-from elar_bundle import  ElarBundle
-from elar_file import  ElarFile
+# from elar_bundle import  ElarBundle
+# from elar_file import  ElarFile
 
 
 class ElarArchive(Archive):
-    # FILETYPES = {
-    #     "ELAN": "text/x-eaf+xml",
-    #     "Toolbox": "text/x-toolbox-text",
-    #     "transcriber": "text/x-trs",
-    #     "praat": "text/praat-textgrid",
-    #     "Flex": "FLEx",
-    # }
+
+    """
+    instances of The Endangered Language Archive
+    """
 
     def __init__(self):
-        self.collections = []
-        self.bundles = []
-        self.files = []
+        super().__init__("ELAR", "https://www.elararchive.org/")
 
-    def populate_collections(self, pagelimit=40, hardlimit=10000):
+    def populate_collections(self, limit=LIMIT, pagelimit=40):
         print("populating collections")
-        self.collections = self.get_elar_collections(pagelimit=pagelimit, hardlimit=hardlimit)
+        self.collections = self.get_elar_collections(pagelimit=pagelimit, limit=limit)
 
-    def populate_bundles(self, hardlimit=10000, languages=True):
+    def populate_bundles(self, limit=LIMIT, hardlimit=LIMIT, languages=True):
+        """add all bundles"""
         print("populating bundles")
         for i, collection in enumerate(self.collections[:LIMIT]):
             print(i, collection.name)
             if collection.bundles == []:
-                collection.populate_bundles(hardlimit=hardlimit, languages=True)
+                collection.populate_bundles(limit=limit, languages=languages)
             self.bundles += collection.bundles
 
-    def populate_files(self,hardlimit=10000):
+    def populate_files(self,limit=LIMIT):
+        """add all files"""
+
         print(f"populating files from {len(self.collections)} collections")
         for i, collection in enumerate(self.collections):
             print(f"{i+1}/{len(self.collections)}")
@@ -49,10 +53,11 @@ class ElarArchive(Archive):
                 collection.populate_bundles()
             for bundle in collection.bundles:
                 if bundle.files == []:
-                    bundle.populate_files(hardlimit=hardlimit)
+                    bundle.populate_files(limit=limit)
                 self.files += bundle.files
 
-    def get_elar_collections(self, pagelimit=40, hardlimit=10000):
+    def get_elar_collections(self, pagelimit=40, limit=10000):
+        """add all collections"""
         if DEBUG:
             pagelimit = LIMIT
             print(f"limit set to {LIMIT}")
@@ -61,19 +66,21 @@ class ElarArchive(Archive):
             catalogpage = f'https://www.elararchive.org/uncategorized/SO_5f038640-311d-4296-a3e9-502e8a18f5b7/?pg={i}'
             print(f"reading {catalogpage}")
             # try:
-            r = requests.get(catalogpage)
+            r = requests.get(catalogpage, timeout=120)
             content = r.text
             new_collection_links = self.get_elar_collection_links_(content)
             print(f" found {len(new_collection_links)} collections")
             collections += new_collection_links
             # except Exception:
             #     print(f"could not download {catalogpage}")
-        if len(collections) >= hardlimit:
-            collections = collections[:hardlimit]
+        if len(collections) >= limit:
+            collections = collections[:limit]
         print(f"finished. There are {len(collections)} collections")
         return collections
 
     def get_elar_collection_links_(self, page):
+        """retrieve all links pointing to ELAR collections"""
+
         soup = BeautifulSoup(page, 'html.parser')
         collection_links = [ElarCollection(a.text, a['href']) for h5 in soup.find_all('h5') for a in h5.find_all('a')]
         return collection_links[:LIMIT]
@@ -139,6 +146,9 @@ class ElarArchive(Archive):
     #     return files
 
     def write_json(self, add=''):
+        """
+        write out the archive metadata as json
+        """
         archive_dict = {}
         for collection in self.collections:
             collection_dict = {'name':collection.name, 'url':collection.url,'bundles':{}}
@@ -151,144 +161,70 @@ class ElarArchive(Archive):
                 }
                 collection_dict['bundles'][bundle.name] = bundle_dict
             archive_dict[collection.name] = collection_dict
-        with open(f'elar_copy{add}.json', 'w') as jsonout:
+        with open(f'out/elar_copy{add}.json', 'w', encoding="utf8") as jsonout:
             jsonout.write(json.dumps(archive_dict, indent=4, sort_keys=True))
 
 
 
 
-    def run(self):
-        self.populate_collections(pagelimit=30)
-        self.write_json(add='_c')
-        self.populate_bundles()
-        self.write_json(add='_b')
-        self.populate_files()
-        self.write_json(add='_f')
 
+    # def json_run_bundle(self):
+    #     with open("elar_copy_b.json", encoding="utf8") as json_in:
+    #         d = json.load(json_in)
+    #     for collection_name, collection_d in d.items():
+    #         collection_url = collection_d['url']
+    #         c = ElarCollection(collection_name, collection_url)
+    #         collection_bundles = []
+    #         for bundle_name, bundle_d in collection_d['bundles'].items():
+    #             bundle_url = bundle_d['url']
+    #             b = ElarBundle(bundle_name, bundle_url)
+    #             collection_bundles.append(b)
+    #         c.bundles = collection_bundles
+    #         self.collections.append(c)
+    #     self.populate_files()
+    #     self.write_json(add='_f')
 
-
-    def json_run_bundle(self):
-        with open("elar_copy_b.json") as json_in:
-            d = json.load(json_in)
-        for collection_name, collection_d in d.items():
-            collection_url = collection_d['url']
-            c = ElarCollection(collection_name, collection_url)
-            collection_bundles = []
-            for bundle_name, bundle_d in collection_d['bundles'].items():
-                bundle_url = bundle_d['url']
-                b = ElarBundle(bundle_name, bundle_url)
-                collection_bundles.append(b)
-            c.bundles = collection_bundles
-            self.collections.append(c)
-        self.populate_files()
-        self.write_json(add='_f')
-
-    def json_run_showcase(self,file_limit=999999):
-        with open("showcase_elar_copy_f.json") as json_in:
-            d = json.load(json_in)
-        i = 0
-        for collection_name, collection_d in d.items():
-            i+=1
-            if i>5:
-                break
-            collection_url = collection_d['url']
-            c = ElarCollection(collection_name, collection_url)
-            collection_bundles = []
-            for bundle_name, bundle_d in collection_d['bundles'].items():
-                bundle_url = bundle_d['url']
-                b = ElarBundle(bundle_name, bundle_url)
-                bundle_files = []
-                for file_d in bundle_d['files'][:file_limit]:
-                    file_name = file_d['name']
-                    file_url = file_d['url']
-                    file_type = file_d['type_']
-                    f = ElarFile(file_name, file_url, file_type)
-                    f.get_size()
-                    bundle_files.append(f)
-                b.files = bundle_files
-                collection_bundles.append(b)
-            c.bundles = collection_bundles
-        self.collections.append(c)
-        self.report()
-
-    def report(self):
-        collections = self.collections
-        bundles = [b for c in collections for b in c.bundles]
-        files = [f for c in collections for b in c.bundles for f in b.files]
-        types = [f.type_ for f in files]
-        print(f"There are {len(collections)} collections")
-        print(f"There are {len(bundles)} bundles")
-        print(f"There are {len(files)} files")
-        types_d = defaultdict(int)
-        for f in files:
-            types_d[f.type_] += f.size
-        counter = Counter(types)
-        for k, v in counter.items():
-            readable_size = humanize.naturalsize(types_d[k])
-            print (f" {k} files: {v} ({readable_size} total)")
-
-
-    def run_languages(self,file_limit=999999):
-        self.populate_collections()
-        self.populate_bundles(languages=True)
-        self.write_json(add='_b')
-        self.report()
-
-    def insert_into_database(self, db_name='test.db'):
-        insert_file_list = []
-        insert_language_list = []
-        found_ids = {}
-        with open("tla_copy_f.json") as json_in:
-            d = json.load(json_in)
-        for collection_name, collection_d in d.items():
-            collection_has_duplicates = False
-            for bundle_name, bundle_d in collection_d['bundles'].items():
-                for f in bundle_d['files']:
-                    id_ = f['url'].split('/')[-1].strip().replace('%3A',':')
-                    if not id_:
-                        continue
-                    type_ = f['type_']
-                    megatype = type2megatype(type_)
-                    size = tla_sizes.get(id_, 0)
-                    length = 0
-                    if found_ids.get(id_):
-                        if found_ids[id_] > 1:
-                            collection_has_duplicates = True
-                        found_ids[id_] += 1
-                        continue
-                    found_ids[id_] = 1
-                    insert_file_tuple = (id_, "TLA", collection_name, bundle_name, type_, megatype,size,length)
-                    insert_file_list.append(insert_file_tuple)
-                    try:
-                        languages = f['languages'][0].split('\n')
-                    except IndexError:
-                        languages  = []
-                    for language in languages:
-                        try:
-                            iso6393 = language_dictionary[language]['iso6393']
-                        except KeyError:
-                            # print(f"{language} not found in language dictionary")
-                            iso6393 = ''
-                        insert_language_tuple = (id_,"TLA",iso6393)
-                        insert_language_list.append(insert_language_tuple)
-            if collection_has_duplicates:
-                print(f"{collection_name} has duplicates:", end="\n    ")
-                print(','.join([id_ for id_ in found_ids if found_ids[id_]>1]))
-                found_ids = {}
-        connection = sqlite3.connect(db_name)
-        cursor = connection.cursor()
-        for f in insert_file_list:
-            try:
-                cursor.execute("INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", f)
-            except sqlite3.IntegrityError:
-                print(f"skipping {f} as the ID is already present in the database")
-        for l in insert_language_list:
-            try:
-                cursor.execute("INSERT INTO languagesfiles VALUES(?,?,?)", l)
-            except sqlite3.IntegrityError:
-                print(f"skipping {l} as this combination is already present in the database")
-        connection.commit()
-        connection.close()
+    # def json_run_showcase(self,file_limit=999999):
+    #     with open("showcase_elar_copy_f.json", encoding="utf8") as json_in:
+    #         d = json.load(json_in)
+    #     i = 0
+    #     for collection_name, collection_d in d.items():
+    #         i+=1
+    #         if i>5:
+    #             break
+    #         c = ElarCollection(collection_name, collection_d['url'])
+    #         collection_bundles = []
+    #         for bundle_name, bundle_d in collection_d['bundles'].items():
+    #             b = ElarBundle(bundle_name, bundle_d['url'])
+    #             bundle_files = []
+    #             for file_d in bundle_d['files'][:file_limit]:
+    #                 f = ElarFile(file_d['name'], file_d['url'], file_d['type_'])
+    #                 f.get_size()
+    #                 bundle_files.append(f)
+    #             b.files = bundle_files
+    #             collection_bundles.append(b)
+    #         c.bundles = collection_bundles
+    #     self.collections.append(c)
+    #     self.report()
+    #
+    # def report(self):
+    #     collections = self.collections
+    #     bundles = [b for c in collections for b in c.bundles]
+    #     files = [f for c in collections for b in c.bundles for f in b.files]
+    #     types = [f.type_ for f in files]
+    #     print(f"There are {len(collections)} collections")
+    #     print(f"There are {len(bundles)} bundles")
+    #     print(f"There are {len(files)} files")
+    #     types_d = defaultdict(int)
+    #     for f in files:
+    #         types_d[f.type_] += f.size
+    #     counter = Counter(types)
+    #     for k, v in counter.items():
+    #         readable_size = humanize.naturalsize(types_d[k])
+    #         print (f" {k} files: {v} ({readable_size} total)")
+    #
+    # def insert_into_database(self, input_file, db_name='test.db'):
+    #     pass
 
 
 

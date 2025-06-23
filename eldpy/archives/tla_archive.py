@@ -8,7 +8,7 @@ instances of The Language Archive
 import json
 
 # import humanize
-import sqlite3
+# import sqlite3
 import requests
 
 # from collections import Counter, defaultdict
@@ -20,7 +20,7 @@ from eldpy.archives.tla_collection import TLACollection
 # from tla_file import  TLAFile
 from eldpy.helpers import type2megatype, language_dictionary
 from tla_sizes import tla_sizes
-from archive import Archive, LIMIT, DEBUG
+from archive import Archive, LIMIT
 
 class TLAArchive(Archive):
     """
@@ -28,16 +28,13 @@ class TLAArchive(Archive):
     """
 
     def __init__(self):
-        self.collections = []
-        self.bundles = []
-        self.files = []
-        self.name = "TLA"
+        super().__init__("TLA", "https://archive.mpi.nl/tla")
 
-    def populate_collections(self, pagelimit=4, hardlimit=10000):
+    def populate_collections(self, limit=LIMIT, pagelimit=4):
         print("populating collections")
-        self.collections = self.get_tla_collections(pagelimit=pagelimit, hardlimit=hardlimit)
+        self.collections = self.get_tla_collections(pagelimit=pagelimit, limit=limit)
 
-    def get_tla_collections(self, pagelimit=4, hardlimit=10000):
+    def get_tla_collections(self,  limit=LIMIT, pagelimit=4):
         """
         get all TLA collections
         """
@@ -56,12 +53,12 @@ class TLAArchive(Archive):
                 and "305B_C" not in l["href"]
                 and l.get("href", "").startswith("/tla/isl")
             ]
-        if len(collections) >= hardlimit:
-            collections = collections[:hardlimit]
+        if len(collections) >= limit:
+            collections = collections[:limit]
         print(f"finished. There are {len(collections)} collections")
         return collections
 
-    def populate_bundles(self, offset=0):
+    def populate_bundles(self, limit=LIMIT, offset=0):
         """
         get all bundles for the collections
         """
@@ -72,7 +69,7 @@ class TLAArchive(Archive):
                 collection.populate_bundles()
             self.bundles += collection.bundles
 
-    def populate_files(self, hardlimit=10000):
+    def populate_files(self, limit=10000):
         """
         get all files for the bundles
         """
@@ -115,7 +112,7 @@ class TLAArchive(Archive):
                 }
                 collection_dict["bundles"][bundle.name] = bundle_dict
             archive_dict[collection.name] = collection_dict
-        with open(f"tla_copy{add}.json", "w", encoding="utf8") as jsonout:
+        with open(f"out/tla_copy{add}.json", "w", encoding="utf8") as jsonout:
             jsonout.write(json.dumps(archive_dict, indent=4, sort_keys=True))
 
 
@@ -132,12 +129,16 @@ class TLAArchive(Archive):
         return 0
 
     def get_size(self, f):
+        """return the size of a file in bytes"""
+
         return tla_sizes.get(f["url"].split("/")[-1].strip().replace("%3A", ":"), 0)
 
-    def get_languages(self, f):
+    def get_languages(self, s):
+        """return a list of ISO-639-3 codes"""
+
         result = []
         try:
-            languages = f[0].split("\n")
+            languages = s[0].split("\n")
         except IndexError:
             languages = []
         for language in languages:

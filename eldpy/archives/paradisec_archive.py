@@ -4,7 +4,7 @@ instances of Pacific and Regional Archive for Digital Sources in Endangered Cult
 # import re
 # import urllib
 # import pprint
-import sqlite3
+# import sqlite3
 # from collections import Counter, defaultdict
 import json
 from bs4 import BeautifulSoup
@@ -15,7 +15,7 @@ from paradisec_collection import ParadisecCollection
 from eldpy.helpers import type2megatype
 # from paradisec_bundle import ParadisecBundle
 # from paradisec_file import ParadisecFile
-from archive import Archive, LIMIT, DEBUG
+from archive import Archive, LIMIT
 
 class ParadisecArchive(Archive):
     """
@@ -23,24 +23,21 @@ class ParadisecArchive(Archive):
     """
 
     def __init__(self):
-        self.collections = []
-        self.bundles = []
-        self.files = []
-        self.name = "PARADISEC"
+        super().__init__("PARADISEC", "https://catalog.paradisec.org.au")
 
-    def populate_collections(self, hardlimit=1000, limit=LIMIT):
+    def populate_collections(self, limit=LIMIT):
         """
         get all PARADISEC collections
         """
         r = requests.get(
-            f"https://catalog.paradisec.org.au/collections/search?page=1&per_page={hardlimit}",
+            f"https://catalog.paradisec.org.au/collections/search?page=1&per_page={limit}",
             timeout=120
         )
         content = r.content
         soup = BeautifulSoup(content, "html.parser")
         table = soup.find_all("table")[-1]
         trs = table.find_all("tr")
-        for i, tr in enumerate(trs[:LIMIT]):
+        for i, tr in enumerate(trs[:limit]):
             print(f"{i}/{len(trs)}")
             tds = tr.find_all("td")
             collection_name = tds[1].text
@@ -51,7 +48,7 @@ class ParadisecArchive(Archive):
                 ParadisecCollection(collection_name, collection_link)
             )
 
-    def populate_bundles(self, limit=LIMIT):
+    def populate_bundles(self, limit=LIMIT, offset=0):
         """
         get all bundles for the collections
         """
@@ -62,7 +59,7 @@ class ParadisecArchive(Archive):
                 collection.populate_bundles()
             self.bundles += collection.bundles
 
-    def populate_files(self, writeout=False, limit=LIMIT):
+    def populate_files(self, limit=LIMIT):
         """
         get all files for the bundles
         """
@@ -75,23 +72,23 @@ class ParadisecArchive(Archive):
                 if bundle.files == []:
                     bundle.populate_files()
                 self.files += bundle.files
-            filename = collection.url.split("/collections/")[-1]
-            collection_dict = {
-                "name": collection.name,
-                "url": collection.url,
-                "bundles": {},
-            }
-            if writeout:
-                for bundle in collection.bundles:
-                    bundle_dict = {
-                        "name": bundle.name,
-                        "url": bundle.url,
-                        "files": [file_.__dict__ for file_ in bundle.files],
-                        "languages": bundle.languages,
-                    }
-                    collection_dict["bundles"][bundle.name] = bundle_dict
-                with open(f"paradisecjson/{filename}.json", "w", encoding='utf8') as jsonout:
-                    jsonout.write(json.dumps(collection_dict, indent=4, sort_keys=True))
+            # filename = collection.url.split("/collections/")[-1]
+            # collection_dict = {
+            #     "name": collection.name,
+            #     "url": collection.url,
+            #     "bundles": {},
+            # }
+            # if writeout:
+            #     for bundle in collection.bundles:
+            #         bundle_dict = {
+            #             "name": bundle.name,
+            #             "url": bundle.url,
+            #             "files": [file_.__dict__ for file_ in bundle.files],
+            #             "languages": bundle.languages,
+            #         }
+            #         collection_dict["bundles"][bundle.name] = bundle_dict
+            #     with open(f"out/paradisecjson/{filename}.json", "w", encoding='utf8') as jsonout:
+            #         jsonout.write(json.dumps(collection_dict, indent=4, sort_keys=True))
 
     # def run(self):
     #     self.populate_collections()

@@ -2,31 +2,19 @@
 An archive with primary material in and about endangered languages
 """
 
-import glob
 import json
-import pprint
+
+# import pprint
 import datetime
-import re
-import urllib
 import sqlite3
 from collections import Counter, defaultdict
-from lxml.html.soupparser import fromstring
 
-from bs4 import BeautifulSoup
-
-# from random import shuffle
+import squarify
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-# import squarify
-from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
+# from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
 
-from collection import Collection
-
-# from . import lod
-from eldpy.lod import lod
-
-# from collections import defaultdict
 
 DEBUG = False
 # DEBUG = True
@@ -36,7 +24,12 @@ if DEBUG:
     LIMIT = 3
     print(f"debugging mode enabled, retrieval limit is {LIMIT}")
 
-class Archive():
+
+class Archive:
+    """
+    An archive with primary material in and about endangered languages
+    """
+
     # FILETYPES = {
     #     "ELAN": "text/x-eaf+xml",
     #     "Toolbox": "text/x-toolbox-text",
@@ -45,37 +38,34 @@ class Archive():
     #     "Flex": "FLEx",
     # }
 
-    def __init__(
-        self,
-        name,
-        url,
-        collectionprefix="",
-        collection_url_template="",
-        landingpage_template="%s",
-    ):
+    def __init__(self, name, url):
         self.name = name
         self.url = url
-        self.collectionprefix = collectionprefix
-        self.collections = {}
-        self.collection_url_template = collection_url_template
+        self.bundles = []
+        self.collections = []
+        self.files = []
         self.statistics = {}
         self.fingerprints = {}
-        self.landingpage_template = landingpage_template
 
-    def populate_bundles(self, hardlimit=10000,limit=LIMIT):
+    def populate_collections(self, limit=LIMIT):
+        """
+        get all bundles for the collections
+        """
+
+    def populate_bundles(self, limit=LIMIT, offset=0):
         """
         get all bundles for the collections
         """
 
         print("populating bundles")
         number_of_collections = len(self.collections)
-        for i, collection in enumerate(self.collections[:LIMIT]):
-            print(f"c{i+1}/{number_of_collections}", end = ' ')
+        for i, collection in enumerate(self.collections[:limit]):
+            print(f"c{i+1}/{number_of_collections}", end=" ")
             if collection.bundles == []:
                 collection.populate_bundles(hardlimit=hardlimit)
             self.bundles += collection.bundles
 
-    def populate_files(self, hardlimit=10000,limit=LIMIT):
+    def populate_files(self, limit=LIMIT):
         """
         get all bundles for the collections
         """
@@ -83,17 +73,32 @@ class Archive():
         print("populating files")
         number_of_collections = len(self.collections)
         for i, collection in enumerate(self.collections):
-            print(f"c{i+1}/{number_of_collections}" )
+            print(f"c{i+1}/{number_of_collections}")
             number_of_bundles = len(collection.bundles)
-            for j, bundle in enumerate(collection.bundles[:LIMIT]):
-                print(f" b{j+1}/{number_of_bundles}", end = ' ')
+            for j, bundle in enumerate(collection.bundles[:limit]):
+                print(f" b{j+1}/{number_of_bundles}", end=" ")
                 bundle.populate_files()
 
+    def get_languages(self, s):
+        """dummy method for subclasses to instantiate"""
+        return s
 
-    def get_languages(self, lg):
-        return lg
+    def get_id(self, f):
+        """dummy method for subclasses to instantiate"""
+        id_ = f["name"]
+        if not id_:
+            return None
+        return id_
+
+    def get_length(self, f):
+        """dummy method for subclasses to instantiate"""
+        duration = f.get("duration", "").strip()
+        if duration in ("", "--"):
+            duration = 0
+        return duration
 
     def get_type(self, type_):
+        """dummy method for subclasses to instantiate"""
         return type_
 
     def insert_into_database(self, input_file, db_name="test.db"):
@@ -113,7 +118,7 @@ class Archive():
                     id_ = self.get_id(f)
                     if not id_:
                         continue
-                    if id_.strip()=='':
+                    if id_.strip() == "":
                         continue
                     type_ = self.get_megatype(f["type_"])
                     megatype = self.get_megatype(f["type_"])
@@ -160,7 +165,7 @@ class Archive():
     def get_fingerprints(self):
         """map filenames to fingerprints"""
         fingerprintd = {
-            "%s/%s" % (self.name, eaf.path): eaf.fingerprint()
+            f"{self.name}/{eaf.path}": eaf.fingerprint()
             for c in self.collections
             for eaf in self.collections[c].elanfiles
         }
@@ -177,9 +182,9 @@ class Archive():
             color=[cm.pink(x * 0.1) for x in [2, 8, 4, 7, 1, 6, 3, 9, 5]],
         )  # jumble colormap
         plt.axis("off")
-        plt.savefig("tiertypetreemap-%s.png" % self.name)
-        with open("tierranks-%s.txt" % self.name, "w") as out:
-            out.write("\n".join(["%s:%s" % x for x in ranks]))
+        plt.savefig(f"tiertypetreemap-{self.name}.png")
+        with open(f"tierranks-{self.name}.txt", "w", encoding="utf8") as out:
+            out.write("\n".join(["{x}:{x}" for x in ranks]))
         self.fingerprints = fingerprintd
 
     def get_metadata(self):
@@ -211,13 +216,19 @@ class Archive():
 
         d["transcribedhours"] = str(
             datetime.timedelta(seconds=d["transcribedseconds"])
-        ).split(".")[0]
+        ).split(".", maxsplit=1)[0]
         self.statistics.update(d)
 
     def populate(self, limit=LIMIT):
+        """add all collections, bundles, and files"""
+
         self.populate_collections(limit=limit)
         self.populate_bundles(limit=limit)
         self.populate_files(limit=limit)
+
+    def get_megatype(self, type_):
+        """dummy method for subclasses to instantiate"""
+        return type_
 
     # def getIdentifiers(self, filename, typ):
     # tree = etree.parse(filename)
@@ -271,4 +282,3 @@ class Archive():
     # for IDs in records:
     # for item in IDs:  # etree.findall returns list
     # dico[0].append(item.text.strip().replace("<", "").replace(">", ""))
-
