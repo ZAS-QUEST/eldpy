@@ -62,7 +62,7 @@ class Archive:
         for i, collection in enumerate(self.collections[:limit]):
             print(f"c{i+1}/{number_of_collections}", end=" ")
             if collection.bundles == []:
-                collection.populate_bundles(hardlimit=hardlimit)
+                collection.populate_bundles(limit=limit)
             self.bundles += collection.bundles
 
     def populate_files(self, limit=LIMIT):
