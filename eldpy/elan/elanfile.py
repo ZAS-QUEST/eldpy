@@ -16,9 +16,9 @@ import io
 from collections import defaultdict
 from lxml import etree
 
-from eldpy import annotation
-from eldpy import constants
-from eldpy.eldpyerror import EldpyError
+import eldpy.elan.annotation as annotation
+import eldpy.elan.constants as constants
+from eldpy.elan.eldpyerror import EldpyError
 from eldpy.helpers import (
     is_major_language,
     is_id_tier,

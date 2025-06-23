@@ -1,4 +1,4 @@
-from collection import Collection
+from eldpy.archives.collection import Collection
 import urllib
 import requests
 from bs4 import BeautifulSoup

@@ -13,6 +13,8 @@ class ParadisecBundle():
 
 
     def populate_files(self):
+        if self.url == '':
+            return
         time.sleep(.1)
         try:
             r = requests.get(self.url)
@@ -43,8 +45,6 @@ class ParadisecBundle():
                 size = tds[2].text
                 duration = tds[3].text
                 url = None
-                print(isocodes)
-                print(self.languages)
                 self.files.append(ParadisecFile(name,url,type_,size,duration,self.languages))
             except IndexError:
                 continue

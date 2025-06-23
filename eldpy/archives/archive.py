@@ -24,7 +24,7 @@ from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
 from collection import Collection
 
 # from . import lod
-import lod
+from eldpy.lod import lod
 
 # from collections import defaultdict
 
@@ -84,7 +84,7 @@ class Archive():
         number_of_collections = len(self.collections)
         for i, collection in enumerate(self.collections):
             print(f"c{i+1}/{number_of_collections}" )
-            number_of_bundles = len(self.bundles)
+            number_of_bundles = len(collection.bundles)
             for j, bundle in enumerate(collection.bundles[:LIMIT]):
                 print(f" b{j+1}/{number_of_bundles}", end = ' ')
                 bundle.populate_files()

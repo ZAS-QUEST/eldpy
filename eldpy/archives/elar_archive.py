@@ -29,14 +29,14 @@ class ElarArchive(Archive):
         self.bundles = []
         self.files = []
 
-    def populate_collections(self, pagelimit=50, hardlimit=10000):
+    def populate_collections(self, pagelimit=40, hardlimit=10000):
         print("populating collections")
         self.collections = self.get_elar_collections(pagelimit=pagelimit, hardlimit=hardlimit)
 
     def populate_bundles(self, hardlimit=10000, languages=True):
         print("populating bundles")
-        for collection in self.collections[:LIMIT]:
-            print(collection.name)
+        for i, collection in enumerate(self.collections[:LIMIT]):
+            print(i, collection.name)
             if collection.bundles == []:
                 collection.populate_bundles(hardlimit=hardlimit, languages=True)
             self.bundles += collection.bundles
@@ -298,5 +298,5 @@ if __name__ == "__main__":
     ea.populate_collections()
     ea.populate_bundles()
     ea.populate_files()
-    # ea.write_json()
+    ea.write_json()
     # ea.insert_into_database()

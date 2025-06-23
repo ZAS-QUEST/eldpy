@@ -12,7 +12,7 @@ import requests
 # import humanize
 
 from paradisec_collection import ParadisecCollection
-from helpers import type2megatype
+from eldpy.helpers import type2megatype
 # from paradisec_bundle import ParadisecBundle
 # from paradisec_file import ParadisecFile
 from archive import Archive, LIMIT, DEBUG

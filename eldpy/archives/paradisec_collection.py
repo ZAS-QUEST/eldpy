@@ -39,6 +39,6 @@ class ParadisecCollection(Collection):
             try:
                 bundle_url = 'https://catalog.paradisec.org.au' + tds[2].find('a')['href']
             except TypeError:
-                print('no URL for {bundle_name} in {self.name}')
-                url = ''
+                print(f'no URL for {bundle_name} in {self.name}')
+                bundle_url = ''
             self.bundles.append(ParadisecBundle(bundle_name,bundle_url,languages))

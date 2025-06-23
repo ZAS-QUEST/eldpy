@@ -6,8 +6,8 @@ import re
 import time
 from collections import defaultdict
 from langdetect import detect_langs, lang_detect_exception
-from eldpy.eldpyerror import EldpyError
-from phyla import phyla
+from eldpy.elan.eldpyerror import EldpyError
+from eldpy.phyla import phyla
 
 LANGDETECT_THRESHOLD = 0.95  # 85% seems to have no false positives in a first run
 

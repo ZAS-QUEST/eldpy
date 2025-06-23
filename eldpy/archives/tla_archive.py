@@ -14,11 +14,11 @@ import requests
 # from collections import Counter, defaultdict
 from bs4 import BeautifulSoup
 
-from tla_collection import TLACollection
+from eldpy.archives.tla_collection import TLACollection
 
 # from tla_bundle import  TLABundle
 # from tla_file import  TLAFile
-from helpers import type2megatype, language_dictionary
+from eldpy.helpers import type2megatype, language_dictionary
 from tla_sizes import tla_sizes
 from archive import Archive, LIMIT, DEBUG
 
@@ -61,13 +61,13 @@ class TLAArchive(Archive):
         print(f"finished. There are {len(collections)} collections")
         return collections
 
-    def populate_bundles(self):
+    def populate_bundles(self, offset=0):
         """
         get all bundles for the collections
         """
-        print("populating bundles")
-        for collection in self.collections:
-            print(collection.name)
+        print(f"populating bundles. Offset is {offset}")
+        for i, collection in enumerate(self.collections[offset:]):
+            print(i+offset, collection.name)
             if collection.bundles == []:
                 collection.populate_bundles()
             self.bundles += collection.bundles
@@ -149,8 +149,15 @@ class TLAArchive(Archive):
         return result
 
 
+    def populate(self, limit=LIMIT, bundle_offset=0):
+        self.populate_collections()
+        self.populate_bundles(offset=bundle_offset)
+        self.populate_files()
+
+
 
 if __name__ == "__main__":
     ta = TLAArchive()
-    ta.populate()
+    ta.populate(bundle_offset=33)
+    ta.write_json()
     # ta.insert_into_database("tla_copy_f.json")

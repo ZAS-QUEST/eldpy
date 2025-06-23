@@ -33,7 +33,7 @@ class AillaArchive(Archive):
         self.files = []
         self.name = "AILLA"
 
-    def populate_collections(self, hardlimit=10000):
+    def populate_collections(self, hardlimit=10000, limit=10000):
         """
         get all AILLA collections
         """
