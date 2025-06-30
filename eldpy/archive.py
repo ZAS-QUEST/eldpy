@@ -19,12 +19,12 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 # import squarify
-from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
+# from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
 
 from collection import Collection
 
 # from . import lod
-import lod
+# import lod
 
 # from collections import defaultdict
 

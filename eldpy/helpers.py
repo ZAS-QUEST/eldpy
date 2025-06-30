@@ -600,7 +600,7 @@ def type2megatype(t):
         "m4a": "audio",
         "tif": "image",
     }
-    return megatype_d.get(t, "")
+    return megatype_d.get(t.lower(), "")
 
 
 iso_replacements = [
@@ -776,6 +776,7 @@ explict_matches = {
     "Shiri": "dar",
     "Icari": "dar",
     "Mah Meri": "mhe",
+    "Ainu": "ain",
 }
 
 

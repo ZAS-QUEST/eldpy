@@ -2,13 +2,17 @@ import requests
 import humanize
 
 class ElarFile:
-    def __init__(self, name, url, type_):
+    def __init__(self, name, url, type_, id_=None):
         self.url = url
         self.download_url = self.url.replace("https://eldp.access.preservica.com/uncategorized/",
                                              "https://www.elararchive.org/download/file/")
         self.name = name
+        self.id_ = id_
         self.type_ = type_
+        self.megatype = ''
         self.size = 0
+        self.duration = 0
+        self.languages = []
 
     def download(self, cookie=None, accept='*'):
         if accept == '*' or self.type_ in accept:

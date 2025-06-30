@@ -38,25 +38,25 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
                                         seconds int,
                                         PRIMARY KEY (ID, archive));
     """
-    cursor.execute(files_table_string)
+    # cursor.execute(files_table_string)
 
     phyla_table_string = """CREATE TABLE phyla(language TEXT,
                                         phylum TEXT,
                                         family TEXT,
                                         languagecode TEXT PRIMARY KEY);
     """
-    cursor.execute(phyla_table_string)
+    # cursor.execute(phyla_table_string)
 
     languages_files_string = """CREATE TABLE languagesfiles(id TEXT,
                                                         archive TEXT,
                                                         languagecode TEXT,
                                                         PRIMARY KEY(id, archive, languagecode));
                             """
-    cursor.execute(languages_files_string)
+    # cursor.execute(languages_files_string)
 
     view_creation_template = """CREATE view iso_{0}{1} AS
                                     SELECT phyla.languagecode, {2}(files.{3}) as {0}_{1}
-                                    FROM languages, phyla, files
+                                    FROM languagesfiles, phyla, files
                                     WHERE languagesfiles.languagecode=phyla.languagecode AND
                                         languagesfiles.id=files.id AND
                                         files.megatype="{0}"
@@ -69,21 +69,21 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
                 column = "id"
             else:
                 operator = "sum"
-                column = type_
+                column = dimension
             view_creation_string = view_creation_template.format(
                 type_, dimension, operator, column
             )
             cursor.execute(view_creation_string)
 
     global_language_files_report_string = """CREATE VIEW iso_language_files_report AS
-                                SELECT  iso_videofiles.isocode,
-                                        iso_videofiles.count as video_count,
+                                SELECT  iso_videofiles.languagecode,
+                                        iso_videofiles.video_files as video_count,
                                         iso_videobytes.video_bytes,
                                         iso_videoseconds.video_seconds,
-                                        iso_audiofiles.count as audio_count,
+                                        iso_audiofiles.audio_files as audio_count,
                                         iso_audiobytes.audio_bytes,
                                         iso_audioseconds.audio_seconds,
-                                        iso_xmlfiles.count as xml_count,
+                                        iso_xmlfiles.xml_files as xml_count,
                                         iso_xmlbytes.xml_bytes,
                                         iso_xmlseconds.xml_seconds
                                 FROM    iso_videofiles,
@@ -95,14 +95,14 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
                                         iso_xmlfiles,
                                         iso_xmlbytes,
                                         iso_xmlseconds
-                                WHERE   iso_videofiles.isocode=iso_videobytes.isocode AND
-                                        iso_videofiles.isocode=iso_videoseconds.isocode AND
-                                        iso_videofiles.isocode=iso_audiofiles.isocode AND
-                                        iso_videofiles.isocode = iso_audiobytes.isocode AND
-                                        iso_videofiles.isocode=iso_audioseconds.isocode AND
-                                        iso_videofiles.isocode=iso_xmlfiles.isocode AND
-                                        iso_videofiles.isocode=iso_xmlbytes.isocode AND
-                                        iso_videofiles.isocode=iso_xmlseconds.isocode;
+                                WHERE   iso_videofiles.languagecode=iso_videobytes.languagecode AND
+                                        iso_videofiles.languagecode=iso_videoseconds.languagecode AND
+                                        iso_videofiles.languagecode=iso_audiofiles.languagecode AND
+                                        iso_videofiles.languagecode=iso_audiobytes.languagecode AND
+                                        iso_videofiles.languagecode=iso_audioseconds.languagecode AND
+                                        iso_videofiles.languagecode=iso_xmlfiles.languagecode AND
+                                        iso_videofiles.languagecode=iso_xmlbytes.languagecode AND
+                                        iso_videofiles.languagecode=iso_xmlseconds.languagecode;
                             """
     cursor.execute(global_language_files_report_string)
 
@@ -127,8 +127,8 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
 
     # FIXME needs outer join
     language_report_string = """CREATE view language_report AS
-                                    SELECT phyla.isocode,
-                                            name,
+                                    SELECT phyla.languagecode,
+                                            language,
                                             phylum,
                                             family,
                                             video_count,
@@ -142,7 +142,7 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
                                             xml_seconds
                                     FROM phyla,
                                          iso_language_files_report
-                                    WHERE phyla.languagecode=iso_language_files_report.isocode;"""
+                                    WHERE phyla.languagecode=iso_language_files_report.languagecode;"""
     cursor.execute(language_report_string)
     connection.commit()
     connection.close()
@@ -169,8 +169,8 @@ if __name__ == "__main__":
         pass
     print("setting up tables")
     setup_metadata_database(db_name=given_db_name)
-    populate_phyla(db_name=given_db_name)
-    print("ingesting archives")
-    for archive_name, archive in archives.items():
-        print(" ingesting", archive_name)
-        archive.insert_into_database(f"{archive_name.lower()}_copy_f.json", db_name=given_db_name)
+    # populate_phyla(db_name=given_db_name)
+    # print("ingesting archives")
+    # for archive_name, archive in archives.items():
+    #     print(" ingesting", archive_name)
+    #     archive.insert_into_database(f"{archive_name.lower()}_copy_f.json", db_name=given_db_name)
