@@ -54,96 +54,64 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
                             """
     # cursor.execute(languages_files_string)
 
-    view_creation_template = """CREATE view iso_{0}{1} AS
-                                    SELECT phyla.languagecode, {2}(files.{3}) as {0}_{1}
-                                    FROM languagesfiles, phyla, files
-                                    WHERE languagesfiles.languagecode=phyla.languagecode AND
-                                        languagesfiles.id=files.id AND
-                                        files.megatype="{0}"
-                                    GROUP BY phyla.languagecode;
-                                    """
-    for type_ in "xml audio video".split():
-        for dimension in "bytes seconds files".split():
-            if dimension == "files":
-                operator = "count"
-                column = "id"
-            else:
-                operator = "sum"
-                column = dimension
-            view_creation_string = view_creation_template.format(
-                type_, dimension, operator, column
-            )
-            cursor.execute(view_creation_string)
-
-    global_language_files_report_string = """CREATE VIEW iso_language_files_report AS
-                                SELECT  iso_videofiles.languagecode,
-                                        iso_videofiles.video_files as video_count,
-                                        iso_videobytes.video_bytes,
-                                        iso_videoseconds.video_seconds,
-                                        iso_audiofiles.audio_files as audio_count,
-                                        iso_audiobytes.audio_bytes,
-                                        iso_audioseconds.audio_seconds,
-                                        iso_xmlfiles.xml_files as xml_count,
-                                        iso_xmlbytes.xml_bytes,
-                                        iso_xmlseconds.xml_seconds
-                                FROM    iso_videofiles,
-                                        iso_videobytes,
-                                        iso_videoseconds,
-                                        iso_audiofiles,
-                                        iso_audiobytes,
-                                        iso_audioseconds,
-                                        iso_xmlfiles,
-                                        iso_xmlbytes,
-                                        iso_xmlseconds
-                                WHERE   iso_videofiles.languagecode=iso_videobytes.languagecode AND
-                                        iso_videofiles.languagecode=iso_videoseconds.languagecode AND
-                                        iso_videofiles.languagecode=iso_audiofiles.languagecode AND
-                                        iso_videofiles.languagecode=iso_audiobytes.languagecode AND
-                                        iso_videofiles.languagecode=iso_audioseconds.languagecode AND
-                                        iso_videofiles.languagecode=iso_xmlfiles.languagecode AND
-                                        iso_videofiles.languagecode=iso_xmlbytes.languagecode AND
-                                        iso_videofiles.languagecode=iso_xmlseconds.languagecode;
-                            """
-    cursor.execute(global_language_files_report_string)
-
-    # FIXME needs outer join
-    phylum_report_string = """CREATE view phylum_report AS
-                                SELECT   phylum,
-                                         family,
-                                         SUM(video_count),
-                                         SUM(video_bytes),
-                                         SUM(video_seconds),
-                                         SUM(audio_count),
-                                         SUM(audio_bytes),
-                                         SUM(audio_seconds),
-                                         SUM(xml_count),
-                                         SUM(xml_bytes),
-                                         SUM(xml_seconds)
-                                FROM     phyla,
-                                         iso_language_files_report
-                                WHERE    phyla.languagecode=iso_language_files_report.languagecode
-                                GROUP BY phylum;"""
-    cursor.execute(phylum_report_string)
-
-    # FIXME needs outer join
-    language_report_string = """CREATE view language_report AS
-                                    SELECT phyla.languagecode,
-                                            language,
-                                            phylum,
-                                            family,
-                                            video_count,
-                                            video_bytes,
-                                            video_seconds,
-                                            audio_count,
-                                            audio_bytes,
-                                            audio_seconds,
-                                            xml_count,
-                                            xml_bytes,
-                                            xml_seconds
-                                    FROM phyla,
-                                         iso_language_files_report
-                                    WHERE phyla.languagecode=iso_language_files_report.languagecode;"""
-    cursor.execute(language_report_string)
+    views = [
+    """CREATE VIEW languagevideos AS
+        SELECT languagesfiles.languagecode,
+                count(files.id) AS videocount,
+                SUM(files.bytes) AS videobytes,
+                SUM(files.seconds) AS videoseconds
+        FROM languagesfiles, files
+        WHERE languagesfiles.id=files.id AND files.megatype='video'
+        GROUP BY languagecode """,
+    """CREATE VIEW languageaudios  AS
+        SELECT languagesfiles.languagecode,
+            count(files.id) AS audiocount,
+            SUM(files.bytes) AS audiobytes,
+            SUM(files.seconds) AS audioseconds
+        FROM languagesfiles, files
+        WHERE languagesfiles.id=files.id AND files.megatype='audio'
+        GROUP BY languagecode """,
+    """CREATE VIEW languagexmls AS
+        SELECT languagesfiles.languagecode,
+            count(files.id) AS xmlcount,
+            SUM(files.bytes) AS xmlbytes,
+            SUM(files.seconds) AS xmlseconds
+        FROM languagesfiles, files
+        WHERE languagesfiles.id=files.id AND files.megatype='xml'
+        GROUP BY languagecode """,
+    """CREATE VIEW fulljoinvideos AS
+        SELECT * FROM  phyla
+            LEFT JOIN languagevideos
+            ON languagevideos.languagecode=phyla.languagecode """,
+    """CREATE VIEW fulljoinaudios AS
+        SELECT * FROM  phyla
+            LEFT JOIN languageaudios
+            ON languageaudios.languagecode=phyla.languagecode """,
+    """CREATE VIEW fulljoinxmls AS
+        SELECT * FROM  phyla LEFT JOIN languagexmls
+        ON languagexmls.languagecode=phyla.languagecode """,
+    """CREATE VIEW cleanlanguagecsv AS
+        SELECT * FROM languagestats
+            WHERE videocount IS NOT NULL
+            OR audiocount IS NOT NULL
+            OR xmlcount is not null """,
+    """CREATE VIEW cleanphylumcsv AS
+        SELECT * FROM phylumstats
+            WHERE videocount IS NOT NULL
+            OR audiocount IS NOT NULL
+            OR xmlcount is not null """,
+    """CREATE VIEW languagecodearchive AS
+        SELECT distinct languagecode, archive
+            FROM languagesfiles
+            ORDER BY languagecode, archive """,
+    """CREATE VIEW languagecodearchiveconcat AS
+        SELECT languagecode,
+                GROUP_CONCAT(archive) AS archives
+            FROM languagecodearchive
+            GROUP BY languagecode"""
+    ]
+    for view in views:
+        cursor.execute(view)
     connection.commit()
     connection.close()
 
