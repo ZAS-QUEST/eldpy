@@ -18,9 +18,10 @@ from eldpy.archives.tla_collection import TLACollection
 
 # from tla_bundle import  TLABundle
 # from tla_file import  TLAFile
-from eldpy.helpers import type2megatype, language_dictionary
-from tla_sizes import tla_sizes
-from archive import Archive, LIMIT
+from eldpy.helpers import type2megatype
+from eldpy.language_metadata import language_dictionary
+from eldpy.archives.tla_sizes import tla_sizes
+from eldpy.archives.archive import Archive, LIMIT
 
 class TLAArchive(Archive):
     """
@@ -159,6 +160,6 @@ class TLAArchive(Archive):
 
 if __name__ == "__main__":
     ta = TLAArchive()
-    ta.populate(bundle_offset=33)
+    ta.populate(bundle_offset=46)
     ta.write_json()
     # ta.insert_into_database("tla_copy_f.json")

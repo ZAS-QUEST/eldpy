@@ -4,12 +4,17 @@ Helper functions to deal with ELAN files and DELAMAN archives
 
 import re
 import time
+# from itertools import tee
 from collections import defaultdict
 from langdetect import detect_langs, lang_detect_exception
+# from pyPreservica import logger
 from eldpy.elan.eldpyerror import EldpyError
 from eldpy.phyla import phyla
+# from eldpy.archives.elar_file import ElarFile
+
 
 LANGDETECT_THRESHOLD = 0.95  # 85% seems to have no false positives in a first run
+HHMMSS = re.compile("([0-9]*?)[H:]?([0-9]*)[M:]?([0-9][0-9])S?$")
 
 
 def tier_to_id_wordlist(t):
@@ -74,11 +79,6 @@ def is_id_tier(wl):
 def is_major_language(
     list_,
     accepted_languages=("en",),
-    # spanish=False,
-    # french=False,
-    # indonesian=False,
-    # portuguese=False,
-    # russian=False,
     logtype="False",
     logger=None,
 ):
@@ -94,18 +94,6 @@ def is_major_language(
         # we are happy that this is an unknown language
         toplanguage = None
 
-    # if spanish:
-    #     accepted_languages.append("es")
-    # if french:
-    #     accepted_languages.append("fr")
-    # if indonesian: #indonesian causes some random errors for muyu
-    #     pass
-    # #     accepted_languages.append("id")
-    # if portuguese:#portuguese throws falls positives
-    #     pass
-    # #     accepted_languages.append("pt")
-    # if russian:
-    #     accepted_languages.append("ru")
     # print(toplanguage.lang,toplanguage.prob,accepted_languages)
     if (
         toplanguage
@@ -603,215 +591,44 @@ def type2megatype(t):
     return megatype_d.get(t.lower(), "")
 
 
-iso_replacements = [
-    ("mul", "_", "multiple languages"),
-    ("awd", "Generic Arawakan", "Arawakan"),
-    ("sai", "_", "Generic South American"),
-    ("xep", "Isthmian Script", "_"),
-    ("tup", "Generic Tupi", "Tupian"),
-    ("zap", "Generic Zapotec", "Eastern Otomanguean"),
-    ("qwe", "Generic Quechuan", "Quechuan"),
-    ("zxx", "_", "Not a language"),
-    ("omq", "Generic Otomanguean", "Otomanguean"),
-    ("oto", "Oto-Pame", "Otomanguean"),
-    ("cba", "Generic Chibchan", "Chibchan"),
-    ("nah", "Generic Nahuatl", "Uto-Aztecan"),
-    ("sio", "Generic Siouan", "Siouan"),
-    ("alg", "Generic Algonquian", "Algonquian-Blackfoot"),
-    ("azc", "Generic Uto-Aztecan", "Uto-Aztecan"),
-    ("cai", "_", "Generic Central-American"),
-    ("nai", "_", "Generic North-American"),
-    ("zho", "_", "Generic Chinese"),
-    ("chi", "_", "Generic Chinese"),
-    ("myn", "Generic Mayan", "Mayan"),
-    ("swa", "Generic Swahili", "Benue-Congo"),
-    ("aym", "Generic Aymara", "Aymaran"),
-    ("hmo", "Hiri Motu", "Malayo-Polynesian (Main)"),
-    ("srp", "Serbian", "Classical Indo-European"),
-    ("hrv", "Croatian", "Classical Indo-European"),
-    ("est", "Estonian", "Classical Indo-European"),
-    ("msa", "Malay", "Malayo-Polynesian (Main)"),
-    ("zsm", "Malay", "Malayo-Polynesian (Main)"),
-    ("fas", "Persian", "Classical Indo-European"),
-    ("nep", "Nepali", "Classical Indo-European"),
-    ("ori", "Oriya", "Classical Indo-European"),
-    ("ase", "American Sign Language", "Sign language"),
-    ("fsl", "Langue des signes française", "Sign language"),
-    ("bal", "Balochi", "Classical Indo-European"),
-    ("pus", "Pashto", "Classical Indo-European"),
-    ("ara", "Arabic", "Semitic"),
-    ("twi", "Twi", "Kwa Volta-Congo"),
-    ("gba", "Gbaya", "Gbaya-Manza-Ngbaka"),
-    ("ful", "Fulfulde", "North-Central Atlantic"),
-    ("ger", "German", "Classical Indo-European"),
-]
+
+def get_seconds_from_str(input_string):
+    """convert a string with time information to the integer value in seconds"""
+
+    result = 0
+    if "prp/10002" in input_string or "TSS-prp/30" in input_string:
+        duration_string = input_string.split()[2].split(".")[0]
+        try:
+            h, m, s = HHMMSS.match(duration_string).groups()
+        except AttributeError:
+            return 0
+        if not h:
+            h = 0
+        if not m:
+            m = 0
+        if not s:
+            s = 0
+        result = 3600 * int(h) + 60 * int(m) + int(s)
+    # print(input_string, result)
+    return result
 
 
-explict_matches = {
-    "Hakhun (variety of Nocte)": "njb",
-    "Nocte - Namsang variety": "njb",
-    "Tangsa - Hakhun variety": "nst",
-    "Tangsa - Cholim variety (general name Tonglum)": "nst",
-    "Tangsa (Cholim)": "nst",
-    "Tangsa - Lochhang variety (general name Langching)": "nst",
-    "Tangsa - Bote variety (general name Bongtai)": "nst",
-    "Tangsa - Hahcheng variety (general name Hasang)": "nst",
-    "Tangsa - Chamchang variety (general name Kimsing)": "nst",
-    "Tangsa - Joglei variety (general name Jugly)": "nst",
-    "Tangsa - Champang variety (general name Thamphang)": "nst",
-    "Tangsa - Haqchum variety": "nst",
-    "Tangsa - Khalak variety": "nst",
-    "Tangsa - Haqcheng variety (general name Hasang)": "nst",
-    "Tangsa - Jiingi variety (general name Donghi)": "nst",
-    "Tangsa - Shechhue variety (general name Shangke)": "nst",
-    "Tangsa - Moshang variety (general name Mossang)": "nst",
-    "Tangsa - Chamkok variety (general name Thamkok)": "nst",
-    "Tangsa - Lakki variety": "nst",
-    "Tangsa - Hawoi variety (general name Havi)": "nst",
-    "Tangsa - Hehle variety (general name Halang)": "nst",
-    "Tangsa - Mueshaung": "nst",
-    "Tangsa - Ngaimong variety": "nst",
-    "Tangsa - Nokya variety": "nst",
-    "Tangsa - Gaqlun variety": "nst",
-    "Bugis": "bug",
-    "Huitoto mïnïka": "hto",
-    "Even language": "eve",
-    "Hoocąk": "win",
-    "Marrku": "mhg-wur",
-    "Gunwinggu": "gup",
-    "Ngaliwurru": "djd",
-    "Djamindjung": "djd",
-    "Sami, Akkala": "sja",
-    "Saami, Akkala": "sja",
-    "Saami, Kildin": "sjd",
-    "Sami, Kildin": "sjd",
-    "Sami,Kildin": "sjd",
-    "Sami, Ter": "sjt",
-    "Saami, Ter": "sjt",
-    "Sami,Ter": "sjt",
-    "Saami, Skolt": "sms",
-    "Sami, Skolt": "sms",
-    "Sami,Skolt": "sms",
-    "Saami, Inari": "smn",
-    "Saami, North": "sme",
-    "Saami, Pite": "sje",
-    "Saami, South": "sma",
-    "Chadian Arabic (Dakara dialect)": "shu",
-    "Lacandón": "lac",
-    "Maya, Yucatán": "yua",
-    "Marquesan, North": "mrq",
-    "Marquesan, South": "mqm",
-    "Kómnzo": "tci",
-    "Wára": "tci",
-    "Wára (Wära)": "tci",
-    "Kómnzo": "tci",
-    "Tibetan, Amdo": "adx",
-    "Solomon Islands Pijin": "pis",
-    "Thai, Southern": "sou",
-    "Maniq Tonok": "tnz",
-    "Maniq Tonte": "tnz",
-    "Batek Deq Kuala Koh": "btq",
-    "Batek Teh Pasir Linggi": "btq",
-    "Kensiw To": "kns",
-    "Kensiw Lubok Legong": "kns",
-    "Lanoh Kertei": "lnh",
-    "Semnam Malau": "ssm",
-    "Batek Teh Sungai Taku": "btq",
-    "Batek Teq": "btq",
-    "Sanzhi": "dar",
-    "Latunde": "ltn",
-    "Salamai": "mnd",
-    "Mekéns": "skf",
-    "Tawande": "xtw",
-    "Taa": "nmn",
-    "Tai Ahom": "aho",
-    "Tai Phake": "phk",
-    "Tai Khamyang": "ksu",
-    "Trumaí": "tpy",
-    "Tuvin": "tyv",
-    "Karagas": "mtm",
-    "Shor": "cjs",
-    "Indonesian": "ind",
-    "ENGLISH": "eng",
-    "PORTUGUESE": "por",
-    "TRUMAÍ": "tpy",
-    "Vanga Vanatɨna (Sudest)": "tgo",
-    "Tetum Prasa": "tet",
-    "Makasai": "mkz",
-    "Dakaka": "bpa",
-    "Yurakaré": "yuz",
-    "Yuracare": "yuz",
-    "Malay": "zsm",
-    "Anta": "tci",
-    "Batek Deq": "btq",
-    "BatekTeh": "btq",
-    "Bilinarra": "nbj",
-    "Hakhi": "njb",
-    "Isubu": "szv",
-    "Kaili": "kzf",
-    "Kentaq Bukit Asu": "",
-    "Kuikuro ": "kui",
-    "Mawng": "mph",
-    "Monguor": "mjg",
-    "Nama": "naq",
-    "Semnam Air Bah": "ssm",
-    "TRUMAI": "tpy",
-    "Unknown": "und",
-    "Unspecified": "und",
-    "Warta Thuntai": "gnt",
-    "Wèré": "wei",
-    "Fulfulde": "fub",
-    "Singpho": "sgp",
-    "'N|ohan": "ngh",
-    "Wovia": "bvb",
-    "Jahai": "jhi",
-    "Jahai Sungai Rual": "jhi",
-    "Jahai Sungai Mangga": "jhi",
-    "Menriq Kuala Lah": "mnq",
-    "Menriq Kuala": "mnq",
-    "Menriq": "mnq",
-    "Menriq Sungai Rual": "mnq",
-    "Paumotu": "pmt",
-    "Kuikuro": "kui",
-    "Shiri": "dar",
-    "Icari": "dar",
-    "Mah Meri": "mhe",
-    "Ainu": "ain",
-}
+def get_seconds(hit):
+    """extract the duration in seconds from a hit"""
+
+    duration = 0
+    for prop in hit.get("xip.property_r_Preservation", []):
+        if "Duration" in prop:
+            duration = get_seconds_from_str(prop)
+    return duration
 
 
-# d = defaultdict(dict)
-language_dictionary = {}
-iso_6393_dictionary = {}
-for family, unit, language, iso6393 in phyla:
-    # family, unit, language, iso6393 = tuple_
-    language_dictionary[language] = {"family": family, "unit": unit, "iso6393": iso6393}
-    iso_6393_dictionary[iso6393] = {"family": family, "unit": unit, "name": language}
-language_dictionary["Huitoto"] = {
-    "family": "Huitotoan",
-    "unit": "Huitotoan",
-    "iso6393": "hto",
-}
-language_dictionary["Huitoto buue"] = {
-    "family": "Huitotoan",
-    "unit": "Huitotoan",
-    "iso6393": "hto",
-}
-for em, iso6393 in explict_matches.items():
-    # print(em, explict_matches[em])
-    language_dictionary[em] = {
-        "family": "unknown",
-        "unit": "unknown",
-        "iso6393": iso6393,
-    }
-iso_replacement_d = {
-    t[0]: {"family": "_", "unit": t[2], "name": t[1]} for t in iso_replacements
-}
-iso_6393_dictionary.update(iso_replacement_d)
-language_replacement_d = {
-    t[1]: {"family": "_", "iso": t[0], "unit": t[2]} for t in iso_replacements
-}
-for key in language_replacement_d:
-    if key in language_dictionary:
-        continue
-    language_dictionary[key] = language_replacement_d[key]
+def list_to_string(l):
+    """Convert a list to a string, skipping over all falsy elements"""
+
+    if l:
+        # do not include falsy elements
+        return ", ".join([x for x in l if x])
+    return ""
+
+

@@ -87,7 +87,7 @@ LGRLIST = set(
 )
 
 # terms which are occasionally recognized, but which are always false positives in the context of ELD
-NER_BLACKLIST = [
+NER_BLACKLIST = [ #check this against more extensive list in the langsci module
     "Q7946755",  #'wasn', radio station
     "Q3089073",  #'happy, happy', norwegian comedy film
     "Q19893364",  #'Inside The Tree', music album
@@ -307,4 +307,9 @@ ACCEPTABLE_COMMENT_TIER_TYPES = (
     "cmt",
     "comment"
 )
+
+
+
+
+
 

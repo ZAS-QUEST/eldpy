@@ -16,8 +16,8 @@ import requests
 # from collections import Counter, defaultdict
 # from bs4 import BeautifulSoup
 
-from ailla_collection import AillaCollection
-from archive import Archive
+from archives.ailla_collection import AillaCollection
+from archives.archive import Archive
 
 # from ailla_bundle import AillaBundle
 

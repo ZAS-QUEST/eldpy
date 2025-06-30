@@ -1,8 +1,8 @@
-from collection import Collection
+from eldpy.archives.collection import Collection
 import urllib
 import requests
 from bs4 import BeautifulSoup
-from elar_bundle import  ElarBundle
+from eldpy.archives.elar_bundle import  ElarBundle
 
 class ElarCollection(Collection):
     def __init__(self, name, url):

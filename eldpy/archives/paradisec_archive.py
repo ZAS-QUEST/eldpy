@@ -11,11 +11,11 @@ from bs4 import BeautifulSoup
 import requests
 # import humanize
 
-from paradisec_collection import ParadisecCollection
+from eldpy.archives.paradisec_collection import ParadisecCollection
 from eldpy.helpers import type2megatype
 # from paradisec_bundle import ParadisecBundle
 # from paradisec_file import ParadisecFile
-from archive import Archive, LIMIT
+from eldpy.archives.archive import Archive, LIMIT
 
 class ParadisecArchive(Archive):
     """

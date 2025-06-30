@@ -1,7 +1,7 @@
-from collection import Collection
+from eldpy.archives.collection import Collection
 import urllib
 from bs4 import BeautifulSoup
-from ailla_bundle import  AillaBundle
+from eldpy.archives.ailla_bundle import  AillaBundle
 import requests
 import json
 

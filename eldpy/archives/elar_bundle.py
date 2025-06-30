@@ -1,6 +1,6 @@
 import urllib
 from bs4 import BeautifulSoup
-from elar_file import  ElarFile
+from eldpy.archives.elar_file import  ElarFile
 import requests
 
 class ElarBundle():

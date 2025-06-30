@@ -1,25 +1,43 @@
 """
 instances of The Endangered Language Archive
 """
-
+import os
 # import re
 # import urllib
 # import pprint
 import json
+# import csv
+import logging
+import time
+# import pprint
 
 # from collections import Counter, defaultdict
-# import sqlite3
+import sqlite3
+# from pathlib import Path
 from bs4 import BeautifulSoup
 
 # import humanize
 import requests
+from dotenv import load_dotenv
 
-from archive import Archive, DEBUG, LIMIT
+from pyPreservica.common import ReferenceNotFoundException
+from pypreservica_api_wrapper import PreservicaAPIWrapper
 
-from elar_collection import  ElarCollection
+from eldpy.archives.archive import Archive, DEBUG, LIMIT
+
+from eldpy.archives.elar_collection import  ElarCollection
+
+from eldpy.archives.elar_file import ElarFile
+
+from eldpy.helpers import get_seconds, type2megatype
+from eldpy.language_metadata import language_dictionary
+
+from itertools import tee
+# from datetime import timedelta, date
 # from elar_bundle import  ElarBundle
 # from elar_file import  ElarFile
 
+logging.basicConfig(level=logging.INFO)
 
 class ElarArchive(Archive):
 
@@ -29,12 +47,14 @@ class ElarArchive(Archive):
 
     def __init__(self):
         super().__init__("ELAR", "https://www.elararchive.org/")
+        self.ingested_collections = []
+        self.collections_with_errors = []
 
     def populate_collections(self, limit=LIMIT, pagelimit=40):
         print("populating collections")
         self.collections = self.get_elar_collections(pagelimit=pagelimit, limit=limit)
 
-    def populate_bundles(self, limit=LIMIT, hardlimit=LIMIT, languages=True):
+    def populate_bundles(self, limit=LIMIT, offset=0, languages=True):
         """add all bundles"""
         print("populating bundles")
         for i, collection in enumerate(self.collections[:LIMIT]):
@@ -59,7 +79,6 @@ class ElarArchive(Archive):
     def get_elar_collections(self, pagelimit=40, limit=10000):
         """add all collections"""
         if DEBUG:
-            pagelimit = LIMIT
             print(f"limit set to {LIMIT}")
         collections = []
         for i in range(pagelimit):
@@ -78,72 +97,14 @@ class ElarArchive(Archive):
         print(f"finished. There are {len(collections)} collections")
         return collections
 
+
+
     def get_elar_collection_links_(self, page):
         """retrieve all links pointing to ELAR collections"""
 
         soup = BeautifulSoup(page, 'html.parser')
         collection_links = [ElarCollection(a.text, a['href']) for h5 in soup.find_all('h5') for a in h5.find_all('a')]
         return collection_links[:LIMIT]
-    #
-    # def get_elar_bundles(collections):
-    #     elar_bundles = []
-    #     for collection in collections:
-    #         elar_bundles += get_collection_bundles(collection)
-    #
-    # def get_bundles_on_page(soup):
-    #     return [(a['href'], a.text) for h5 in soup.find_all('h5') for a in h5.find_all('a')]
-    #
-    # def get_files_on_page(soup):
-    #     return [(a['href'], a.text, a.findNext('div').text.strip()) for h5 in soup.find_all('h5') for a in h5.find_all('a')]
-    #
-    # def get_collection_bundles(collection):
-    #     url = collection[0]
-    #     print(url)
-    #     with urllib.request.urlopen(url) as collection_reader:
-    #         content = collection_reader.read()
-    #         soup = BeautifulSoup(content, 'html.parser')
-    #         try:
-    #             limit = int(soup.find('div',class_='pagination').find_all('a')[-2].text)
-    #         except IndexError:
-    #             limit = 1
-    #         bundles = get_bundles_on_page(soup)
-    #         current = 2
-    #     while current <= limit:
-    #         current_url =  url + f"?pg={current}"
-    #         print(current_url)
-    #         with urllib.request.urlopen(current_url) as current_collection_reader:
-    #             current_content = current_collection_reader.read()
-    #             current_soup = BeautifulSoup(current_content, 'html.parser')
-    #             bundles += get_bundles_on_page(current_soup)
-    #         current += 1
-    #     return bundles
-
-    # def get_files(bundle):
-    #     url = bundle[0]
-    #     print(url)
-    #
-    #     with urllib.request.urlopen(url) as bundle_reader:
-    #         try:
-    #             content = bundle_reader.read()
-    #         except urllib.error.HTTPError:
-    #             print (f"{url} could not be opened")
-    #             return []
-    #         soup = BeautifulSoup(content, 'html.parser')
-    #         try:
-    #             limit = int(soup.find('div',class_='pagination').find_all('a')[-2].text)
-    #         except IndexError:
-    #             limit = 1
-    #         files = get_files_on_page(soup)
-    #         current = 2
-    #     while current <= limit:
-    #         current_url =  url + f"?pg={current}"
-    #         print(current_url)
-    #         with urllib.request.urlopen(current_url) as current_file_reader:
-    #             current_content = current_file_reader.read()
-    #             current_soup = BeautifulSoup(current_content, 'html.parser')
-    #             files += get_bundles_on_page(current_soup)
-    #         current += 1
-    #     return files
 
     def write_json(self, add=''):
         """
@@ -166,65 +127,247 @@ class ElarArchive(Archive):
 
 
 
+    def populate_database(self, given_db_name="test.db", offset=0, limit=99999, fussy=False):
+        """crawl the ELAR archive via the Preservica API and add the metadata to the db"""
+
+        connection = sqlite3.connect(given_db_name)
+        # collections_with_errors = []
+        # ingested_collections = []
+        self.retrieve_collections(connection, offset=offset, limit=limit, fussy=fussy)
+        print("The following collections could not be ingested:", self.collections_with_errors)
+        connection.close()
 
 
-    # def json_run_bundle(self):
-    #     with open("elar_copy_b.json", encoding="utf8") as json_in:
-    #         d = json.load(json_in)
-    #     for collection_name, collection_d in d.items():
-    #         collection_url = collection_d['url']
-    #         c = ElarCollection(collection_name, collection_url)
-    #         collection_bundles = []
-    #         for bundle_name, bundle_d in collection_d['bundles'].items():
-    #             bundle_url = bundle_d['url']
-    #             b = ElarBundle(bundle_name, bundle_url)
-    #             collection_bundles.append(b)
-    #         c.bundles = collection_bundles
-    #         self.collections.append(c)
-    #     self.populate_files()
-    #     self.write_json(add='_f')
+    def retrieve_collections(self, connection, offset=0, limit=99999, fussy=True):
+        """retrieve collection medata from ELAR and add it to the db"""
+        cursor = connection.cursor()
+        load_dotenv()
+        load_dotenv(dotenv_path=os.environ["ENV_PATH"])
 
-    # def json_run_showcase(self,file_limit=999999):
-    #     with open("showcase_elar_copy_f.json", encoding="utf8") as json_in:
-    #         d = json.load(json_in)
-    #     i = 0
-    #     for collection_name, collection_d in d.items():
-    #         i+=1
-    #         if i>5:
-    #             break
-    #         c = ElarCollection(collection_name, collection_d['url'])
-    #         collection_bundles = []
-    #         for bundle_name, bundle_d in collection_d['bundles'].items():
-    #             b = ElarBundle(bundle_name, bundle_d['url'])
-    #             bundle_files = []
-    #             for file_d in bundle_d['files'][:file_limit]:
-    #                 f = ElarFile(file_d['name'], file_d['url'], file_d['type_'])
-    #                 f.get_size()
-    #                 bundle_files.append(f)
-    #             b.files = bundle_files
-    #             collection_bundles.append(b)
-    #         c.bundles = collection_bundles
-    #     self.collections.append(c)
-    #     self.report()
-    #
-    # def report(self):
-    #     collections = self.collections
-    #     bundles = [b for c in collections for b in c.bundles]
-    #     files = [f for c in collections for b in c.bundles for f in b.files]
-    #     types = [f.type_ for f in files]
-    #     print(f"There are {len(collections)} collections")
-    #     print(f"There are {len(bundles)} bundles")
-    #     print(f"There are {len(files)} files")
-    #     types_d = defaultdict(int)
-    #     for f in files:
-    #         types_d[f.type_] += f.size
-    #     counter = Counter(types)
-    #     for k, v in counter.items():
-    #         readable_size = humanize.naturalsize(types_d[k])
-    #         print (f" {k} files: {v} ({readable_size} total)")
-    #
-    # def insert_into_database(self, input_file, db_name='test.db'):
-    #     pass
+        client = PreservicaAPIWrapper()
+
+        # the * is used to filter for existing values, "" retrieves all records
+        collection_filter_values = {
+            "imdi.country": "",
+            "imdi.language": "",
+            "imdi.corpusTitle": "",
+            "xip.title": "",
+            "xip.parent_ref": os.environ["PRESERVICA_ROOT_FOLDER_ID"],
+        }
+
+        #     # now go through all hits
+        print("retrieving collections")
+        raw_hits = client.content_client.search_index_filter_list(
+            query="*", filter_values=collection_filter_values
+        )
+        print("fetching all hits into memory", end=" ")
+        hits = [x for x in raw_hits]
+        print(f"({len(hits)} hits)")
+        limit = min(limit, len(hits))
+        i = offset
+        try:
+            for current_hit in hits[offset:]:
+                i += 1
+                if i > limit:
+                    break
+                print(f"{i}/{limit}:", end=" ")
+                current_collection_folder = client.entity_client.folder(
+                    current_hit["xip.reference"]
+                )
+                collection_folder = self.process_collection(current_hit, current_collection_folder, client, cursor, fussy=fussy)
+                if collection_folder:
+                    self.ingested_collections.append(collection_folder)
+                    connection.commit()
+                    print("Added to database")
+        except RuntimeError as e:
+            self.collections_with_errors.append((i,current_collection_folder))
+            print()
+            print(e)
+            print("Server connection dropped. Proceeding to next collection")
+            self.retrieve_collections(connection,offset=i,fussy=fussy)
+        except sqlite3.IntegrityError as e:
+            connection.rollback()
+            self.collections_with_errors.append((i,current_collection_folder))
+            print()
+            print(e)
+            print("Database problem. Proceeding to next collection")
+            self.retrieve_collections(connection,offset=i,fussy=fussy)
+        except ReferenceNotFoundException as e:
+            connection.rollback()
+            self.collections_with_errors.append((i,current_collection_folder))
+            print()
+            print(e)
+            print("Archive problem. Proceeding to next collection")
+            self.retrieve_collections(connection,offset=i,fussy=fussy)
+
+
+
+    def process_collection(self, hit, collection_folder, client, cursor, fussy=True):
+        """process one ELAR collection and add the metadata to the database"""
+        # print("processing")
+
+        # collection_countries = set()
+        collection_languages = set()
+
+        collection_title = hit.get("imdi.corpusTitle", "_NO_TITLE")
+        print(f"now in {collection_folder.title}")
+
+        # collection_countries.add(hit.get("imdi.country"))
+        collection_languages.update(hit.get("imdi.language", []))
+
+        # find the folders with the collection folder as parent
+        session_filter_values = {
+            "imdi.country": "",
+            "imdi.sessionTitle": "",
+            "imdi.language": "",
+            "xip.security_descriptor": "*",
+            "xip.parent_ref": collection_folder.reference,
+        }
+
+        collection_ref = collection_folder.reference
+        cursor.execute(
+            f'select * from files where archive="ELAR" and collection="{collection_ref}"'
+        )
+        files_for_collection = cursor.fetchall()
+        if len(files_for_collection) > 0:
+            cursor.execute(
+                f'select distinct(bundle) from files where archive="ELAR" and collection="{collection_ref}"'
+            )
+            bundles = cursor.fetchall()
+            # print(f"collection {collection_ref} already in database ({len(files_for_collection)} files in {len(bundles)} sessions). Skipping.")
+            return False
+        # now go through all hits
+        raw_session_hits = client.content_client.search_index_filter_list(
+            query="*", filter_values=session_filter_values
+        )
+        print(" fetching session hits. ", end="", flush=True)
+        try:
+            session_hits = [x for x in raw_session_hits]
+        except RuntimeError:
+            time.sleep(3)
+            session_hits = [x for x in raw_session_hits]
+        print(
+            f"Analyzing {len(session_hits)} sessions. Numbers indicate the number of files fetched per session",
+            end="\n ",
+        )
+        collection_files_db = []
+        languages_db = []
+        for current_session_hit in session_hits:
+            # pprint.pprint(current_session_hit)
+            session_ref = current_session_hit["xip.reference"]
+            # short_title = current_session_hit.get("imdi.sessionTitle", "")[:50]
+            # print(f" processing {file_ref} {short_title}")
+            if fussy:
+                elar_files = self.process_session_hit(current_session_hit, client)
+            else:
+                try:
+                    elar_files = self.process_session_hit(current_session_hit, client)
+                except pyPreservica.common.ReferenceNotFoundException as e:
+                    print(
+                        f"Archive problem while fetching files for  {session_ref} in {collection_ref}. Skipping"
+                    )
+                    print(e)
+                    continue
+            if not elar_files:
+                continue
+            for elar_file in elar_files:
+                elar_file.megatype = type2megatype(elar_file.type_)
+                file_ref = elar_file.id_
+                file_data = [
+                    file_ref,
+                    "ELAR",
+                    collection_ref,
+                    session_ref,
+                    elar_file.megatype,
+                    elar_file.type_,
+                    elar_file.size,
+                    elar_file.duration,
+                ]
+                # print(file_data)
+                collection_files_db.append(file_data)
+                for language in elar_file.languages:
+                    try:
+                        iso6393 = language_dictionary[language]["iso6393"]
+                    except KeyError:
+                        iso6393 = f"_{language}"
+                    language_data = (file_ref, "ELAR", iso6393)
+                    languages_db.append(language_data)
+        for c in collection_files_db:
+            # print(c)
+            cursor.execute("INSERT INTO files VALUES (?,?,?,?,?,?,?,?)", c)
+        for l in list(set(languages_db)):
+            # print(l)
+            cursor.execute(
+                "INSERT INTO languagesfiles VALUES (?,?,?)",
+                l,
+            )
+        print()
+        return collection_folder
+
+
+    def process_session_hit(self, session_hit, client):
+        """ extract the metadata for one session"""
+
+        # session_countries = set()
+        session_languages = set()
+        # we only want published Sessions
+        # session_sec_desc_set = set(session_hit["xip.security_descriptor"])
+        session_folder = client.entity_client.folder(session_hit["xip.reference"])
+        try:
+            session_languages.update(session_hit.get("imdi.language"))
+        except TypeError:
+            pass
+        # print(session_languages)
+
+        # find the assets with the session folder as parent
+        asset_filter_values = {
+            # size of preservation bitstream
+            "xip.size_r_Preservation": "",
+            # all the technical information in a list
+            "xip.property_r_Preservation": "",
+            # original file name with extension
+            "xip.bitstream_names_r_Preservation": "",
+            # audio, video, document
+            "xip.content_type_r_Preservation": "",
+            "xip.security_descriptor": "*",
+            "xip.parent_ref": session_folder.reference,
+        }
+        # now go through all hits
+        raw_asset_hits = client.content_client.search_index_filter_list(
+            query="*", filter_values=asset_filter_values
+        )
+        # i = 0
+        # make a backup of the generator in case the first one runs into a timeout
+        raw_asset_hits1, raw_asset_hitsbackup = tee(raw_asset_hits)
+        for raw_asset_hits in (raw_asset_hits1, raw_asset_hitsbackup):
+            try:
+                asset_hits = [x for x in raw_asset_hits]
+                print(f"{len(asset_hits)}.", end="", flush=True)
+                files = []
+                for asset_hit in asset_hits:
+                    try:
+                        filename = asset_hit["xip.bitstream_names_r_Preservation"][0]
+                    except KeyError:
+                        filename = "_UNNAMED"
+                    file_ref = asset_hit["xip.reference"]
+                    filetype = filename.split(".")[-1]
+                    elar_file = ElarFile(filename, file_ref, filetype, id_=file_ref)
+                    elar_file.languages = session_languages
+                    r_preservation = asset_hit.get("xip.content_type_r_Preservation", "")
+                    if not r_preservation:
+                        return None
+                    elar_file.size = asset_hit["xip.size_r_Preservation"]
+                    if "video" in r_preservation:
+                        elar_file.duration = get_seconds(asset_hit)
+                        elar_file.megatype = "video"
+                    elif "audio" in r_preservation:
+                        elar_file.duration = get_seconds(asset_hit)
+                        elar_file.megatype = "audio"
+                    files.append(elar_file)
+            except TimeoutError:
+                continue
+            break  # if the run succeeded the first time, skip the backup
+        return files
 
 
 

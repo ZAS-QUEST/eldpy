@@ -1,6 +1,6 @@
 import urllib
 from bs4 import BeautifulSoup
-from paradisec_file import  ParadisecFile
+from eldpy.archives.paradisec_file import  ParadisecFile
 import requests
 import time
 

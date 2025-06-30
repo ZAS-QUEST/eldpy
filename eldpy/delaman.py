@@ -8,15 +8,15 @@ import sys
 # from archive import Archive
 from phyla import phyla
 # from tla_sizes import tla_sizes
-from ailla_archive import AillaArchive
-from elar_archive import ElarArchive
-from paradisec_archive import ParadisecArchive
-from tla_archive import TLAArchive
+from archives.ailla_archive import AillaArchive
+from archives.elar_archive import ElarArchive
+from archives.paradisec_archive import ParadisecArchive
+from archives.tla_archive import TLAArchive
 
 archives = {
     "PARADISEC": ParadisecArchive(),
     "AILLA": AillaArchive(),
-    # "ELAR": ElarArchive(),
+    "ELAR": ElarArchive(),
     "TLA": TLAArchive(),
 }
 
@@ -29,30 +29,30 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
     connection = sqlite3.connect(db_name)
     cursor = connection.cursor()
     files_table_string = """CREATE TABLE files(id TEXT,
-                                        archive TEXT NOT NULL,
-                                        collection TEXT NOT NULL,
-                                        bundle TEXT,
-                                        megatype TEXT,
-                                        filetype TEXT NOT NULL,
-                                        bytes int,
-                                        seconds int,
-                                        PRIMARY KEY (ID, archive));
+                                                archive TEXT NOT NULL,
+                                                collection TEXT NOT NULL,
+                                                bundle TEXT,
+                                                megatype TEXT,
+                                                filetype TEXT NOT NULL,
+                                                bytes int,
+                                                seconds int,
+                                                PRIMARY KEY (ID, archive));
     """
-    # cursor.execute(files_table_string)
+    cursor.execute(files_table_string)
 
     phyla_table_string = """CREATE TABLE phyla(language TEXT,
-                                        phylum TEXT,
-                                        family TEXT,
-                                        languagecode TEXT PRIMARY KEY);
+                                                phylum TEXT,
+                                                family TEXT,
+                                                languagecode TEXT PRIMARY KEY);
     """
-    # cursor.execute(phyla_table_string)
+    cursor.execute(phyla_table_string)
 
     languages_files_string = """CREATE TABLE languagesfiles(id TEXT,
                                                         archive TEXT,
                                                         languagecode TEXT,
                                                         PRIMARY KEY(id, archive, languagecode));
                             """
-    # cursor.execute(languages_files_string)
+    cursor.execute(languages_files_string)
 
     views = [
     """CREATE VIEW languagevideos AS

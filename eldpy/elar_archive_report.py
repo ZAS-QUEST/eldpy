@@ -182,7 +182,7 @@ def process_hit(hit, collection_folder):
         session_ref = current_session_hit["xip.reference"]
         short_title = current_session_hit.get("imdi.sessionTitle", "")[:50]
         print(".", end="", flush=True)
-        # print(f" processing {session_ref} {short_title}")
+        print(f" processing {session_ref} {short_title}")
         session = process_session_hit(current_session_hit)
         if not session:
             continue
@@ -196,12 +196,12 @@ def process_hit(hit, collection_folder):
             0,
             0,
         ]
-        # print(f"  {sessiondata}")
+        print(f"sessiondata:  {sessiondata}")
         cursor.execute("INSERT INTO sessions VALUES (?,?,?,?,?,?,?,?)", sessiondata)
-        # print(f"  {session.languages}")
+        print(f"  {session.languages}")
         for language in session.languages:
             cursor.execute(
-                "INSERT INTO sessionlanguages VALUES (?,?,?)",
+                "INSERT INTO languagesfiles VALUES (?,?,?)",
                 [collection_folder.reference, session_ref, language],
             )
         connection.commit()
@@ -210,7 +210,11 @@ def process_hit(hit, collection_folder):
 if __name__ == "__main__":
     limit = 1000
     try:
-        offset = int(sys.argv[1])
+        given_db_name = sys.argv[1]
+    except (TypeError, IndexError):
+        given_db_name = "test.db"
+    try:
+        offset = int(sys.argv[2])
     except (TypeError, IndexError):
         offset = 0
     print(f"offset is {offset}")
@@ -228,7 +232,7 @@ if __name__ == "__main__":
         "xip.parent_ref": os.environ["PRESERVICA_ROOT_FOLDER_ID"],
     }
 
-    connection = sqlite3.connect("elarreport.db")
+    connection = sqlite3.connect(given_db_name)
     cursor = connection.cursor()
     #     # now go through all hits
     raw_hits = client.content_client.search_index_filter_list(

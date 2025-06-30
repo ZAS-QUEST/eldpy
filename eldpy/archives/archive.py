@@ -7,25 +7,21 @@ import json
 # import pprint
 import datetime
 import sqlite3
-from collections import Counter, defaultdict
+from  collections import Counter, defaultdict
 
 import squarify
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-<<<<<<< HEAD:eldpy/archive.py
 # import squarify
 # from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
 
-from collection import Collection
+from eldpy.archives.collection import Collection
 
 # from . import lod
 # import lod
 
 # from collections import defaultdict
-=======
-# from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
->>>>>>> 1fa181819c6b1286deeefaf096ac890b7fdf5643:eldpy/archives/archive.py
 
 
 DEBUG = False

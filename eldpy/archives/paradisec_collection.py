@@ -1,11 +1,11 @@
-from collection import Collection
+from eldpy.archives.collection import Collection
 import urllib
 import requests
 import json
 import re
 from bs4 import BeautifulSoup
-from paradisec_bundle import  ParadisecBundle
-from archive import LIMIT
+from eldpy.archives.paradisec_bundle import  ParadisecBundle
+from eldpy.archives.archive import LIMIT
 
 class ParadisecCollection(Collection):
     def __init__(self, name, url):

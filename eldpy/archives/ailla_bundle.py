@@ -4,7 +4,7 @@ import json
 
 from bs4 import BeautifulSoup
 
-from ailla_file import  AillaFile
+from eldpy.archives.ailla_file import  AillaFile
 
 class AillaBundle():
     def __init__(self, name, id_):

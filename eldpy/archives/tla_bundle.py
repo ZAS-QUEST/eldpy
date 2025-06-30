@@ -1,6 +1,6 @@
 import urllib
 from bs4 import BeautifulSoup
-from tla_file import  TLAFile
+from eldpy.archives.tla_file import  TLAFile
 import requests
 
 class TLABundle():

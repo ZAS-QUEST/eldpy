@@ -2,7 +2,7 @@ from eldpy.archives.collection import Collection
 import urllib
 import requests
 from bs4 import BeautifulSoup
-from tla_bundle import  TLABundle
+from eldpy.archives.tla_bundle import  TLABundle
 
 class TLACollection(Collection):
     def __init__(self, name, url):
