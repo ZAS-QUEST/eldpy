@@ -22,6 +22,7 @@ from eldpy.helpers import type2megatype
 from eldpy.language_metadata import language_dictionary
 from eldpy.archives.tla_sizes import tla_sizes
 from eldpy.archives.archive import Archive, LIMIT
+from eldpy.helpers import type2megatype
 
 class TLAArchive(Archive):
     """
@@ -70,28 +71,41 @@ class TLAArchive(Archive):
                 collection.populate_bundles()
             self.bundles += collection.bundles
 
-    def populate_files(self, limit=10000):
-        """
-        get all files for the bundles
-        """
-        print(f"populating files from {len(self.collections)} collections")
-        for i, collection in enumerate(self.collections):
-            print(f"{i+1}/{len(self.collections)}")
-            if collection.bundles == []:
-                collection.populate_bundles()
-            for bundle in collection.bundles:
-                if bundle.files == []:
-                    bundle.populate_files()
-                self.files += bundle.files
+    # def populate_files(self, limit=10000, database=None):
+    #     """
+    #     get all files for the bundles
+    #     """
+    #     print(f"populating files from {len(self.collections)} collections")
+    #     if database:
+    #         connection = sqlite3.connect(database)
+    #         cursor = connection.cursor()
+    #     for i, collection in enumerate(self.collections):
+    #         print(f"{i+1}/{len(self.collections)}")
+    #         if collection.bundles == []:
+    #             collection.populate_bundles()
+    #         for bundle in collection.bundles:
+    #             if bundle.files == []:
+    #                 bundle.populate_files()
+    #             self.files += bundle.files
+    #             if database:
+    #                 for tla_file in bundle.files():
+    #                     file_data = [
+    #                         tla_file.url,
+    #                         "TLA",
+    #                         collection.ID,
+    #                         bundle.url,
+    #                         file2megatype(tla_file.type_),
+    #                         tla_file.type_,
+    #                         tla_file.get_size(),
+    #                         0
+    #                     ]
+    #                     cursor.execute("INSERT INTO files VALUES (?,?,?,?,?,?,?,?)", file_data)
+    #                     for lg in tla_file.langauges:
+    #                         cursor.execute("INSERT INTO languagesfiles VALUES (?,?,?)", [tla_file.url,"TLA",lg])
+    #         if database:
+    #             print(f"committing files for {collection.name}")
+    #             connection.commit()
 
-    #
-    # def run(self):
-    #     self.populate_collections(pagelimit=4)
-    #     self.write_json(add='_c')
-    #     self.populate_bundles()
-    #     self.write_json(add='_b')
-    #     self.populate_files()
-    #     self.write_json(add='_f')
 
     def write_json(self, add=""):
         """
@@ -151,15 +165,16 @@ class TLAArchive(Archive):
         return result
 
 
-    def populate(self, limit=LIMIT, bundle_offset=0):
-        self.populate_collections()
+    def populate(self, limit=LIMIT, bundle_offset=0, database=None):
+        self.populate_collections(limit=limit)
         self.populate_bundles(offset=bundle_offset)
-        self.populate_files()
+        self.populate_files(database=database)
+
+
 
 
 
 if __name__ == "__main__":
     ta = TLAArchive()
-    ta.populate(bundle_offset=46)
+    ta.populate(limit=2, database="test.db")
     ta.write_json()
-    # ta.insert_into_database("tla_copy_f.json")

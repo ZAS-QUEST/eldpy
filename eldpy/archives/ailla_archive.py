@@ -16,8 +16,8 @@ import requests
 # from collections import Counter, defaultdict
 # from bs4 import BeautifulSoup
 
-from archives.ailla_collection import AillaCollection
-from archives.archive import Archive
+from eldpy.archives.ailla_collection import AillaCollection
+from eldpy.archives.archive import Archive
 
 # from ailla_bundle import AillaBundle
 
@@ -132,7 +132,7 @@ class AillaArchive(Archive):
 
 if __name__ == "__main__":
     aa = AillaArchive()
-    aa.populate()
+    aa.populate(database='test.db')
     # aa.populate_collections()
     # aa.populate_bundles()
     # aa.populate_files()

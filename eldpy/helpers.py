@@ -9,7 +9,6 @@ from collections import defaultdict
 from langdetect import detect_langs, lang_detect_exception
 # from pyPreservica import logger
 from eldpy.elan.eldpyerror import EldpyError
-from eldpy.phyla import phyla
 # from eldpy.archives.elar_file import ElarFile
 
 

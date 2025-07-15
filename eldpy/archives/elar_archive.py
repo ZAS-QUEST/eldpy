@@ -262,7 +262,7 @@ class ElarArchive(Archive):
             else:
                 try:
                     elar_files = self.process_session_hit(current_session_hit, client)
-                except pyPreservica.common.ReferenceNotFoundException as e:
+                except ReferenceNotFoundException as e:
                     print(
                         f"Archive problem while fetching files for  {session_ref} in {collection_ref}. Skipping"
                     )

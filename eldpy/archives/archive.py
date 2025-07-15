@@ -73,12 +73,15 @@ class Archive:
                 collection.populate_bundles(limit=limit)
             self.bundles += collection.bundles
 
-    def populate_files(self, limit=LIMIT):
+    def populate_files(self, limit=LIMIT, database=None):
         """
         get all bundles for the collections
         """
 
         print("populating files")
+        if database:
+            connection = sqlite3.connect(database)
+            cursor = connection.cursor()
         number_of_collections = len(self.collections)
         for i, collection in enumerate(self.collections):
             print(f"c{i+1}/{number_of_collections}")
@@ -86,6 +89,24 @@ class Archive:
             for j, bundle in enumerate(collection.bundles[:limit]):
                 print(f" b{j+1}/{number_of_bundles}", end=" ")
                 bundle.populate_files()
+                if database:
+                    for file_ in bundle.files():
+                        file_data = [
+                            file_.url,
+                            self.name,
+                            collection.ID,
+                            bundle.url,
+                            file2megatype(file_.type_),
+                            file_.type_,
+                            file_.size,
+                            0
+                        ]
+                        cursor.execute("INSERT INTO files VALUES (?,?,?,?,?,?,?,?)", file_data)
+                        for lg in tla_file.langauges:
+                            cursor.execute("INSERT INTO languagesfiles VALUES (?,?,?)", [tla_file.url,self.name,lg])
+            if database:
+                print(f"committing files for {collection.name}")
+                connection.commit()
 
     def get_languages(self, s):
         """dummy method for subclasses to instantiate"""
@@ -227,12 +248,12 @@ class Archive:
         ).split(".", maxsplit=1)[0]
         self.statistics.update(d)
 
-    def populate(self, limit=LIMIT):
+    def populate(self, limit=LIMIT, database=None):
         """add all collections, bundles, and files"""
 
         self.populate_collections(limit=limit)
         self.populate_bundles(limit=limit)
-        self.populate_files(limit=limit)
+        self.populate_files(limit=limit, database=database)
 
     def get_megatype(self, type_):
         """dummy method for subclasses to instantiate"""

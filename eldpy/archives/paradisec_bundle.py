@@ -1,13 +1,15 @@
 import urllib
 from bs4 import BeautifulSoup
 from eldpy.archives.paradisec_file import  ParadisecFile
+from eldpy.archives.bundle import  Bundle
 import requests
 import time
 
-class ParadisecBundle():
+class ParadisecBundle(Bundle):
     def __init__(self, name, url, languages):
         self.name = name
         self.url = url
+        self.id_ = url.split('/')[-1]
         self.languages = []
         self.files = []
 

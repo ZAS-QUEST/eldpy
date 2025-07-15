@@ -5,13 +5,15 @@ import json
 from bs4 import BeautifulSoup
 
 from eldpy.archives.ailla_file import  AillaFile
+from eldpy.archives.bundle import  Bundle
 
-class AillaBundle():
-    def __init__(self, name, id_):
+class AillaBundle(Bundle):
+    def __init__(self, name, url):
         self.name = name
-        self.id_ = id_
-        self.url = f"https://ailla.utexas.org/folders/{id_}"
+        self.url = url
+        self.id_ = url.split('/')[-1]
         self.files = []
+        self.languages = []
 
 
     def populate_files(self, hardlimit=10000):
