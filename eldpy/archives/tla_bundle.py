@@ -7,9 +7,10 @@ import requests
 class TLABundle(Bundle):
     def __init__(self, name, id_):
         self.name = name
-        self.url = url
-        self.id_ = url.split('/')[-1]
-        # self.url = f"https://archive.mpi.nl/tla/islandora/object/{id_}"
+        # self.url = url
+        print(id_)
+        self.id_ = id_
+        self.url = f"https://archive.mpi.nl/tla/islandora/object/{id_}"
         self.files = []
         self.languages = []
 

@@ -8,10 +8,10 @@ from eldpy.archives.ailla_file import  AillaFile
 from eldpy.archives.bundle import  Bundle
 
 class AillaBundle(Bundle):
-    def __init__(self, name, url):
+    def __init__(self, name, id_):
         self.name = name
-        self.url = url
-        self.id_ = url.split('/')[-1]
+        self.id_ = id_
+        self.url = f"https://ailla.utexas.org/folders/{id_}"
         self.files = []
         self.languages = []
 

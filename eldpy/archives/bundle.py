@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from eldpy.archives.ailla_file import  AillaFile
 
-class AillaBundle(Bundle):
+class Bundle():
     def __init__(self, name, url):
         self.name = name
         self.url = url
