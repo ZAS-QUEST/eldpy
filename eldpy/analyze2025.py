@@ -3,6 +3,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+EXCLUDELANGUAGES = """where languagecode != 'eng'
+                and languagecode != 'spa'
+                and languagecode != 'rus'
+                and languagecode != 'por'
+                and languagecode != 'ind'
+                and languagecode != 'tpi'
+                and languagecode != 'fra'
+                and languagecode != 'swh'
+                and languagecode != '_Chinese, Mandarin'
+                and languagecode != '_Chinese'
+                """
+
 def totalcount(df,dimension):
     try:
         v = df[f"video{dimension}"]
@@ -28,23 +40,13 @@ def get_df(sql):
 def plot_totalfiles(log=False):
     sql = f"""SELECT languagecode, count(id) as total
                 FROM languagesfiles
-                where languagecode != 'eng'
-                and languagecode != 'spa'
-                and languagecode != 'rus'
-                and languagecode != 'por'
-                and languagecode != 'ind'
-                and languagecode != 'tpi'
-                and languagecode != 'fra'
-                and languagecode != 'swh'
-                and languagecode != '_Chinese, Mandarin'
-                and languagecode != '_Chinese'
+                {EXCLUDELANGUAGES}
                 GROUP BY languagecode;
                 """
     df = get_df(sql)
 
 
     df = df.sort_values("total", ascending=False)
-    print(df)
     plt.figure(figsize=(12,6))
     plt.bar(df["languagecode"], df["total"])
     log_addendum = ''
@@ -62,8 +64,10 @@ def plot_totalfiles(log=False):
     plt.xlabel("rank")
 
     plt.ylabel("total")
+    if log:
+        plt.ylabel("total (log scale)")
     plt.title(f"Total files per language across the four archives")
-    plt.show()
+    # plt.show()
 
     plt.savefig(f"files_per_languages_{log_addendum}.png", dpi=300, bbox_inches="tight")
 
@@ -80,7 +84,7 @@ def plot_languages():
                 """
     df = get_df(sql)
 
-    print(df)
+    # print(df)
 
     values = df[f"count"].tolist()
     archives = df["archive"].tolist()
@@ -111,7 +115,7 @@ def plot_phyla():
                 """
     df = get_df(sql)
 
-    print(df)
+    # print(df)
 
     values = df[f"count"].tolist()
     archives = df["archive"].tolist()
@@ -140,7 +144,7 @@ def stacked_plot(mime,dimension):
                 WHERE megatype='{mime}';"""
     df = get_df(sql)
 
-    print(df)
+    # print(df)
 
     values = df[f"{dimension}s"].tolist()
     archives = df["archive"].tolist()
@@ -175,7 +179,7 @@ def archive_plot(archive, measure):
                 GROUP BY megatype;"""
     df = get_df(sql)
 
-    print(df)
+    # print(df)
 
     values = df["value"].tolist()
     types = df["megatype"].tolist()
@@ -230,7 +234,9 @@ def rankplot(level, mime, dimension, sql, log=False, aggregatefunction=totalcoun
 
     plt.xlabel("rank")
 
-    plt.ylabel("total (log scale)")
+    plt.ylabel("total")
+    if log:
+        plt.ylabel("total (log scale)")
     plt.title(f"Total {mime}{dimension} per  {level} across the four archives")
 
 
@@ -244,37 +250,38 @@ def rankplot(level, mime, dimension, sql, log=False, aggregatefunction=totalcoun
 
 
 # ====================== OK =====================================
-# plot_totalfiles()
-# plot_totalfiles(log=True)
-# for archive in "AILLA ELAR PARADISEC TLA".split():
-#     for dimension in "count sum".split():
-#         archive_plot(archive, dimension)
-#
-#
-#
-# plot_languages()
-# plot_phyla()
-#
-# for mime in "audio video xml".split():
-#     for dimension in "count second byte".split():
-#         stacked_plot(mime, dimension)
-#
-#
-# for mime in "audio video xml".split():
-#     for dimension in "count bytes seconds".split():
-#         for boolean in (True, False):
-#             rankplot("language", mime, dimension, f"""SELECT
-#                         languagecode as code,
-#                         {mime}{dimension}
-#                     FROM cleanlanguagecsv
-#                 """,log=boolean)
-#
-#
-# for mime in "audio video xml".split():
-#     for dimension in "count bytes seconds".split():
-#         for boolean in (True, False):
-#             rankplot("phylum",mime, dimension, f"""SELECT
-#                         phylum as code,
-#                         {mime}{dimension}
-#                     FROM cleanphylumcsv
-#                 """,log=boolean)
+plot_totalfiles()
+plot_totalfiles(log=True)
+for archive in "AILLA ELAR PARADISEC TLA".split():
+    for dimension in "count sum".split():
+        archive_plot(archive, dimension)
+
+
+
+plot_languages()
+plot_phyla()
+
+for mime in "audio video xml".split():
+    for dimension in "count second byte".split():
+        stacked_plot(mime, dimension)
+
+
+for mime in "audio video xml".split():
+    for dimension in "count bytes seconds".split():
+        for boolean in (True, False):
+            rankplot("language", mime, dimension, f"""SELECT
+                        languagecode as code,
+                        {mime}{dimension}
+                    FROM cleanlanguagecsv
+                    {EXCLUDELANGUAGES}
+                """,log=boolean)
+
+
+for mime in "audio video xml".split():
+    for dimension in "count bytes seconds".split():
+        for boolean in (True, False):
+            rankplot("phylum",mime, dimension, f"""SELECT
+                        phylum as code,
+                        {mime}{dimension}
+                    FROM cleanphylumcsv
+                """,log=boolean)
