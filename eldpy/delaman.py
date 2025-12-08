@@ -132,7 +132,19 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
         AND phyla.languagecode=fulljoinaudios.languagecode
         AND phyla.languagecode=fulljoinxmls.languagecode
         GROUP BY phyla.phylum;
-        """
+        """,
+    """CREATE VIEW archivecounts AS
+        SELECT archive, megatype, COUNT(id) AS counts
+        FROM files
+        GROUP BY archive, megatype;""",
+    """CREATE VIEW archivebytes AS
+        SELECT archive, megatype, sum(bytes) AS bytes
+        FROM files
+        GROUP BY archive, megatype;"""
+    """CREATE VIEW archiveseconds AS
+        SELECT archive, megatype, sum(seconds) AS seconds
+        FROM files
+        GROUP BY archive, megatype;"""
     ]
     for view in views:
         cursor.execute(view)

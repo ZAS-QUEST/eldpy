@@ -18,11 +18,47 @@ def totalcount(df,dimension):
         x = 0
     return v+a+x
 
-def rankplot(level, mime, dimension, sql, log=False, aggregatefunction=totalcount):
+def get_df(sql):
     connection = sqlite3.connect('delaman2025a.db')
     df = pd.read_sql_query(sql, connection)
-
     connection.close()
+    return df
+
+def stacked_plot(mime,dimension):
+    sql = f"""SELECT archive, {dimension}s
+                FROM archive{dimension}s
+                WHERE megatype='{mime}';"""
+    df = get_df(sql)
+
+    print(df)
+
+    values = df[f"{dimension}s"].tolist()
+    archives = df["archive"].tolist()
+
+
+    bottoms = np.cumsum([0] + values[:-1])
+
+    plt.figure(figsize=(5,7))
+
+    for archive, value, bottom in zip(archives, values, bottoms):
+        plt.bar(0, value, bottom=bottom, label=archive)
+
+    plt.xticks([])      # no x-axis ticks for a single bar
+    plt.ylabel("count")
+    plt.title(f"Holdings of {mime} in {dimension}s")
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
+    # plt.savefig(f"stacked_{mime}.png", dpi=300, bbox_inches="tight")
+
+    # plt.tight_layout()
+    plt.close()
+
+
+
+def rankplot(level, mime, dimension, sql, log=False, aggregatefunction=totalcount):
+    df = get_df(sql)
 
     # df["total"] = df["videocount"] + df["audiocount"] + df["xmlcount"]
     df["total"] = aggregatefunction(df,dimension)
@@ -88,24 +124,6 @@ def rankplot(level, mime, dimension, sql, log=False, aggregatefunction=totalcoun
 #     """, log=True)
 
 
-for mime in "audio video xml".split():
-    for dimension in "count bytes seconds".split():
-        for boolean in (True, False):
-            rankplot("language", mime, dimension, f"""SELECT
-                        languagecode as code,
-                        {mime}{dimension}
-                    FROM cleanlanguagecsv
-                """,log=boolean)
-
-
-for mime in "audio video xml".split():
-    for dimension in "count bytes seconds".split():
-        for boolean in (True, False):
-            rankplot("phylum",mime, dimension, f"""SELECT
-                        phylum as code,
-                        {mime}{dimension}
-                    FROM cleanphylumcsv
-                """,log=boolean)
 
 
 #
@@ -125,3 +143,29 @@ for mime in "audio video xml".split():
 #             xmlcount
 #         FROM cleanphylumcsv
 #     """, log=True)
+
+
+for mime in "audio video xml".split():
+    for dimension in "count second byte".split():
+        stacked_plot(mime, dimension)
+
+
+# ====================== OK =====================================
+# for mime in "audio video xml".split():
+#     for dimension in "count bytes seconds".split():
+#         for boolean in (True, False):
+#             rankplot("language", mime, dimension, f"""SELECT
+#                         languagecode as code,
+#                         {mime}{dimension}
+#                     FROM cleanlanguagecsv
+#                 """,log=boolean)
+#
+#
+# for mime in "audio video xml".split():
+#     for dimension in "count bytes seconds".split():
+#         for boolean in (True, False):
+#             rankplot("phylum",mime, dimension, f"""SELECT
+#                         phylum as code,
+#                         {mime}{dimension}
+#                     FROM cleanphylumcsv
+#                 """,log=boolean)
