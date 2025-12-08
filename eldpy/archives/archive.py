@@ -9,7 +9,7 @@ import datetime
 import sqlite3
 from  collections import Counter, defaultdict
 
-import squarify
+# import squarify
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
@@ -84,17 +84,17 @@ class Archive:
             cursor = connection.cursor()
         number_of_collections = len(self.collections)
         for i, collection in enumerate(self.collections):
-            print(f"c{i+1}/{number_of_collections}")
+            print(f"\nc{i+1}/{number_of_collections}")
             number_of_bundles = len(collection.bundles)
             for j, bundle in enumerate(collection.bundles[:limit]):
                 print(f" b{j+1}/{number_of_bundles}", end=" ")
                 bundle.populate_files()
                 if database:
-                    for file_ in bundle.files():
+                    for file_ in bundle.files:
                         file_data = [
                             file_.url,
                             self.name,
-                            collection.ID,
+                            collection.id_,
                             bundle.url,
                             file2megatype(file_.type_),
                             file_.type_,
@@ -102,8 +102,8 @@ class Archive:
                             0
                         ]
                         cursor.execute("INSERT INTO files VALUES (?,?,?,?,?,?,?,?)", file_data)
-                        for lg in tla_file.langauges:
-                            cursor.execute("INSERT INTO languagesfiles VALUES (?,?,?)", [tla_file.url,self.name,lg])
+                        for lg in file_.languages:
+                            cursor.execute("INSERT INTO languagesfiles VALUES (?,?,?)", [file_.url,self.name,lg])
             if database:
                 print(f"committing files for {collection.name}")
                 connection.commit()

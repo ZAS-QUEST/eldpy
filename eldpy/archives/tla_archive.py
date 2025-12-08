@@ -176,5 +176,6 @@ class TLAArchive(Archive):
 
 if __name__ == "__main__":
     ta = TLAArchive()
-    ta.populate(limit=2, database="test.db")
-    ta.write_json()
+    # ta.populate(limit=2, database="test.db")
+    # ta.write_json()
+    ta.insert_into_database("../tla_copy_f.bak.json", db_name="delaman2025a.db")

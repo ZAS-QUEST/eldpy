@@ -378,4 +378,4 @@ if __name__ == "__main__":
     ea.populate_bundles()
     ea.populate_files()
     ea.write_json()
-    # ea.insert_into_database()
+    ea.insert_into_database()

@@ -8,7 +8,7 @@ class ElarBundle(Bundle):
     def __init__(self, name, id_):
         self.name = name
         self.url = url
-        self.id_ = =url.split('/')[-1]
+        self.id_ = url.split('/')[-1]
         # self.url = f"https://www.elararchive.org/uncategorized/{id_}"
         self.files = []
         self.languages = []

@@ -29,20 +29,25 @@ class ParadisecArchive(Archive):
         """
         get all PARADISEC collections
         """
+        request_url = f"https://catalog.paradisec.org.au/collections/search?page=1&per_page={limit}"
+        print(request_url)
         r = requests.get(
-            f"https://catalog.paradisec.org.au/collections/search?page=1&per_page={limit}",
+            request_url,
             timeout=120
         )
         content = r.content
         soup = BeautifulSoup(content, "html.parser")
         table = soup.find_all("table")[-1]
         trs = table.find_all("tr")
+        print(len(trs))
         for i, tr in enumerate(trs[:limit]):
-            print(f"{i}/{len(trs)}")
             tds = tr.find_all("td")
             collection_name = tds[1].text
+            print(i,collection_name)
+            link_base = tds[8].find("a")["href"]
+            print(link_base)
             collection_link = (
-                "https://catalog.paradisec.org.au" + tds[7].find("a")["href"]
+                "https://catalog.paradisec.org.au" + link_base
             )
             self.collections.append(
                 ParadisecCollection(collection_name, collection_link)
@@ -59,19 +64,19 @@ class ParadisecArchive(Archive):
                 collection.populate_bundles()
             self.bundles += collection.bundles
 
-    def populate_files(self, limit=LIMIT):
-        """
-        get all files for the bundles
-        """
-        print(f"populating files from {len(self.collections)} collections")
-        for i, collection in enumerate(self.collections):
-            print(f"{i+1}/{len(self.collections)}")
-            if collection.bundles == []:
-                collection.populate_bundles()
-            for bundle in collection.bundles:
-                if bundle.files == []:
-                    bundle.populate_files()
-                self.files += bundle.files
+    # def populate_files(self, limit=LIMIT):
+    #     """
+    #     get all files for the bundles
+    #     """
+    #     print(f"populating files from {len(self.collections)} collections")
+    #     for i, collection in enumerate(self.collections):
+    #         print(f"{i+1}/{len(self.collections)}")
+    #         if collection.bundles == []:
+    #             collection.populate_bundles()
+    #         for bundle in collection.bundles:
+    #             if bundle.files == []:
+    #                 bundle.populate_files()
+    #             self.files += bundle.files
             # filename = collection.url.split("/collections/")[-1]
             # collection_dict = {
             #     "name": collection.name,
@@ -185,6 +190,6 @@ class ParadisecArchive(Archive):
 
 if __name__ == "__main__":
     pa = ParadisecArchive()
-    pa.populate()
-    pa.write_json()
-    # pa.insert_into_database("paradisec_copy_f.json")
+    # pa.populate()
+    # pa.write_json()
+    pa.insert_into_database("paradisec_copy.json", db_name="delaman2025a.db")

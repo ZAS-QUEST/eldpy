@@ -47,7 +47,7 @@ class AillaArchive(Archive):
             id_ = collection["id"]
             url = f"https://ailla.utexas.org/collections/{id_}"
             name = collection["title"]["en"]
-            self.collections.append(AillaCollection(name, url))
+            self.collections.append(AillaCollection(name, id_))
         print(f"found {len(collection_list)} collections")
 
     # def populate_bundles(self, hardlimit=10000):
@@ -82,7 +82,7 @@ class AillaArchive(Archive):
                 }
                 collection_dict["bundles"][bundle.name] = bundle_dict
             archive_dict[collection.name] = collection_dict
-        with open(f"out/ailla_copy{add}.json", "w", encoding="utf8") as jsonout:
+        with open(f"ailla_copy{add}.json", "w", encoding="utf8") as jsonout:
             jsonout.write(json.dumps(archive_dict, indent=4, sort_keys=True))
 
     # def json_run_showcase(self, file_limit=999999):
@@ -132,9 +132,9 @@ class AillaArchive(Archive):
 
 if __name__ == "__main__":
     aa = AillaArchive()
-    aa.populate(database='test.db')
+    # aa.populate(database='test.db')
     # aa.populate_collections()
     # aa.populate_bundles()
     # aa.populate_files()
-    aa.write_json()
-    # aa.insert_into_database("ailla_copy_f.json")
+    # aa.write_json(add="_f")
+    aa.insert_into_database("ailla_copy_f.json", db_name="delaman2025a.db")
