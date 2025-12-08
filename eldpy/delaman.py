@@ -108,7 +108,31 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
         SELECT languagecode,
                 GROUP_CONCAT(archive) AS archives
             FROM languagecodearchive
-            GROUP BY languagecode"""
+            GROUP BY languagecode""",
+    """CREATE VIEW languagestats AS
+        SELECT phyla.languagecode, videocount, videobytes, videoseconds, audiocount, audiobytes, audioseconds, xmlcount, xmlbytes, xmlseconds
+        FROM phyla, fulljoinvideos, fulljoinaudios, fulljoinxmls
+        WHERE phyla.languagecode=fulljoinvideos.languagecode
+          AND phyla.languagecode=fulljoinaudios.languagecode
+          AND phyla.languagecode=fulljoinxmls.languagecode;
+        """,
+    """CREATE VIEW phylumstats AS
+        SELECT phyla.phylum,
+        SUM(videocount) AS videocount,
+        SUM(videobytes) AS videobytes,
+        SUM(videoseconds) AS videoseconds,
+        SUM(audiocount) AS audiocount,
+        SUM(audiobytes) AS audiobytes,
+        SUM(audioseconds) AS audioseconds,
+        SUM(xmlcount) AS xmlcount,
+        SUM(xmlbytes) AS xmlbytes,
+        SUM(xmlseconds) AS xmlseconds
+        FROM phyla, fulljoinvideos, fulljoinaudios, fulljoinxmls
+        WHERE phyla.languagecode=fulljoinvideos.languagecode
+        AND phyla.languagecode=fulljoinaudios.languagecode
+        AND phyla.languagecode=fulljoinxmls.languagecode
+        GROUP BY phyla.phylum;
+        """
     ]
     for view in views:
         cursor.execute(view)
@@ -130,15 +154,15 @@ def populate_phyla(db_name="delaman_holdings.db"):
 
 
 if __name__ == "__main__":
-    given_db_name = "test.db"
+    given_db_name = "delaman2025.db"
     try:
         given_db_name = sys.argv[1]
     except IndexError:
         pass
     print("setting up tables")
     setup_metadata_database(db_name=given_db_name)
-    # populate_phyla(db_name=given_db_name)
-    # print("ingesting archives")
-    # for archive_name, archive in archives.items():
-    #     print(" ingesting", archive_name)
-    #     archive.insert_into_database(f"{archive_name.lower()}_copy_f.json", db_name=given_db_name)
+    populate_phyla(db_name=given_db_name)
+    print("ingesting archives")
+    for archive_name, archive in archives.items():
+        print(" ingesting", archive_name)
+        archive.insert_into_database(f"{archive_name.lower()}_copy_f.json", db_name=given_db_name)
