@@ -2,6 +2,10 @@ import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import lingtypology
+import json
+from webglottolog import string2glottocode
+import math
 
 EXCLUDELANGUAGES = """where languagecode != 'eng'
                 and languagecode != 'spa'
@@ -246,42 +250,189 @@ def rankplot(level, mime, dimension, sql, log=False, aggregatefunction=totalcoun
     plt.close()
 
 
+def plot_zero_records():
+    sql="""select languagecode from (SELECT phyla.languagecode,count(id) as count  FROM  phyla
+            LEFT JOIN languagesfiles ON phyla.languagecode=languagesfiles.languagecode group by phyla.languagecode) where count=0;"""
+    df = get_df(sql)
+    isos = df[df["languagecode"].str.len().isin([3])]["languagecode"].tolist()
+    # isos=['eng','fra']
+    # print(isos)
+    with open('isoglotto2.json') as jsonin:
+        glottolog_d = json.load(jsonin)
+    bare_glottocodes = [glottolog_d.get(iso) for iso in isos]
+    # d={bare_glottocodes[i]:isos[i] for i in range(len(isos))}
+    # with open('isoglotto.json', 'w') as jsonout:
+    #     jsonout.write(json.dumps(d))
+    glottocodes = [x for x in bare_glottocodes if x]
+    # print(glottocodes)
+
+    m = lingtypology.LingMap(glottocodes, glottocode=True)
+    m.tiles = "openstreetmap"
+    m.create_map()
+    fname = f"zero_records.png"
+    print(f"saving to {fname}")
+    m.save_static(fname=fname)
+    # image = fname
+    # crop(image, (200, 20, 1230, 600), 'otclgs.png')
+
+def mime_gradient_map(mime):
+    sql=f"""SELECT languagecode, {mime}count AS count
+            FROM fulljoin{mime}s
+            WHERE languagecode != 'eng'
+            AND languagecode != 'spa'
+            AND languagecode != 'rus'
+            AND languagecode != 'por'
+            AND languagecode != 'ind'
+            AND languagecode != 'swh'
+            AND languagecode != 'tpi'
+            AND languagecode != 'fra';"""
+    df = get_df(sql)
+    # isos=['eng','fra']
+    # print(isos)
+    # with open('isoglotto2.json') as jsonin:
+    #     glottolog_d = json.load(jsonin)
+    # bare_glottocodes = [glottolog_d.get(iso) for iso in isos]
+
+    isos = df["languagecode"].tolist()
+    counts = df["count"].tolist()
+    counts = [0 if math.isnan(x) else x for x in counts]
 
 
+    print(isos)
+    print(counts)
+
+    # glottolog_d = {iso:string2glottocode(iso) for iso in isos}
+    # with open('isoglotto3.json', 'w') as jsonout:
+    #     jsonout.write(json.dumps(glottolog_d))
+    with open('isoglotto3.json') as jsonin:
+        glottolog_d = json.load(jsonin)
+    glottocodes = [glottolog_d.get(iso) for iso in isos]
+    # print(glottocodes)
+
+    #compute the logarithms of the counts. Since 0 has no logarithm, we add a small number, making the result for 0 slightly smaller then 0, and then round up again to 0. The same is done for the other results, but will not lead to distortions since the offset will have to influence on the arity of the count
+    logcounts = [math.ceil(x) for x in np.log10([x+0.11 for x in counts])]
+
+    # logcounts = np.log10([x+0.1 for x in counts])
+    print(logcounts)
+
+    m = lingtypology.LingMap(glottocodes, glottocode=True)
+    # m.add_features(counts, radius=2, numeric=True)
+    m.add_features(logcounts, radius=1, numeric=True)
+    m.colormap_colors = ('red', 'blue')
+    m.tiles = "openstreetmap"
+    m.create_map()
+    fname = f"gradient_map_{mime}.png"
+    print(f"saving to {fname}")
+    m.save_static(fname=fname)
+
+
+
+def gradient_map():
+    sql=f"""SELECT phyla.languagecode, count(id) AS count
+            FROM  phyla
+            LEFT JOIN languagesfiles
+            ON phyla.languagecode=languagesfiles.languagecode
+            WHERE LENGTH(phyla.languagecode)=3
+            AND phyla.languagecode != 'eng'
+            AND phyla.languagecode != 'spa'
+            AND phyla.languagecode != 'rus'
+            AND phyla.languagecode != 'por'
+            AND phyla.languagecode != 'ind'
+            AND phyla.languagecode != 'swh'
+            AND phyla.languagecode != 'tpi'
+            AND phyla.languagecode != 'fra'
+            GROUP BY phyla.languagecode;"""
+    df = get_df(sql)
+    # isos=['eng','fra']
+    # print(isos)
+    # with open('isoglotto2.json') as jsonin:
+    #     glottolog_d = json.load(jsonin)
+    # bare_glottocodes = [glottolog_d.get(iso) for iso in isos]
+
+    isos = df["languagecode"].tolist()
+    counts = df["count"].tolist()
+
+    print(isos)
+    print(counts)
+
+    # glottolog_d = {iso:string2glottocode(iso) for iso in isos}
+    # with open('isoglotto3.json', 'w') as jsonout:
+    #     jsonout.write(json.dumps(glottolog_d))
+    with open('isoglotto3.json') as jsonin:
+        glottolog_d = json.load(jsonin)
+    glottocodes = [glottolog_d.get(iso) for iso in isos]
+    # print(glottocodes)
+
+    #compute the logarithms of the counts. Since 0 has no logarithm, we add a small number, making the result for 0 slightly smaller then 0, and then round up again to 0. The same is done for the other results, but will not lead to distortions since the offset will have to influence on the arity of the count
+    logcounts = [math.ceil(x) for x in np.log10([x+0.11 for x in counts])]
+
+    # logcounts = np.log10([x+0.1 for x in counts])
+    print(logcounts)
+
+    m = lingtypology.LingMap(glottocodes, glottocode=True)
+    # m.add_features(counts, radius=2, numeric=True)
+    m.add_features(logcounts, radius=1, numeric=True)
+    m.colormap_colors = ('red', 'blue')
+    m.tiles = "openstreetmap"
+    m.create_map()
+    fname = f"gradient_map.png"
+    print(f"saving to {fname}")
+    m.save_static(fname=fname)
+
+
+def plot_existing_records():
+    sql="""select languagecode from (SELECT phyla.languagecode,count(id) as count  FROM  phyla
+            LEFT JOIN languagesfiles ON phyla.languagecode=languagesfiles.languagecode group by phyla.languagecode) where count>0;"""
+    df = get_df(sql)
+    codes = df[df["languagecode"].str.len().isin([3])]["languagecode"].tolist()
+    print(codes)
+    m = lingtypology.LingMap(codes)
+    m.tiles = "openstreetmap"
+    m.create_map()
+    fname = f"existing_records.png"
+    print(f"saving to {fname}")
+    m.save_static(fname=fname)
+
+
+
+mime_gradient_map('audio')
+mime_gradient_map('video')
+mime_gradient_map('xml')
 
 # ====================== OK =====================================
-plot_totalfiles()
-plot_totalfiles(log=True)
-for archive in "AILLA ELAR PARADISEC TLA".split():
-    for dimension in "count sum".split():
-        archive_plot(archive, dimension)
-
-
-
-plot_languages()
-plot_phyla()
-
-for mime in "audio video xml".split():
-    for dimension in "count second byte".split():
-        stacked_plot(mime, dimension)
-
-
-for mime in "audio video xml".split():
-    for dimension in "count bytes seconds".split():
-        for boolean in (True, False):
-            rankplot("language", mime, dimension, f"""SELECT
-                        languagecode as code,
-                        {mime}{dimension}
-                    FROM cleanlanguagecsv
-                    {EXCLUDELANGUAGES}
-                """,log=boolean)
-
-
-for mime in "audio video xml".split():
-    for dimension in "count bytes seconds".split():
-        for boolean in (True, False):
-            rankplot("phylum",mime, dimension, f"""SELECT
-                        phylum as code,
-                        {mime}{dimension}
-                    FROM cleanphylumcsv
-                """,log=boolean)
+# gradient_map()
+# plot_totalfiles()
+# plot_totalfiles(log=True)
+# for archive in "AILLA ELAR PARADISEC TLA".split():
+#     for dimension in "count sum".split():
+#         archive_plot(archive, dimension)
+#
+#
+#
+# plot_languages()
+# plot_phyla()
+#
+# for mime in "audio video xml".split():
+#     for dimension in "count second byte".split():
+#         stacked_plot(mime, dimension)
+#
+#
+# for mime in "audio video xml".split():
+#     for dimension in "count bytes seconds".split():
+#         for boolean in (True, False):
+#             rankplot("language", mime, dimension, f"""SELECT
+#                         languagecode as code,
+#                         {mime}{dimension}
+#                     FROM cleanlanguagecsv
+#                     {EXCLUDELANGUAGES}
+#                 """,log=boolean)
+#
+#
+# for mime in "audio video xml".split():
+#     for dimension in "count bytes seconds".split():
+#         for boolean in (True, False):
+#             rankplot("phylum",mime, dimension, f"""SELECT
+#                         phylum as code,
+#                         {mime}{dimension}
+#                     FROM cleanphylumcsv
+#                 """,log=boolean)
