@@ -71,40 +71,40 @@ class TLAArchive(Archive):
                 collection.populate_bundles()
             self.bundles += collection.bundles
 
-    # def populate_files(self, limit=10000, database=None):
-    #     """
-    #     get all files for the bundles
-    #     """
-    #     print(f"populating files from {len(self.collections)} collections")
-    #     if database:
-    #         connection = sqlite3.connect(database)
-    #         cursor = connection.cursor()
-    #     for i, collection in enumerate(self.collections):
-    #         print(f"{i+1}/{len(self.collections)}")
-    #         if collection.bundles == []:
-    #             collection.populate_bundles()
-    #         for bundle in collection.bundles:
-    #             if bundle.files == []:
-    #                 bundle.populate_files()
-    #             self.files += bundle.files
-    #             if database:
-    #                 for tla_file in bundle.files():
-    #                     file_data = [
-    #                         tla_file.url,
-    #                         "TLA",
-    #                         collection.ID,
-    #                         bundle.url,
-    #                         file2megatype(tla_file.type_),
-    #                         tla_file.type_,
-    #                         tla_file.get_size(),
-    #                         0
-    #                     ]
-    #                     cursor.execute("INSERT INTO files VALUES (?,?,?,?,?,?,?,?)", file_data)
-    #                     for lg in tla_file.langauges:
-    #                         cursor.execute("INSERT INTO languagesfiles VALUES (?,?,?)", [tla_file.url,"TLA",lg])
-    #         if database:
-    #             print(f"committing files for {collection.name}")
-    #             connection.commit()
+    def populate_files(self, limit=10000, database=None):
+        """
+        get all files for the bundles
+        """
+        print(f"populating files from {len(self.collections)} collections")
+        if database:
+            connection = sqlite3.connect(database)
+            cursor = connection.cursor()
+        for i, collection in enumerate(self.collections):
+            print(f"{i+1}/{len(self.collections)}")
+            if collection.bundles == []:
+                collection.populate_bundles()
+            for bundle in collection.bundles:
+                if bundle.files == []:
+                    bundle.populate_files()
+                self.files += bundle.files
+                if database:
+                    for tla_file in bundle.files():
+                        file_data = [
+                            tla_file.url,
+                            "TLA",
+                            collection.ID,
+                            bundle.url,
+                            file2megatype(tla_file.type_),
+                            tla_file.type_,
+                            tla_file.get_size(),
+                            0
+                        ]
+                        cursor.execute("INSERT INTO files VALUES (?,?,?,?,?,?,?,?)", file_data)
+                        for lg in tla_file.langauges:
+                            cursor.execute("INSERT INTO languagesfiles VALUES (?,?,?)", [tla_file.url,"TLA",lg])
+            if database:
+                print(f"committing files for {collection.name}")
+                connection.commit()
 
 
     def write_json(self, add=""):

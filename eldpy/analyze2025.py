@@ -395,11 +395,11 @@ def plot_existing_records():
 
 
 
-mime_gradient_map('audio')
-mime_gradient_map('video')
-mime_gradient_map('xml')
 
 # ====================== OK =====================================
+# mime_gradient_map('audio')
+# mime_gradient_map('video')
+# mime_gradient_map('xml')
 # gradient_map()
 # plot_totalfiles()
 # plot_totalfiles(log=True)
