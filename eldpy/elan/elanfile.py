@@ -217,7 +217,7 @@ class ElanFile:
     def populate_translations(
         self,
         candidates=constants.ACCEPTABLE_TRANSLATION_TIER_TYPES,
-        major_languages=("en",),
+        major_languages=("en","pt"),
     ):
         """fill the attribute translation with translations from the ELAN file"""
 
@@ -238,6 +238,7 @@ class ElanFile:
             translationtiers = root.findall(querystring)
             if translationtiers != []:  # we found a tier of the linguistic type
                 for tier in translationtiers:
+                    print(tier)
                     tier_id = tier.attrib["TIER_ID"]
                     wordlist = tier_to_wordlist(tier)
                     if wordlist == []:

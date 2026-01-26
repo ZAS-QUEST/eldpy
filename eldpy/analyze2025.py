@@ -182,7 +182,7 @@ def archive_plot(archive, measure):
                 AND megatype != ''
                 GROUP BY megatype;"""
     df = get_df(sql)
-
+    print(archive, measure, 'bytes')
     # print(df)
 
     values = df["value"].tolist()
@@ -298,8 +298,8 @@ def mime_gradient_map(mime):
     counts = [0 if math.isnan(x) else x for x in counts]
 
 
-    print(isos)
-    print(counts)
+    # print(isos)
+    # print(counts)
 
     # glottolog_d = {iso:string2glottocode(iso) for iso in isos}
     # with open('isoglotto3.json', 'w') as jsonout:
@@ -313,7 +313,7 @@ def mime_gradient_map(mime):
     logcounts = [math.ceil(x) for x in np.log10([x+0.11 for x in counts])]
 
     # logcounts = np.log10([x+0.1 for x in counts])
-    print(logcounts)
+    # print(logcounts)
 
     m = lingtypology.LingMap(glottocodes, glottocode=True)
     # m.add_features(counts, radius=2, numeric=True)
@@ -352,8 +352,8 @@ def gradient_map():
     isos = df["languagecode"].tolist()
     counts = df["count"].tolist()
 
-    print(isos)
-    print(counts)
+    # print(isos)
+    # print(counts)
 
     # glottolog_d = {iso:string2glottocode(iso) for iso in isos}
     # with open('isoglotto3.json', 'w') as jsonout:
@@ -367,7 +367,7 @@ def gradient_map():
     logcounts = [math.ceil(x) for x in np.log10([x+0.11 for x in counts])]
 
     # logcounts = np.log10([x+0.1 for x in counts])
-    print(logcounts)
+    # print(logcounts)
 
     m = lingtypology.LingMap(glottocodes, glottocode=True)
     # m.add_features(counts, radius=2, numeric=True)
@@ -385,7 +385,7 @@ def plot_existing_records():
             LEFT JOIN languagesfiles ON phyla.languagecode=languagesfiles.languagecode group by phyla.languagecode) where count>0;"""
     df = get_df(sql)
     codes = df[df["languagecode"].str.len().isin([3])]["languagecode"].tolist()
-    print(codes)
+    # print(codes)
     m = lingtypology.LingMap(codes)
     m.tiles = "openstreetmap"
     m.create_map()
@@ -393,46 +393,65 @@ def plot_existing_records():
     print(f"saving to {fname}")
     m.save_static(fname=fname)
 
+print('collections')
+print(get_df("""select archive, count(distinct(collection)) from files group by archive;"""))
+print('bundles')
+print(get_df("""select archive, count(distinct(collection)) from files group by archive;"""))
+print('files')
+for t in ('audio', 'video', 'xml'):
+    print(f"{t} count")
+    print(get_df(f"select archive, count(distinct(id))  from files where megatype='{t}' group by archive;"))
+    print(f"{t} seconds")
+    print(get_df(f"select archive, sum(seconds)  from files where megatype='{t}' group by archive;"))
+    print(f"{t} bytes")
+    print(get_df(f"select archive, sum(bytes)  from files where megatype='{t}' group by archive;"))
 
+print('total bytes')
+print(get_df("select archive, count(bytes)  from files group by archive;"))
 
+print('languages')
+print(get_df('select archive, count(distinct languagecode) from languagesfiles group by archive;'))
+
+print('phyla')
+print(get_df('select archive, count(distinct phylum) from languagesfiles,phyla where languagesfiles.languagecode=phyla.languagecode group by archive;'))
 
 # ====================== OK =====================================
-# mime_gradient_map('audio')
-# mime_gradient_map('video')
-# mime_gradient_map('xml')
-# gradient_map()
-# plot_totalfiles()
-# plot_totalfiles(log=True)
-# for archive in "AILLA ELAR PARADISEC TLA".split():
-#     for dimension in "count sum".split():
-#         archive_plot(archive, dimension)
-#
-#
-#
-# plot_languages()
-# plot_phyla()
-#
-# for mime in "audio video xml".split():
-#     for dimension in "count second byte".split():
-#         stacked_plot(mime, dimension)
-#
-#
-# for mime in "audio video xml".split():
-#     for dimension in "count bytes seconds".split():
-#         for boolean in (True, False):
-#             rankplot("language", mime, dimension, f"""SELECT
-#                         languagecode as code,
-#                         {mime}{dimension}
-#                     FROM cleanlanguagecsv
-#                     {EXCLUDELANGUAGES}
-#                 """,log=boolean)
-#
-#
-# for mime in "audio video xml".split():
-#     for dimension in "count bytes seconds".split():
-#         for boolean in (True, False):
-#             rankplot("phylum",mime, dimension, f"""SELECT
-#                         phylum as code,
-#                         {mime}{dimension}
-#                     FROM cleanphylumcsv
-#                 """,log=boolean)
+mime_gradient_map('audio')
+mime_gradient_map('video')
+mime_gradient_map('xml')
+gradient_map()
+plot_totalfiles()
+plot_totalfiles(log=True)
+for archive in "AILLA ELAR PARADISEC TLA".split():
+    for dimension in "count sum".split():
+        archive_plot(archive, dimension)
+
+
+
+plot_languages()
+plot_phyla()
+
+for mime in "audio video xml".split():
+    for dimension in "count second byte".split():
+        stacked_plot(mime, dimension)
+
+
+for mime in "audio video xml".split():
+    for dimension in "count bytes seconds".split():
+        for boolean in (True, False):
+            rankplot("language", mime, dimension, f"""SELECT
+                        languagecode as code,
+                        {mime}{dimension}
+                    FROM cleanlanguagecsv
+                    {EXCLUDELANGUAGES}
+                """,log=boolean)
+
+
+for mime in "audio video xml".split():
+    for dimension in "count bytes seconds".split():
+        for boolean in (True, False):
+            rankplot("phylum",mime, dimension, f"""SELECT
+                        phylum as code,
+                        {mime}{dimension}
+                    FROM cleanphylumcsv
+                """,log=boolean)

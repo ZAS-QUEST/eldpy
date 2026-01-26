@@ -56,10 +56,11 @@ class AillaBundle(Bundle):
         for f in data['files']:
             filename = f['filename']
             file_size = f['file_size']
+            duration_string = f['extent']
             islandora_pid = f['islandora_pid']
             type_ = f['media_type']
             download_url = f"https://ailla-legacy.lib.utexas.edu/islandora/object/{islandora_pid}/datastream/OBJ/download"
-            files.append(AillaFile(filename, download_url, type_, file_size, subject_languages))
+            files.append(AillaFile(filename, download_url, type_, file_size, duration_string, subject_languages))
         # print(f"   found {len(files)} files")
         return files
 

@@ -140,7 +140,7 @@ def setup_metadata_database(db_name="delaman_holdings.db"):
     """CREATE VIEW archivebytes AS
         SELECT archive, megatype, sum(bytes) AS bytes
         FROM files
-        GROUP BY archive, megatype;"""
+        GROUP BY archive, megatype;""",
     """CREATE VIEW archiveseconds AS
         SELECT archive, megatype, sum(seconds) AS seconds
         FROM files

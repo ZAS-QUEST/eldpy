@@ -559,33 +559,33 @@ def type2megatype(t):
     """
 
     megatype_d = {
-        "jpg": "image",
-        "png": "image",
-        "image": "image",
-        "mpg": "video",
-        "avi": "video",
-        "mov": "video",
-        "mp4": "video",
-        "video": "video",
-        "wav": "audio",
-        "mp3": "audio",
-        "audio": "audio",
-        "xml": "xml",
-        "flextext": "xml",
-        "txt": "text",
-        "trs": "text",
-        "flextext+xml": "xml",
-        "eaf+xml": "xml",
-        "eaf": "xml",
-        "x-iso9660-image": "image",
-        "pdf": "text",
-        "vnd.openxmlformats-officedocument.wordprocessingml.document": "text",
-        "vnd.oasis.opendocument.text": "text",
-        "vnd.wav": "audio",
-        "mxf": "video",
-        "mpeg": "video",
-        "m4a": "audio",
-        "tif": "image",
+            "jpg": "image",
+            "png": "image",
+            "image": "image",
+            "mpg": "video",
+            "avi": "video",
+            "mov": "video",
+            "mp4": "video",
+            "video": "video",
+            "wav": "audio",
+            "mp3": "audio",
+            "audio": "audio",
+            "xml": "xml",
+            "flextext": "xml",
+            "txt": "text",
+            "trs": "text",
+            "flextext+xml": "xml",
+            "eaf+xml": "xml",
+            "eaf": "xml",
+            "x-iso9660-image": "image",
+            "pdf": "text",
+            "vnd.openxmlformats-officedocument.wordprocessingml.document": "text",
+            "vnd.oasis.opendocument.text": "text",
+            "vnd.wav": "audio",
+            "mxf": "video",
+            "mpeg": "video",
+            "m4a": "audio",
+            "tif": "image",
     }
     return megatype_d.get(t.lower(), "")
 
@@ -597,19 +597,25 @@ def get_seconds_from_str(input_string):
     result = 0
     if "prp/10002" in input_string or "TSS-prp/30" in input_string:
         duration_string = input_string.split()[2].split(".")[0]
-        try:
-            h, m, s = HHMMSS.match(duration_string).groups()
-        except AttributeError:
-            return 0
-        if not h:
-            h = 0
-        if not m:
-            m = 0
-        if not s:
-            s = 0
-        result = 3600 * int(h) + 60 * int(m) + int(s)
+        return get_seconds_from_clean_str(duration_string)
     # print(input_string, result)
+    return 0
+
+def get_seconds_from_clean_str(input_string):
+    """convert a string with time information to the integer value in seconds"""
+    try:
+            h, m, s = HHMMSS.match(input_string).groups()
+    except AttributeError:
+        return 0
+    if not h:
+        h = 0
+    if not m:
+        m = 0
+    if not s:
+        s = 0
+    result = 3600 * int(h) + 60 * int(m) + int(s)
     return result
+
 
 
 def get_seconds(hit):

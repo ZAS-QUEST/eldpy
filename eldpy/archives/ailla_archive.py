@@ -12,6 +12,7 @@ import json
 
 # import humanize
 import requests
+import sys
 
 # from collections import Counter, defaultdict
 # from bs4 import BeautifulSoup
@@ -32,17 +33,18 @@ class AillaArchive(Archive):
     def __init__(self):
         super().__init__("AILLA", "https://ailla.utexas.org")
 
-    def populate_collections(self, limit=10000):
+    def populate_collections(self, limit=10000,start=0):
         """
         get all AILLA collections
         """
-
+        stop=start+limit
         print("populating AILLA collections")
         r = requests.get(
             "https://ailla-backend-prod.gsc1-pub.lib.utexas.edu/collections/all",
             timeout=120,
         )
-        collection_list = json.loads(r.content)[:limit]
+        print(f"downloading collections  {start}-{stop}")
+        collection_list = json.loads(r.content)[start:stop]
         for collection in collection_list:
             id_ = collection["id"]
             url = f"https://ailla.utexas.org/collections/{id_}"
@@ -124,7 +126,19 @@ class AillaArchive(Archive):
         return type_
 
     def get_length(self, f):
-        return 0
+        duration = f.get("duration", "").strip()
+        if duration in ("", "--"):
+            length = 0
+        else:
+            # print(duration)
+            try:
+                h, m, s = duration.split(":")
+                length = float(s) + 60 * int(m) + 60 * 60 * int(h)
+            except ValueError:
+                # print(f)
+                # print(f"'{duration}' could not be parsed in {f['name']}")
+                return 0
+        return length
 
     def get_id(self, f):
         return f["url"].split("/")[-4].strip()
@@ -133,8 +147,14 @@ class AillaArchive(Archive):
 if __name__ == "__main__":
     aa = AillaArchive()
     # aa.populate(database='test.db')
-    # aa.populate_collections()
-    # aa.populate_bundles()
-    # aa.populate_files()
-    # aa.write_json(add="_f")
-    aa.insert_into_database("ailla_copy_f.json", db_name="delaman2025a.db")
+    # offset=int(sys.argv[1])*10
+    # for start in (210,220,230):
+    #     limit=10
+    #     aa.populate_collections(start=start,limit=limit)
+    #     # aa.populate_collections()
+    #     aa.populate_bundles()
+    #     aa.populate_files()
+    #     aa.write_json(add=f"_{start}_{start+limit}")
+    for i in range(0,290,10):
+        print(i)
+        aa.insert_into_database(f"ailla_copy_{i}_{i+10}.json", db_name="delaman2025a.db")

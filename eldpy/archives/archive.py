@@ -3,7 +3,7 @@ An archive with primary material in and about endangered languages
 """
 
 import json
-
+from eldpy import delaman
 # import pprint
 import datetime
 import sqlite3
@@ -182,12 +182,19 @@ class Archive:
                 )
         connection = sqlite3.connect(db_name)
         cursor = connection.cursor()
-        cursor.executemany(
-            "INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", insert_file_list
-        )
-        cursor.executemany(
-            "INSERT INTO languagesfiles VALUES(?,?,?)", set(insert_language_list)
-        )
+        print(insert_file_list)
+        try:
+            cursor.executemany(
+                "INSERT INTO files VALUES(?,?,?,?,?,?,?,?)", set(insert_file_list)
+            )
+        except sqlite3.IntegrityError:
+            pass
+        try:
+            cursor.executemany(
+                "INSERT INTO languagesfiles VALUES(?,?,?)", set(insert_language_list)
+            )
+        except sqlite3.IntegrityError:
+            pass
         connection.commit()
         connection.close()
 
